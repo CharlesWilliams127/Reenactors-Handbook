@@ -10,24 +10,34 @@
   <nav><a href="/login"><img id="logo" src="/assets/img/face.png" alt="face logo"/></a>
     <div class="navlink"><a href="/logout">Log out</a></div>
   </nav>
-  <section id="makeDomo">
-    <form id="domoForm" name="domoForm" action="/maker" method="POST" class="domoForm">
+  <section id="makeKit">
+    <form id="kitForm" name="kitForm" action="/maker" method="POST" class="domoForm">
       <label for="name">Name: </label>
-      <input id="domoName" type="text" name="name" placeholder="Domo Name"/>
-      <label for="age">Age: </label>
-      <input id="domoAge" type="text" name="age" placeholder="Domo Age"/>
+      <input id="kitName" type="text" name="name" placeholder="Kit Name"/>
+      <label for="description">Description: </label>
+      <textarea id="kitDescription" type="text" name="description"></textarea>
+      <label for="startTimePeriod">Time Period: </label>
+      <input id="kitStartTimePeriod" type="text" name="startTimePeriod" placeholder="Start Date"/>
+      <input id="kitEndTimePeriod" type="text" name="endTimePeriod" placeholder="End Date"/>
       <input type="hidden" name="_csrf" value={{csrfToken}} />
-      <input class="makeDomoSubmit" type="submit" value="Make Domo" />
+      <input class="makeDomoSubmit" type="submit" value="Make Kit" />
     </form>
   </section>
   <section id="domos">
     <div class="domo">
-      {{#if domos}}
-        {{#each domos}}
+      {{#if kits}}
+        {{#each kits}}
           <div class="domo">
-            <img src = "/assets/img/domoface.jpeg" alt="domo face" class="domoFace"/>
             <h3 class="domoName">Name: {{this.name}}</h3>
-            <h3 class="domoAge">Age: {{this.age}}</h3>
+            {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
+            <h3>Kit Items: {{this.age}}</h3>
+            {{#if this.kitItems}}
+              {{#each this.kitItems}}
+                <h3>You've got a kit item</h3>
+              {{/each}}
+            {{/if}}
+            {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
+            {{#if this.image}}<img url={{this.image}} alt="My cool pic"></img>{{/if}}
           </div>
         {{/each}}
       {{else}}

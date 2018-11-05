@@ -1,2 +1,3 @@
 module.exports.Account = require('./Account.js');
-module.exports.Domo = require('./Domo.js');
+module.exports.Kit = require('./Kit.js');
+module.exports.KitItem = require('./KitItem.js');

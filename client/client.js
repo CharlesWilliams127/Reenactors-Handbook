@@ -59,17 +59,17 @@ $(document).ready(() => {
     return false;
   });
   
-  $("#domoForm").on("submit", (e) => {
+  $("#kitForm").on("submit", (e) => {
     e.preventDefault();
 
     $("#domoMessage").animate({width:'hide'},350);
 
-    if($("#domoName").val() == '' || $("#domoAge").val() == '') {
-      handleError("RAWR! All fields are required");
+    if($("#kitName").val() == '') {
+      handleError("Kit name is required");
       return false;
     }
 
-    sendAjax($("#domoForm").attr("action"), $("#domoForm").serialize());
+    sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize());
 
     return false;
   });
