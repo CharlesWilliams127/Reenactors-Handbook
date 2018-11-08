@@ -1,6 +1,12 @@
 const handleError = (message) => {
   $("#errorMessage").text(message);
-  $("#domoMessage").animate({width:'toggle'},350);
+  $("#kitMessage").animate({width:'toggle'},350);
+}
+
+// helper method for displaying or hiding a small section
+const displayHideSection = (sectionID, displayStyle) => {
+  const section = document.querySelector(`#${sectionID}`);
+  section.style.display = displayStyle;
 }
 
 const sendAjax = (action, data) => {
@@ -11,7 +17,7 @@ const sendAjax = (action, data) => {
     data: data,
     dataType: "json",
     success: (result, status, xhr) => {
-      $("#domoMessage").animate({width:'hide'},350);
+      $("#kitMessage").animate({width:'hide'},350);
 
       window.location = result.redirect;
     },
@@ -27,7 +33,7 @@ $(document).ready(() => {
   $("#signupForm").on("submit", (e) => {
     e.preventDefault();
 
-    $("#domoMessage").animate({width:'hide'},350);
+    $("#kitMessage").animate({width:'hide'},350);
 
     if($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
       handleError("RAWR! All fields are required");
@@ -47,7 +53,7 @@ $(document).ready(() => {
   $("#loginForm").on("submit", (e) => {
     e.preventDefault();
 
-    $("#domoMessage").animate({width:'hide'},350);
+    $("#kitMessage").animate({width:'hide'},350);
 
     if($("#user").val() == '' || $("#pass").val() == '') {
       handleError("RAWR! Username or password is empty");
@@ -62,7 +68,7 @@ $(document).ready(() => {
   $("#kitForm").on("submit", (e) => {
     e.preventDefault();
 
-    $("#domoMessage").animate({width:'hide'},350);
+    $("#kitMessage").animate({width:'hide'},350);
 
     if($("#kitName").val() == '') {
       handleError("Kit name is required");
@@ -73,4 +79,7 @@ $(document).ready(() => {
 
     return false;
   });
+
+  $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
+  $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });

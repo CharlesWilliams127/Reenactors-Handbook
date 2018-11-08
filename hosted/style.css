@@ -16,7 +16,6 @@ html, body {
 
 nav {
     width: 100%;
-    height: 50px;
     background-color: #55acee;
 }
 
@@ -47,10 +46,17 @@ nav:nth-child(1) {
     background-color: #66bdff;
 }
 
-.domoForm {
+.text-input{
+    background-color: #E8E8E8;
+    border-radius: 10px;
+    border-style: none;
+    font-size: 14pt;
+    padding: 5px;
+  }
+
+.kitForm {
     border: 2px solid #338acc;
-    height: 35px;
-    width: 700px;
+    width: 100%;
     margin-top:0px;
     padding-top:10px;
     background-color: #55acee;
@@ -58,7 +64,7 @@ nav:nth-child(1) {
     border-top-right-radius: 4px;
 }
 
-.domoForm label {
+.kitForm label {
     display: inline-block;
     width: 75px;
     margin-left: 10px;
@@ -67,7 +73,7 @@ nav:nth-child(1) {
     color: white;
 }
 
-.domoForm input[type=text] {
+.kitForm input[type=text] {
     float:left;
 }
 
@@ -147,7 +153,7 @@ nav:nth-child(1) {
     box-shadow: 0px 0px 1px 1px #55acee;
 }
 
-#domoMessage {
+#kitMessage {
     display:none;
     top: 250px;
     width: 250px;
@@ -158,7 +164,7 @@ nav:nth-child(1) {
     overflow: hidden;
 }
 
-#domoMessage h3 {
+#kitMessage h3 {
     width: 200px;
     position: absolute;
     top: 0px;
@@ -178,7 +184,7 @@ nav:nth-child(1) {
     font-style: italic;
 }
 
-#domo {
+#kit {
     z-index: 225;
     margin-top: -20px;
     margin-left: 135px;
@@ -189,7 +195,7 @@ nav:nth-child(1) {
     transform: rotate(330deg);
 }
 
-#domos {
+#kits {
     width: 40%;
     min-width: 400px;
     border: 2px solid #55acee;
@@ -198,7 +204,7 @@ nav:nth-child(1) {
     margin-top: 100px;
 }
 
-.domo {
+.kit {
     width: 95%;
     margin: 0 auto;
     margin-top: 2px;
@@ -211,14 +217,14 @@ nav:nth-child(1) {
     overflow: hidden;
 }
 
-.domo:hover {
+.kit:hover {
     transition: border-color 0.2s ease-out;
     border-color: rgba(255,255,255, 0.8);
     transition: background-color 2.6s ease-out;
     background-color: #66bfff;
 }
 
-img.domoFace {
+img.kitFace {
     margin-left: 25px;
     margin-right: 10px;
     height: 50px;
@@ -236,7 +242,7 @@ h3.emptyDomo {
     margin-top: 18px;
 }
 
-h3.domoName {
+h3.kitName {
     float:left;
     width: 200px;
     font-weight: bold;
@@ -244,7 +250,7 @@ h3.domoName {
     font-size: 1.5em;
 }
 
-h3.domoAge {
+h3.kitAge {
     float:right;
     text-align: left;
     width: 100px;
@@ -253,10 +259,78 @@ h3.domoAge {
     font-size: 1.5em;
 }
 
-.domo:first-child {
+.kit:first-child {
     margin-top: 10px;
 }
 
-.domo:last-child {
+.kit:last-child {
     margin-bottom:10px;
-}
+} 
+
+.modal-background {
+    display: none; 
+    position: fixed; 
+    z-index: 3; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0,0,0,0.4); 
+    border-radius:15px;
+    animation-name: fadeIn;
+    animation-duration: 0.4s
+  }
+  
+  .modal-body {
+    padding: 2px 16px;
+    border-radius:15px;
+  }
+  
+  .modal-content {
+    position: fixed;
+    background-color: #fefefe;
+    padding: 0%;
+    margin: auto;
+    overflow: auto;
+    text-align: center;
+    border: 1px solid #888;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    animation-name: animatetop;
+    animation-duration: 0.4s
+  }
+  
+  .modal-content-large {
+    height: 620px;
+    width:76%;
+    top: 15%;
+    left: 12%;
+  }
+  
+  .modal-content-small {
+    height: 180px;
+    width:56%;
+    top: 15%;
+    left: 22%;
+  }
+  
+  .modal-header {
+    background-color: #55acee;
+    text-align: center;
+    padding: 2px 16px;
+    color: white;
+  }
+  
+  .modal-footer {
+    width: 100%;
+    padding: 2px 8px;
+    text-align: center;
+  }
+  
+  @keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 15%; opacity: 1}
+  }
+  
+  @keyframes fadeIn {
+    from {opacity: 0} 
+    to {opacity: 1}

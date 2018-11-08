@@ -3,32 +3,42 @@
   <meta charset="utf-8"/>
   <title>DomoMaker</title>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <link rel="shortcut icon" href="/assets/img/favicon.png"/>
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
 </head>
 <body>
-  <nav><a href="/login"><img id="logo" src="/assets/img/face.png" alt="face logo"/></a>
     <div class="navlink"><a href="/logout">Log out</a></div>
+    <div class="navlink"><a href="/">Change Password</a></div>
+    <div class="navlink">
+      <input id="addKitForm" type="button"value="Add New Reeactment Kit"/>
+    </div>
   </nav>
-  <section id="makeKit">
-    <form id="kitForm" name="kitForm" action="/maker" method="POST" class="domoForm">
-      <label for="name">Name: </label>
-      <input id="kitName" type="text" name="name" placeholder="Kit Name"/>
-      <label for="description">Description: </label>
-      <textarea id="kitDescription" type="text" name="description"></textarea>
-      <label for="startTimePeriod">Time Period: </label>
-      <input id="kitStartTimePeriod" type="text" name="startTimePeriod" placeholder="Start Date"/>
-      <input id="kitEndTimePeriod" type="text" name="endTimePeriod" placeholder="End Date"/>
-      <input type="hidden" name="_csrf" value={{csrfToken}} />
-      <input class="makeDomoSubmit" type="submit" value="Make Kit" />
-    </form>
+  <section id="makeKit" class="modal-background">
+    <section class="modal-content modal-content-large">
+      <div class="modal-header">
+          <h2>Add a Reeactment Kit</h2>
+      </div>
+      <div class="modal-body">
+        <form id="kitForm" name="kitForm" action="/maker" method="POST" class="kitForm">
+          <label for="name">Name: </label>
+          <input id="kitName" type="text" name="name" class="text-input" placeholder="Kit Name"/>
+          <label for="description">Description: </label>
+          <textarea id="kitDescription" type="text" class="text-input" name="description"></textarea>
+          <label for="startTimePeriod">Time Period: </label>
+          <input id="kitStartTimePeriod" type="text" class="text-input" name="startTimePeriod" placeholder="Start Date"/>
+          <input id="kitEndTimePeriod" type="text" class="text-input" name="endTimePeriod" placeholder="End Date"/>
+          <input type="hidden" name="_csrf" value={{csrfToken}} />
+          <input class="makeDomoSubmit" type="submit" value="Make Kit" />
+        </form>
+        <input id="hideKitForm" type="button" value="Hide Form"/>
+      </div>
+    </section>
   </section>
-  <section id="domos">
-    <div class="domo">
+  <section id="kits">
+    <div class="kit">
       {{#if kits}}
         {{#each kits}}
-          <div class="domo">
-            <h3 class="domoName">Name: {{this.name}}</h3>
+          <div class="kit">
+            <h3 class="kitName">Name: {{this.name}}</h3>
             {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
             <h3>Kit Items: {{this.age}}</h3>
             {{#if this.kitItems}}
@@ -41,12 +51,12 @@
           </div>
         {{/each}}
       {{else}}
-        <h3 class="emptyDomo">No Domos yet</h3>
+        <h3 class="emptyDomo">No Reenactment Kits yet</h3>
       {{/if}}
     </div>
   </section>
-  <div id="domoMessage"><img id="speech" src="/assets/img/speech.png" alt="speech box"/>
-    <h3><span id="errorMessage"></span></h3><img id="domo" src="assets/img/domo.png" alt="domo"/>
+  <div id="kitMessage"><img id="speech" src="/assets/img/speech.png" alt="speech box"/>
+    <h3><span id="errorMessage"></span></h3><img id="kit" src="assets/img/domo.png" alt="kit"/>
   </div>
   <script src="/assets/bundle.js"></script>
 </body>

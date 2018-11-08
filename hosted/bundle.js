@@ -2,7 +2,13 @@
 
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-  $("#domoMessage").animate({ width: 'toggle' }, 350);
+  $("#kitMessage").animate({ width: 'toggle' }, 350);
+};
+
+// helper method for displaying or hiding a small section
+var displayHideSection = function displayHideSection(sectionID, displayStyle) {
+  var section = document.querySelector("#" + sectionID);
+  section.style.display = displayStyle;
 };
 
 var sendAjax = function sendAjax(action, data) {
@@ -13,7 +19,7 @@ var sendAjax = function sendAjax(action, data) {
     data: data,
     dataType: "json",
     success: function success(result, status, xhr) {
-      $("#domoMessage").animate({ width: 'hide' }, 350);
+      $("#kitMessage").animate({ width: 'hide' }, 350);
 
       window.location = result.redirect;
     },
@@ -29,7 +35,7 @@ $(document).ready(function () {
   $("#signupForm").on("submit", function (e) {
     e.preventDefault();
 
-    $("#domoMessage").animate({ width: 'hide' }, 350);
+    $("#kitMessage").animate({ width: 'hide' }, 350);
 
     if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
       handleError("RAWR! All fields are required");
@@ -49,7 +55,7 @@ $(document).ready(function () {
   $("#loginForm").on("submit", function (e) {
     e.preventDefault();
 
-    $("#domoMessage").animate({ width: 'hide' }, 350);
+    $("#kitMessage").animate({ width: 'hide' }, 350);
 
     if ($("#user").val() == '' || $("#pass").val() == '') {
       handleError("RAWR! Username or password is empty");
@@ -64,7 +70,7 @@ $(document).ready(function () {
   $("#kitForm").on("submit", function (e) {
     e.preventDefault();
 
-    $("#domoMessage").animate({ width: 'hide' }, 350);
+    $("#kitMessage").animate({ width: 'hide' }, 350);
 
     if ($("#kitName").val() == '') {
       handleError("Kit name is required");
@@ -74,5 +80,12 @@ $(document).ready(function () {
     sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize());
 
     return false;
+  });
+
+  $('#addKitForm').on("click", function (e) {
+    return displayHideSection('makeKit', 'block');
+  });
+  $('#hideKitForm').on("click", function (e) {
+    return displayHideSection('makeKit', 'none');
   });
 });
