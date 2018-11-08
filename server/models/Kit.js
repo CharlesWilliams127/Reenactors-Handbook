@@ -16,7 +16,7 @@ const KitSchema = new mongoose.Schema({
     trim: true,
     set: setStringVal,
   },
-  description : {
+  description: {
     type: String,
     required: false,
     trim: true,
@@ -24,12 +24,12 @@ const KitSchema = new mongoose.Schema({
   },
   // array of items that make up this kit
   kitItems: [kitItem.KitItemSchema],
-  startTimePeriod : {
+  startTimePeriod: {
     type: Number,
     required: false,
   },
   // TODO: add assert that this is not less than the start time period date
-  endTimePeriod : {
+  endTimePeriod: {
     type: Number,
     required: false,
   },
@@ -64,7 +64,9 @@ KitSchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertID(ownerId),
   };
 
-  return KitModel.find(search).select('name description kitItems startTimePeriod endTimePeriod image').exec(callback);
+  return KitModel.find(search)
+  .select('name description kitItems startTimePeriod endTimePeriod image')
+  .exec(callback);
 };
 
 KitModel = mongoose.model('Kit', KitSchema);

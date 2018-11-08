@@ -16,7 +16,8 @@ const makeKit = (req, res) => {
   if (!req.body.name) {
     return res.status(400).json({ error: 'Kit needs a name' });
   }
-  if((req.body.startTimePeriod && req.body.endTimePeriod) && (req.body.endTimePeriod < req.body.startTimePeriod)) {
+  if ((req.body.startTimePeriod && req.body.endTimePeriod)
+  && (req.body.endTimePeriod < req.body.startTimePeriod)) {
     return res.status(400).json({ error: 'Kit\'s start period cannot be before its end period' });
   }
   // TODO: add check for that start time period is before end time period

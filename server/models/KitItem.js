@@ -14,7 +14,7 @@ const KitItemSchema = new mongoose.Schema({
     trim: true,
     set: setStringVal,
   },
-  description : {
+  description: {
     type: String,
     required: true,
     trim: true,
@@ -29,7 +29,7 @@ const KitItemSchema = new mongoose.Schema({
     type: String,
     trim: true,
     set: setStringVal,
-    }],
+  }],
   // represents a string URL, probably will be hosted on Imgur for now
   image: {
     type: String,
@@ -60,7 +60,9 @@ KitItemSchema.statics.findByOwner = (ownerId, callback) => {
     owner: convertID(ownerId),
   };
 
-  return KitItemSchema.find(search).select('name description price recipeSteps image').exec(callback);
+  return KitItemSchema.find(search)
+  .select('name description price recipeSteps image')
+  .exec(callback);
 };
 
 KitItemModel = mongoose.model('KitItem', KitItemSchema);

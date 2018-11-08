@@ -93,10 +93,9 @@ const changePass = (request, response) => {
   }
 
   return Account.AccountModel.generateHash(newPassword, (hash) => {
-
     const query = Account.AccountModel.findOneAndUpdate(
-      {'username': username},
-      {'password': hash}
+      { username },
+      { password: hash }
     );
 
     const updatePassPromise = query.exec();
