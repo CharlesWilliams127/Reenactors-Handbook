@@ -80,6 +80,29 @@ $(document).ready(() => {
     return false;
   });
 
+  var thing = $("#changePassForm");
+  console.log(thing);
+
+  $("#changePassForm").on("submit", (e)=> {
+    e.preventDefault();
+
+    $("#kitMessage").animate({width:'hide'},350);
+
+    if($("#user").val() == '' || $("#pass").val() == '' || $("#newPass").val() == '') {
+      handleError("RAWR! All fields are required");
+      return false;
+    }
+
+    if($("#pass").val() === $("#newPass").val()) {
+      handleError("Passwords are the same");
+      return false;
+    }
+
+    sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize());
+
+    return false;
+  });
+
   $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
   $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });
