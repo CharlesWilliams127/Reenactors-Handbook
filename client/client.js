@@ -1,3 +1,11 @@
+let linkCounter = 0;
+
+const getLinkCount = () => {return linkCounter++};
+
+const counterStruct = {
+  'Link': getLinkCount,
+}
+
 const handleError = (message) => {
   $("#errorMessage").text(message);
   $("#kitMessage").animate({width:'toggle'},350);
@@ -8,6 +16,30 @@ const displayHideSection = (sectionID, displayStyle) => {
   const section = document.querySelector(`#${sectionID}`);
   section.style.display = displayStyle;
 }
+
+// creates a new field for the user to add to
+const addItem = (e, list, elemName, value) => {
+  const count = counterStruct[elemName]();
+  const item = document.createElement('li');
+  const deleteLabel= document.createElement('label');
+  deleteLabel.classList.add('small-button--label');
+  const deleteButton = document.createElement('input');
+  deleteButton.classList.add('button');
+  deleteButton.classList.add('button--close');
+  deleteButton.classList.add('button--small');
+  deleteButton.value = 'X';
+  deleteButton.id = `deleteButton${count}`;
+  deleteLabel.htmlFor = deleteButton.id;
+  // attatch listener to delete button
+  deleteButton.addEventListener('click', (e) => {
+      list.removeChild(item);
+  });
+  item.innerHTML = `<input id="${elemName}${count}" class="text-input" type="text" name="${elemName}[${count}]" value="${value}"/>`;
+  deleteLabel.appendChild(deleteButton);
+  item.appendChild(deleteLabel);
+  list.appendChild(item);
+  
+};
 
 const sendAjax = (action, data) => {
   $.ajax({
@@ -103,6 +135,22 @@ $(document).ready(() => {
     return false;
   });
 
+  $("#kitItemForm").on("submit", (e) => {
+    e.preventDefault();
+
+    $("#kitMessage").animate({width:'hide'},350);
+
+    if($("#kitItemName").val() == '') {
+      handleError("Kit name is required");
+      return false;
+    }
+
+    sendAjax($("#kitItemForm").attr("action"), $("#kitItemForm").serialize());
+
+    return false;
+  });
+
+  $('#addLinkButton').on("click", (e) => addItem(e, document.querySelector('#linkList'), 'Link', ""));
   $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
   $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });

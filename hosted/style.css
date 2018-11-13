@@ -258,6 +258,46 @@ h3.kitName {
     margin-bottom:10px;
 } 
 
+.button {
+    color: #fff;
+    font-size: 20pt;
+    background-color: #EEC015;
+    border-radius: 10px;
+    border-style: none;
+    margin-bottom: 15px;
+    transition-property: background;
+    transition-duration: 0.25s;
+  }
+  
+  .button:hover {
+    cursor: pointer;
+    background-color: #F8D246;
+  }
+  
+  .button--close {
+    background-color: #303F42;
+  }
+  
+  .button--small {
+    text-align: center;
+    width: 25px;
+  }
+  
+  .button--close:hover {
+    cursor: pointer;
+    background-color: #55676A;
+  }
+  
+  .button--label {
+    position: absolute;
+    left:47%;
+    top: 25%;
+    right:0;
+    font-size: 14pt;
+    margin-left:auto;
+    margin-right:auto;
+  }
+
 .modal-background {
     display: none; 
     position: fixed; 

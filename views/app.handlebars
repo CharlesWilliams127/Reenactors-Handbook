@@ -40,12 +40,29 @@
           <div class="kit">
             <h3 class="kitName">Name: {{this.name}}</h3>
             {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
-            <h3>Kit Items: {{this.age}}</h3>
-            {{#if this.kitItems}}
-              {{#each this.kitItems}}
-                <h3>You've got a kit item</h3>
-              {{/each}}
-            {{/if}}
+            <div class="kit-items-expand">
+              {{#if this.kitItems}}
+              <h3>Kit Items:</h3>
+                {{#each this.kitItems}}
+                  <h3>You've got a kit item</h3>
+                {{/each}}
+              {{/if}}
+              <!--Option to add a kit item-->
+              <h3>Add a New Kit Item:</h3>
+              <form id="kitItemForm" name="kitItemForm" action="/addKitItem" method="POST" class="kitItemForm">
+                <label for="itemName">Name: </label>
+                <input id="kitItemName" type="text" name="itemName" class="text-input" placeholder="Kit Item Name"/>
+                <label for="itemDescription">Description: </label>
+                <textarea id="kitItemDescription" type="text" class="text-input" name="itemDescription"></textarea>
+                <label for="itemPrice">Price: </label>
+                <input id="kitItemPrice" type="text" name="itemPrice" class="text-input" placeholder="Price"/>
+                <input id="addLinkButton" type="button" class="button" value="Add Link"/>
+                <ul id="linkList">
+                </ul>
+                <input type="hidden" name="_csrf" value={{csrfToken}} />
+                <input class="makeDomoSubmit" type="submit" value="Add Kit Item" />
+              </form>
+            </div>
             {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
             {{#if this.image}}<img url={{this.image}} alt="My cool pic"></img>{{/if}}
           </div>

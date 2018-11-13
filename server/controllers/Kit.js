@@ -16,10 +16,10 @@ const makeKit = (req, res) => {
   if (!req.body.name) {
     return res.status(400).json({ error: 'Kit needs a name' });
   }
-  if ((req.body.startTimePeriod && req.body.endTimePeriod)
-  && (req.body.endTimePeriod < req.body.startTimePeriod)) {
-    return res.status(400).json({ error: 'Kit\'s start period cannot be before its end period' });
-  }
+  // if ((req.body.startTimePeriod && req.body.endTimePeriod)
+  // && (req.body.endTimePeriod < req.body.startTimePeriod)) {
+  //   return res.status(400).json({ error: 'Kit\'s start period cannot be before its end period' });
+  // }
   // TODO: add check for that start time period is before end time period
 
   const kitData = {
@@ -45,5 +45,10 @@ const makeKit = (req, res) => {
   return kitPromise;
 };
 
+const addKitItem = (req, res) => {
+
+};
+
 module.exports.makerPage = makerPage;
 module.exports.make = makeKit;
+module.exports.addKitItem = addKitItem;

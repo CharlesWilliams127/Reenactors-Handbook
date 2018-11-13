@@ -24,8 +24,8 @@ const KitItemSchema = new mongoose.Schema({
     type: Number,
     required: false,
   },
-  // how to make this item, if applicable
-  recipeSteps: [{
+  // links for reference for this item
+  links: [{
     type: String,
     trim: true,
     set: setStringVal,
@@ -51,7 +51,7 @@ KitItemSchema.statics.toAPI = (doc) => ({
   name: doc.name,
   description: doc.description,
   price: doc.price,
-  recipeSteps: doc.recipeSteps,
+  links: doc.links,
   image: doc.image,
 });
 
@@ -61,7 +61,7 @@ KitItemSchema.statics.findByOwner = (ownerId, callback) => {
   };
 
   return KitItemSchema.find(search)
-  .select('name description price recipeSteps image')
+  .select('name description price links image')
   .exec(callback);
 };
 
