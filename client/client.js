@@ -1,6 +1,6 @@
 let linkCounter = 0;
 
-const getLinkCount = () => {return linkCounter++};
+const getLinkCount = () => {return linkCounter++;};
 
 const counterStruct = {
   'Link': getLinkCount,
@@ -137,6 +137,8 @@ $(document).ready(() => {
 
   $("#kitItemForm").on("submit", (e) => {
     e.preventDefault();
+
+    document.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
 
     $("#kitMessage").animate({width:'hide'},350);
 

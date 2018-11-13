@@ -26,7 +26,7 @@
           <label for="startTimePeriod">Time Period: </label>
           <input id="kitStartTimePeriod" type="text" class="text-input" name="startTimePeriod" placeholder="Start Date"/>
           <input id="kitEndTimePeriod" type="text" class="text-input" name="endTimePeriod" placeholder="End Date"/>
-          <input type="hidden" name="_csrf" value={{csrfToken}} />
+          <input id="initCsrf" type="hidden" name="_csrf" value={{csrfToken}} />
           <input class="makeDomoSubmit" type="submit" value="Make Kit" />
         </form>
         <input id="hideKitForm" type="button" value="Hide Form"/>
@@ -40,11 +40,15 @@
           <div class="kit">
             <h3 class="kitName">Name: {{this.name}}</h3>
             {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
+            {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
+            {{#if this.image}}<img url={{this.image}} alt="My cool pic"></img>{{/if}}
             <div class="kit-items-expand">
               {{#if this.kitItems}}
               <h3>Kit Items:</h3>
                 {{#each this.kitItems}}
-                  <h3>You've got a kit item</h3>
+                  <h3>Item Name: {{this.name}}</h3>
+                  <h3>Item Description: {{this.description}}</h3>
+                  <h3>Item Price: {{this.Price}}</h3>
                 {{/each}}
               {{/if}}
               <!--Option to add a kit item-->
@@ -59,12 +63,11 @@
                 <input id="addLinkButton" type="button" class="button" value="Add Link"/>
                 <ul id="linkList">
                 </ul>
-                <input type="hidden" name="_csrf" value={{csrfToken}} />
+                <input type="hidden" id="newCsrf" name="_csrf" value={{csrfToken}} />
+                <input type="hidden" name="parentKit" value={{this.name}} />
                 <input class="makeDomoSubmit" type="submit" value="Add Kit Item" />
               </form>
             </div>
-            {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
-            {{#if this.image}}<img url={{this.image}} alt="My cool pic"></img>{{/if}}
           </div>
         {{/each}}
       {{else}}

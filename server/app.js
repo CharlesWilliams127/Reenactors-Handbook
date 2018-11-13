@@ -47,6 +47,11 @@ app.disable('x-powered-by');
 app.use(cookieParser());
 
 app.use(csrf());
+// app.use((req, res, next) => {
+//   app.locals.csrfToken = req.csrfToken();
+//   next();
+// });
+
 app.use((err, req, res, next) => {
   if (err.code !== 'EBADCSRFTOKEN') return next(err);
 

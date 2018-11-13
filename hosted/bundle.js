@@ -141,6 +141,8 @@ $(document).ready(function () {
   $("#kitItemForm").on("submit", function (e) {
     e.preventDefault();
 
+    document.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+
     $("#kitMessage").animate({ width: 'hide' }, 350);
 
     if ($("#kitItemName").val() == '') {
