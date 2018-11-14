@@ -28,7 +28,8 @@ const makeKit = (req, res) => {
   }
   // if ((req.body.startTimePeriod && req.body.endTimePeriod)
   // && (req.body.endTimePeriod < req.body.startTimePeriod)) {
-  //   return res.status(400).json({ error: 'Kit\'s start period cannot be before its end period' });
+  //   return
+  // res.status(400).json({ error: 'Kit\'s start period cannot be before its end period' });
   // }
   // TODO: add check for that start time period is before end time period
 
@@ -65,11 +66,11 @@ const addKitItem = (req, res) => {
     description: req.body.itemDescription,
     price: req.body.itemPrice,
     links: req.body.Link,
-  }
+  };
 
   const query = Kit.KitModel.findOneAndUpdate(
     { name: req.body.parentKit },
-    {$push: {kitItems: kitItemData}}
+    { $push: { kitItems: kitItemData } }
   );
 
   const promise = query.exec();

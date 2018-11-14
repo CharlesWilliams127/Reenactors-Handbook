@@ -2,15 +2,15 @@ const models = require('../models');
 const Account = models.Account;
 
 const loginPage = (req, res) => {
-  res.render('login', { csrfToken: req.csrfToken(), });
+  res.render('login', { csrfToken: req.csrfToken() });
 };
 
 const signupPage = (req, res) => {
-  res.render('signup', { csrfToken: req.csrfToken(), });
+  res.render('signup', { csrfToken: req.csrfToken() });
 };
 
 const changePassPage = (req, res) => {
-  res.render('changePass', { csrfToken: req.csrfToken(), });
+  res.render('changePass', { csrfToken: req.csrfToken() });
 };
 
 const logout = (req, res) => {
@@ -92,14 +92,18 @@ const changePass = (request, response) => {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  return Account.AccountModel.generateHash(newPassword, (hash) => {
+  return Account.AccountModel.generateHash(newPassword, (salt, hash) => {
     const query = Account.AccountModel.findOneAndUpdate(
       { username },
-      { password: hash }
+      { salt, password: hash },
+      { new: true }
     );
 
     const updatePassPromise = query.exec();
-    updatePassPromise.then(() => res.json({ redirect: '/maker' }));
+    updatePassPromise.then((doc) => {
+      req.session.account = Account.AccountModel.toAPI(doc);
+      res.json({ redirect: '/maker' });
+    });
 
     updatePassPromise.catch((err) => {
       console.log(err);
