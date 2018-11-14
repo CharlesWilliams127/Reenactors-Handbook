@@ -12,6 +12,23 @@ const makerPage = (req, res) => {
   });
 };
 
+const homePage = (req, res) => {
+  const search = {
+    public: true,
+  };
+
+  Kit.KitModel.find(search,
+    'name description kitItems startTimePeriod endTimePeriod public image',
+    (err, docs) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occured' });
+      }
+
+      return res.render('home', { csrfToken: req.csrfToken(), kits: docs });
+    });
+};
+
 // const itemMakerPage = (req, res) => {
 //   Kit.KitModel.findByOwner(req.session.account._id, (err, docs) => {
 //     if (err) {
@@ -33,11 +50,18 @@ const makeKit = (req, res) => {
   // }
   // TODO: add check for that start time period is before end time period
 
+  let tempPublic = true;
+
+  if (!req.body.public) {
+    tempPublic = false;
+  }
+
   const kitData = {
     name: req.body.name,
     description: req.body.description,
     startTimePeriod: req.body.startTimePeriod,
     endTimePeriod: req.body.endTimePeriod,
+    public: tempPublic,
     owner: req.session.account._id,
   };
 
@@ -87,4 +111,5 @@ const addKitItem = (req, res) => {
 module.exports.makerPage = makerPage;
 module.exports.make = makeKit;
 module.exports.addKitItem = addKitItem;
+module.exports.homePage = homePage;
 // module.exports.itemMakerPage = itemMakerPage;

@@ -1,0 +1,45 @@
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Reenactors Handbook</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
+</head>
+<body>
+    <nav>
+    <div class="navlink"><a href="/logout">Log out</a></div>
+    <div class="navlink"><a href="/changePass">Change Password</a></div>
+    <div class="navlink"><a href="/maker">My Kits</a></div>
+  </nav>
+  <section id="kits">
+    <div class="kit">
+      {{#if kits}}
+        {{#each kits}}
+          <div class="kit">
+            <h3 class="kitName">Name: {{this.name}}</h3>
+            {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
+            {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
+            {{#if this.image}}<img url={{this.image}} alt="My cool pic"></img>{{/if}}
+            <div class="kit-items-expand">
+              {{#if this.kitItems}}
+              <h3>Kit Items:</h3>
+                {{#each this.kitItems}}
+                  <h3>Item Name: {{this.name}}</h3>
+                  <h3>Item Description: {{this.description}}</h3>
+                  <h3>Item Price: {{this.Price}}</h3>
+                {{/each}}
+              {{/if}}
+            </div>
+          </div>
+        {{/each}}
+      {{else}}
+        <h3 class="emptyDomo">No Reenactment Kits yet</h3>
+      {{/if}}
+    </div>
+  </section>
+  <div id="kitMessage"><img id="speech" src="/assets/img/speech.png" alt="speech box"/>
+    <h3><span id="errorMessage"></span></h3><img id="kit" src="assets/img/domo.png" alt="kit"/>
+  </div>
+  <script src="/assets/bundle.js"></script>
+</body>
+</html>

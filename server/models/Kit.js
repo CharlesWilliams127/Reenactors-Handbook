@@ -38,6 +38,11 @@ const KitSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  // represents if a user wants their kit to appear for all users on the home page
+  public: {
+    type: Boolean,
+    required: true,
+  },
   owner: {
     type: mongoose.Schema.ObjectId,
     required: true,
@@ -56,6 +61,7 @@ KitSchema.statics.toAPI = (doc) => ({
   KitItems: doc.KitItems,
   startTimePeriod: doc.startTimePeriod,
   endTimePeriod: doc.endTimePeriod,
+  public: doc.public,
   image: doc.image,
 });
 
@@ -65,7 +71,7 @@ KitSchema.statics.findByOwner = (ownerId, callback) => {
   };
 
   return KitModel.find(search)
-  .select('name description kitItems startTimePeriod endTimePeriod image')
+  .select('name description kitItems startTimePeriod endTimePeriod public image')
   .exec(callback);
 };
 
