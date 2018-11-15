@@ -62,6 +62,7 @@ const makeKit = (req, res) => {
     startTimePeriod: req.body.startTimePeriod,
     endTimePeriod: req.body.endTimePeriod,
     public: tempPublic,
+    image: req.body.imageURL,
     owner: req.session.account._id,
   };
 

@@ -1,6 +1,10 @@
-"use strict";
+'use strict';
 
 var linkCounter = 0;
+
+// for use with the imgur API
+var imgurClientID = '879ac2e671a727c';
+var imgurClientSecret = '524c709be991cd1fc64f474056b8802ea09e18b0';
 
 // get reference to masonry.js
 // Credit: Masonry Library
@@ -19,9 +23,51 @@ var handleError = function handleError(message) {
     $("#kitMessage").animate({ width: 'toggle' }, 350);
 };
 
+// wrapper function to submit an image to imgur when posting
+// will upload image to imgur if recipe upload was successful
+// before calling default handler function
+var makeImgurRequest = function makeImgurRequest(image) {
+    return new Promise(function (resolve, reject) {
+        // Imgur upload
+        if (image) {
+            var fd = new FormData();
+            fd.append("image", image);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://api.imgur.com/3/image.json");
+            xhr.onload = function () {
+                // this is the happy path, the image upload was successful
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    console.dir("Image uploaded!");
+                    console.dir(JSON.parse(xhr.responseText).data.link);
+                    // resolve our promise, allowing our original POST to go through
+                    resolve(xhr.responseText);
+                } else {
+                    reject({
+                        status: xhr.status,
+                        message: xhr.statusText
+                    });
+                }
+            };
+            xhr.onerror = function () {
+                reject({
+                    status: xhr.status,
+                    message: xhr.statusText
+                });
+            };
+            xhr.setRequestHeader('Authorization', 'Client-ID ' + imgurClientID);
+            // display loading widget
+            displayHideSection('recipeSubmitLoading', 'block');
+            xhr.send(fd);
+        } else {
+            resolve("");
+        }
+    });
+};
+
 // helper method for displaying or hiding a small section
 var displayHideSection = function displayHideSection(sectionID, displayStyle) {
-    var section = document.querySelector("#" + sectionID);
+    var section = document.querySelector('#' + sectionID);
     section.style.display = displayStyle;
 };
 
@@ -36,19 +82,20 @@ var addItem = function addItem(e, list, elemName, value) {
     deleteButton.classList.add('button--close');
     deleteButton.classList.add('button--small');
     deleteButton.value = 'X';
-    deleteButton.id = "deleteButton" + count;
+    deleteButton.id = 'deleteButton' + count;
     deleteLabel.htmlFor = deleteButton.id;
     // attatch listener to delete button
     deleteButton.addEventListener('click', function (e) {
         list.removeChild(item);
     });
-    item.innerHTML = "<input id=\"" + elemName + count + "\" class=\"text-input\" type=\"text\" name=\"" + elemName + "[" + count + "]\" value=\"" + value + "\"/>";
+    item.innerHTML = '<input id="' + elemName + count + '" class="text-input" type="text" name="' + elemName + '[' + count + ']" value="' + value + '"/>';
     deleteLabel.appendChild(deleteButton);
     item.appendChild(deleteLabel);
     list.appendChild(item);
 };
 
 var sendAjax = function sendAjax(action, data) {
+    console.dir(data);
     $.ajax({
         cache: false,
         type: "POST",
@@ -132,7 +179,19 @@ $(document).ready(function () {
             return false;
         }
 
-        sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize());
+        makeImgurRequest(document.querySelector('#imageField').files[0]).then(function (imageData) {
+            var image = "";
+
+            if (imageData) {
+                var data = JSON.parse(imageData).data;
+                image = data.link;
+            }
+
+            return image;
+        }).then(function (image) {
+            document.querySelector('#imageURL').value = image;
+            sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize());
+        });
 
         return false;
     });

@@ -31,10 +31,10 @@
           <li class="nav-item">
             <a class="nav-link" href="/home">Home</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item text-right">
             <a class="nav-link" href="/login">Login</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item text-right">
             <a class="nav-link" href="/signup">Sign up</a>
           </li>
         </ul>
@@ -52,11 +52,11 @@
     <div id="dynamicContent">
       {{#if kits}}
         {{#each kits}}
-          <div class="grid-item">
+          <div class="grid-item text-truncate">
             <h3 class="kitName">Name: {{this.name}}</h3>
             {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
             {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
-            {{#if this.image}}<img url={{this.image}} alt="My cool pic"></img>{{/if}}
+            {{#if this.image}}<img src={{this.image}} alt="My cool pic"></img>{{/if}}
             <div class="kit-items-expand">
               {{#if this.kitItems}}
               <h3>Kit Items:</h3>

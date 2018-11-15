@@ -1,5 +1,9 @@
 let linkCounter = 0;
 
+// for use with the imgur API
+const imgurClientID = '879ac2e671a727c';
+const imgurClientSecret = '524c709be991cd1fc64f474056b8802ea09e18b0';
+
 // get reference to masonry.js
 // Credit: Masonry Library
 let masonry;
@@ -13,6 +17,50 @@ const counterStruct = {
 const handleError = (message) => {
   $("#errorMessage").text(message);
   $("#kitMessage").animate({width:'toggle'},350);
+}
+
+// wrapper function to submit an image to imgur when posting
+// will upload image to imgur if recipe upload was successful
+// before calling default handler function
+const makeImgurRequest = (image) => {
+  return new Promise((resolve, reject) => {
+      // Imgur upload
+      if(image){
+          const fd = new FormData();
+          fd.append("image", image);
+
+          const xhr = new XMLHttpRequest();
+          xhr.open("POST", "https://api.imgur.com/3/image.json");
+          xhr.onload = () => {
+              // this is the happy path, the image upload was successful
+              if (xhr.status >= 200 && xhr.status < 300) {
+                  console.dir("Image uploaded!");
+                  console.dir(JSON.parse(xhr.responseText).data.link);
+                  // resolve our promise, allowing our original POST to go through
+                  resolve(xhr.responseText);
+              }
+              else {
+                  reject({
+                      status: xhr.status,
+                      message: xhr.statusText
+                  });
+              }
+          };
+          xhr.onerror = () => {
+              reject({
+                  status: xhr.status,
+                  message: xhr.statusText
+              });
+          }
+          xhr.setRequestHeader('Authorization', `Client-ID ${imgurClientID}`);
+          // display loading widget
+          displayHideSection('recipeSubmitLoading', 'block');
+          xhr.send(fd);
+      }
+      else {
+          resolve("");
+      }
+  });
 }
 
 // helper method for displaying or hiding a small section
@@ -46,6 +94,7 @@ const addItem = (e, list, elemName, value) => {
 };
 
 const sendAjax = (action, data) => {
+  console.dir(data);
   $.ajax({
     cache: false,
     type: "POST",
@@ -129,7 +178,21 @@ $(document).ready(() => {
       return false;
     }
 
-    sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize());
+    makeImgurRequest(document.querySelector('#imageField').files[0])
+    .then((imageData) => {
+      let image = "";
+
+      if (imageData) {
+          const data = JSON.parse(imageData).data;
+          image = data.link;
+      }
+
+      return image;
+    })
+    .then((image) => {
+      document.querySelector('#imageURL').value = image;
+      sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize());
+    });
 
     return false;
   });
