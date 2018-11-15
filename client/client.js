@@ -1,5 +1,9 @@
 let linkCounter = 0;
 
+// get reference to masonry.js
+// Credit: Masonry Library
+let masonry;
+
 const getLinkCount = () => {return linkCounter++;};
 
 const counterStruct = {
@@ -62,6 +66,24 @@ const sendAjax = (action, data) => {
 }
 
 $(document).ready(() => {
+  if(document.querySelector('#dynamicContent')) {
+    // set up masonry content
+    const grid = document.querySelector('#dynamicContent');
+    masonry = new Masonry(grid, {
+        columnWidth: 256,
+        gutter: 10,
+        itemSelector: '.grid-item',
+    });
+
+    // ensure that we only lay out grid when all images are loaded
+    // Credit: ImagesLoaded Library
+    imagesLoaded( '#grid', { background: true }, function() {
+        masonry.layout();
+    });
+
+    masonry.layout();
+  }
+
   $("#signupForm").on("submit", (e) => {
     e.preventDefault();
 
@@ -111,9 +133,6 @@ $(document).ready(() => {
 
     return false;
   });
-
-  var thing = $("#changePassForm");
-  console.log(thing);
 
   $("#changePassForm").on("submit", (e)=> {
     e.preventDefault();

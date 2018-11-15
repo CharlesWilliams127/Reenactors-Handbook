@@ -11,10 +11,10 @@ const router = (app) => {
   app.post('/maker', mid.requiresLogin, controllers.Kit.make);
   app.post('/addKitItem', mid.requiresLogin, controllers.Kit.addKitItem);
   // app.get('/addKitItem', mid.requiresLogin, controllers.Kit.itemMakerPage);
-  app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
+  app.get('/', mid.requiresSecure, controllers.Kit.homePage);
   app.post('/changePass', mid.requiresLogin, controllers.Account.changePass);
   app.get('/changePass', mid.requiresLogin, controllers.Account.changePassPage);
-  app.get('/home', controllers.Kit.homePage);
+  app.get('/home', mid.requiresSecure, controllers.Kit.homePage);
 };
 
 module.exports = router;

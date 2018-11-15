@@ -366,3 +366,69 @@ h3.kitName {
     from {opacity: 0} 
     to {opacity: 1}
   }
+
+  /* MASONRY STYLING */
+.grid {
+    width: 100%;
+    padding: 0% 10% 0% 10%;
+  }
+  
+  /* clearfix */
+  .grid:after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+  
+  .grid-item {
+    float: left;
+    border: 2px solid #E8E8E8;
+    width: 512px; /* Default size, will be adjusted dynamically based on recieved input */
+    box-shadow: 3px 3px 20px rgb(145, 145, 145);
+    border-color: hsla(0, 0%, 0%, 0.5);
+    border-radius:15px;
+    margin-bottom: 10px;
+    word-wrap: break-word;
+    overflow: hidden;
+    transition-property: filter;
+    transition-duration: 0.25s;
+  }
+  
+  .grid-item-inner-content {
+    font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
+    background: #fff;
+    color: #000;
+    display: none;
+    overflow: auto;
+  }
+  
+  .grid-item-inner-content h3 {
+    margin-top: 10px;
+    font-size: 18pt;
+  }
+  
+  .grid-item--width2 { width: 512px; }
+  
+  .grid-item--selected {
+    width: 512px;
+    z-index: 2;
+  }
+  
+  .grid-item--selected .grid-item-inner-content{
+    display: block;
+    text-align: left;
+  }
+  
+  .grid-item:before {
+    display: block;
+    color: white;
+    padding-top: 0.2em;
+    text-align: center;
+    font-size: 1.4rem;
+  }
+  
+  .grid-item:hover {
+    filter: opacity(.9);
+    border-color: white;
+    cursor: pointer;
+  }

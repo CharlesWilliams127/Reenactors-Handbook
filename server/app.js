@@ -8,6 +8,8 @@ const mongoose = require('mongoose');
 const expressHandlebars = require('express-handlebars');
 const session = require('express-session');
 const csrf = require('csurf');
+// const masonry = require('masonry');
+// const imagesLoaded = require('imagesloaded');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
@@ -23,6 +25,8 @@ mongoose.connect(dbURL, (err) => {
 const router = require('./router.js');
 
 const app = express();
+app.use('/masonry',express.static(path.resolve(`${__dirname}/../node_modules/masonry-layout/dist/masonry.pkgd.min.js`)));
+app.use('/imagesLoaded', express.static(path.resolve(`${__dirname}/../node_modules/imagesloaded/imagesloaded.pkgd.min.js`)));
 app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted/`)));
 app.use(favicon(`${__dirname}/../hosted/img/favicon.png`));
 app.use(compression());

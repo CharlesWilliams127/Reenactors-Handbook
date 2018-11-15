@@ -25,7 +25,7 @@ const homePage = (req, res) => {
         return res.status(400).json({ error: 'An error occured' });
       }
 
-      return res.render('home', { csrfToken: req.csrfToken(), kits: docs });
+      return res.render('home', { csrfToken: req.csrfToken(), kits: docs, account: req.session.account});
     });
 };
 
