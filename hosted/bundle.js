@@ -220,7 +220,7 @@ $(document).ready(function () {
         e.preventDefault();
 
         document.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
-
+        var imageF = document.querySelector('#itemImageField');
         $("#kitMessage").animate({ width: 'hide' }, 350);
 
         if ($("#kitItemName").val() == '') {
@@ -228,7 +228,19 @@ $(document).ready(function () {
             return false;
         }
 
-        sendAjax($("#kitItemForm").attr("action"), $("#kitItemForm").serialize());
+        makeImgurRequest(imageF.files[0]).then(function (imageData) {
+            var image = "";
+
+            if (imageData) {
+                var data = JSON.parse(imageData).data;
+                image = data.link;
+            }
+
+            return image;
+        }).then(function (image) {
+            document.querySelector('#itemImageURL').value = image;
+            sendAjax($("#kitItemForm").attr("action"), $("#kitItemForm").serialize());
+        });
 
         return false;
     });

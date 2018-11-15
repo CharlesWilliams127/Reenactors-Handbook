@@ -91,6 +91,7 @@ const addKitItem = (req, res) => {
     description: req.body.itemDescription,
     price: req.body.itemPrice,
     links: req.body.Link,
+    image: req.body.itemImageURL,
   };
 
   const query = Kit.KitModel.findOneAndUpdate(

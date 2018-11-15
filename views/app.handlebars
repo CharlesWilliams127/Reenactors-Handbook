@@ -68,9 +68,10 @@
               {{#if this.kitItems}}
               <h3>Kit Items:</h3>
                 {{#each this.kitItems}}
+                  {{#if this.image}}<img src={{this.image}} alt="My cool pic"></img>{{/if}}
                   <h3>Item Name: {{this.name}}</h3>
-                  <h3>Item Description: {{this.description}}</h3>
-                  <h3>Item Price: {{this.Price}}</h3>
+                  {{#if this.description}}<h3>Item Description: {{this.description}}</h3>{{/if}}
+                  {{#if this.price}}<h3>Item Price: {{this.Price}}</h3>{{/if}}
                 {{/each}}
               {{/if}}
               <!--Option to add a kit item-->
@@ -90,6 +91,7 @@
                 <ul id="linkList">
                 </ul>
                 <input type="hidden" id="newCsrf" name="_csrf" value={{csrfToken}} />
+                <input type="hidden" id="itemImageURL" name="itemImageURL" value="" />
                 <input type="hidden" name="parentKit" value={{this.name}} />
                 <input class="makeDomoSubmit" type="submit" value="Add Kit Item" />
               </form>

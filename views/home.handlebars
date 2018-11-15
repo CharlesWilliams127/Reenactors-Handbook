@@ -57,16 +57,6 @@
             {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
             {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
             {{#if this.image}}<img src={{this.image}} alt="My cool pic"></img>{{/if}}
-            <div class="kit-items-expand">
-              {{#if this.kitItems}}
-              <h3>Kit Items:</h3>
-                {{#each this.kitItems}}
-                  <h3>Item Name: {{this.name}}</h3>
-                  <h3>Item Description: {{this.description}}</h3>
-                  <h3>Item Price: {{this.Price}}</h3>
-                {{/each}}
-              {{/if}}
-            </div>
           </div>
         {{/each}}
       {{else}}
