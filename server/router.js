@@ -17,6 +17,7 @@ const router = (app) => {
   app.post('/changePass', mid.requiresLogin, controllers.Account.changePass);
   app.get('/changePass', mid.requiresLogin, controllers.Account.changePassPage);
   app.get('/home', mid.requiresSecure, controllers.Kit.homePage);
+  app.delete('/deleteKit', mid.requiresLogin, controllers.Kit.deleteKit);
 };
 
 module.exports = router;

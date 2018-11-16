@@ -156,11 +156,28 @@ $(document).ready(() => {
     }
   }
 
+  // allow links to be added to kit items
   const linkButtons = document.getElementsByClassName("addLinkButton");
   if(linkButtons) {
     for (let i = 0; i < linkButtons.length; i++) {
       linkButtons[i].addEventListener("click", (e) => addItem(e, 
         linkButtons[i].parentElement.parentElement, 'Link', ""));
+    }
+  }
+
+  // attatch event listeners on each kit on the myKits page
+  const myKits = document.getElementsByClassName("kit");
+  if(myKits) {
+    for(let i = 0; i < myKits.length; i++) {
+      myKits[i].querySelector('#deleteKitForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const $kitForm = $(myKits[i].querySelector('#deleteKitForm'));
+
+        sendAjax($kitForm.attr("action"), $kitForm.serialize(), "DELETE", "json");
+
+        return false;
+      });
     }
   }
 

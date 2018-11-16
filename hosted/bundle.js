@@ -163,6 +163,7 @@ $(document).ready(function () {
     })();
   }
 
+  // allow links to be added to kit items
   var linkButtons = document.getElementsByClassName("addLinkButton");
   if (linkButtons) {
     var _loop2 = function _loop2(i) {
@@ -173,6 +174,26 @@ $(document).ready(function () {
 
     for (var i = 0; i < linkButtons.length; i++) {
       _loop2(i);
+    }
+  }
+
+  // attatch event listeners on each kit on the myKits page
+  var myKits = document.getElementsByClassName("kit");
+  if (myKits) {
+    var _loop3 = function _loop3(i) {
+      myKits[i].querySelector('#deleteKitForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var $kitForm = $(myKits[i].querySelector('#deleteKitForm'));
+
+        sendAjax($kitForm.attr("action"), $kitForm.serialize(), "DELETE", "json");
+
+        return false;
+      });
+    };
+
+    for (var i = 0; i < myKits.length; i++) {
+      _loop3(i);
     }
   }
 

@@ -25,7 +25,6 @@ const homePage = (req, res) => {
         return res.status(400).json({ error: 'An error occured' });
       }
 
-      console.log(docs);
       return res.render('home',
         { csrfToken: req.csrfToken(),
           kits: docs, account: req.session.account });
@@ -55,9 +54,6 @@ const viewerPage = (req, res) => {
     public: true,
   };
 
-  console.log(req.query.owner);
-  console.log(req.query.name);
-
   Kit.KitModel.find(search,
     'name description kitItems startTimePeriod endTimePeriod public image',
     (err, docs) => {
@@ -65,8 +61,6 @@ const viewerPage = (req, res) => {
         console.log(err);
         return res.status(400).json({ error: 'An error occured' });
       }
-
-      console.log(docs);
 
       return res.render('viewer',
         { csrfToken: req.csrfToken(),
@@ -155,10 +149,35 @@ const addKitItem = (req, res) => {
   return promise;
 };
 
+const deleteKit = (req, res) => {
+  const deleteFilter = {
+    name: req.body.itemToDelete,
+    owner: req.session.account._id
+  };
+
+  console.log(deleteFilter);
+
+  const query = Kit.KitModel.deleteOne(
+    deleteFilter
+  );
+
+  const promise = query.exec();
+
+  promise.then(() => res.json({redirect: '/maker'}))
+
+  promise.catch((err) => {
+    console.log(err);
+    return res.status(400).json({ error: 'An error occured' });
+  });
+
+  return promise;
+};
+
 module.exports.makerPage = makerPage;
 module.exports.make = makeKit;
 module.exports.addKitItem = addKitItem;
 module.exports.homePage = homePage;
 module.exports.viewer = viewer;
 module.exports.viewerPage = viewerPage;
+module.exports.deleteKit = deleteKit;
 // module.exports.itemMakerPage = itemMakerPage;

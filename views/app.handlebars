@@ -80,7 +80,6 @@
     </div>
 
     <section id="kits" class="container bg-light mt-5">
-      <div class="kit">
         {{#if kits}}
           {{#each kits}}
             <div class="kit">
@@ -96,10 +95,14 @@
                 </div>
                 <div class="col-5">
                   {{#if this.description}}<h5>Description: {{this.description}}</h5>{{/if}}
-                  <div class="btn-group text-center">
-                    <button type="button" class="btn btn-sm btn-outline-primary">Edit</button>
-                    <button type="button" class="btn btn-sm btn-outline-danger">Delete</button>
-                  </div>
+                    <form id="deleteKitForm" action="/deleteKit" method="DELETE">
+                      <div class="btn-group text-center">
+                        <button type="button" class="btn btn-sm btn-outline-primary">Edit</button>                          
+                        <input type="hidden" name="itemToDelete" value={{this.name}} />
+                        <input id="initCsrf" type="hidden" name="_csrf" value={{../csrfToken}} />
+                        <button type="submit" class="btn btn-sm btn-outline-danger" id="kitDeleteButton" name="kitDeleteButton">Delete</button>
+                      </div>
+                    </form>
                 </div>
               </div>
               <hr>
@@ -123,10 +126,15 @@
                           {{/each}}
                         </ul>
                       {{/if}}
-                      <div class="btn-group text-center">
-                        <button type="button" class="btn btn-sm btn-outline-primary">Edit</button>
-                        <button type="button" class="btn btn-sm btn-outline-danger">Delete</button>
-                      </div>
+                      <form id="deleteKitItemForm" action="/deletKitItem" method="DELETE">
+                        <div class="btn-group text-center">
+                          <button type="button" class="btn btn-sm btn-outline-primary">Edit</button>                          
+                          <input type="hidden" name="parentKit" value={{../name}} />
+                          <input type="hidden" name="itemToDelete" value={{this.name}} />
+                          <input id="initCsrf" type="hidden" name="_csrf" value={{../../csrfToken}} />
+                          <button type="submit" class="btn btn-sm btn-outline-danger" id="kitItemDeleteButton" name="kitItemDeleteButton">Delete</button>
+                        </div>
+                      </form>
                     </div>
                   </div>
                   <hr>
@@ -181,7 +189,6 @@
         {{/if}}
       </div>
     </section>
-  </div>
   <script src="/assets/bundle.js"></script>
 </body>
 </html>
