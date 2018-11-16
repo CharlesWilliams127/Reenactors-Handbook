@@ -18,6 +18,47 @@ const homePage = (req, res) => {
   };
 
   Kit.KitModel.find(search,
+    'name description kitItems startTimePeriod endTimePeriod public image owner',
+    (err, docs) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occured' });
+      }
+
+      console.log(docs);
+      return res.render('home',
+        { csrfToken: req.csrfToken(),
+          kits: docs, account: req.session.account });
+    });
+};
+
+const viewer = (req, res) => {
+  const search = {
+    owner: req.query.owner,
+    name: req.query.name,
+    public: true,
+  };
+
+  const query = Kit.KitModel.findOne(search,
+    'name description kitItems startTimePeriod endTimePeriod public image owner');
+
+  const promise = query.exec();
+  promise.then((doc) => res.json({ redirect: `/viewerPage?name=${doc.name}&owner=${doc.owner}` }));
+
+  return promise;
+};
+
+const viewerPage = (req, res) => {
+  const search = {
+    owner: req.query.owner,
+    name: req.query.name,
+    public: true,
+  };
+
+  console.log(req.query.owner);
+  console.log(req.query.name);
+
+  Kit.KitModel.find(search,
     'name description kitItems startTimePeriod endTimePeriod public image',
     (err, docs) => {
       if (err) {
@@ -25,7 +66,11 @@ const homePage = (req, res) => {
         return res.status(400).json({ error: 'An error occured' });
       }
 
-      return res.render('home', { csrfToken: req.csrfToken(), kits: docs, account: req.session.account});
+      console.log(docs);
+
+      return res.render('viewer',
+        { csrfToken: req.csrfToken(),
+          kits: docs, account: req.session.account });
     });
 };
 
@@ -114,4 +159,6 @@ module.exports.makerPage = makerPage;
 module.exports.make = makeKit;
 module.exports.addKitItem = addKitItem;
 module.exports.homePage = homePage;
+module.exports.viewer = viewer;
+module.exports.viewerPage = viewerPage;
 // module.exports.itemMakerPage = itemMakerPage;

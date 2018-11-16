@@ -10,6 +10,8 @@ const router = (app) => {
   app.get('/maker', mid.requiresLogin, controllers.Kit.makerPage);
   app.post('/maker', mid.requiresLogin, controllers.Kit.make);
   app.post('/addKitItem', mid.requiresLogin, controllers.Kit.addKitItem);
+  app.get('/viewer', mid.requiresSecure, controllers.Kit.viewer);
+  app.get('/viewerPage', mid.requiresSecure, controllers.Kit.viewerPage);
   // app.get('/addKitItem', mid.requiresLogin, controllers.Kit.itemMakerPage);
   app.get('/', mid.requiresSecure, controllers.Kit.homePage);
   app.post('/changePass', mid.requiresLogin, controllers.Account.changePass);

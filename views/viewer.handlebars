@@ -1,1 +1,61 @@
-<!-- Redirect page for user viewing a kit -->
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>Reenactors Handbook</title>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
+</head>
+<body>
+    <nav>
+    {{#if account}}
+      <nav class="navbar navbar-expand-lg navbar-light bg-light"> 
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/home">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/maker">My Kits</a>
+          </li>
+        </ul>
+      </nav>
+    {{else}}
+      <nav class="navbar navbar-expand-lg navbar-light bg-light"> 
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/home">Home</a>
+          </li>
+          <li class="nav-item text-right">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          <li class="nav-item text-right">
+            <a class="nav-link" href="/signup">Sign up</a>
+          </li>
+        </ul>
+      </nav>
+    {{/if}}
+  </nav>
+  <section class="kit">
+    {{#if kits}}
+        {{#each kits}}
+          <div class="kit">
+              <h3 class="kitName" id="kitName">{{this.name}}</h3>
+            {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
+            {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
+            {{#if this.image}}<img src={{this.image}} alt="My cool pic"></img>{{/if}}
+          </div>
+        {{/each}}
+      {{else}}
+        <h3 class="emptyDomo">No Reenactment Kits yet</h3>
+      {{/if}}
+  </section>
+  <div id="kitMessage"><img id="speech" src="/assets/img/speech.png" alt="speech box"/>
+    <h3><span id="errorMessage"></span></h3><img id="kit" src="assets/img/domo.png" alt="kit"/>
+  </div>
+  <script src="/assets/bundle.js"></script>
+</body>
+</html>

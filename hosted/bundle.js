@@ -94,18 +94,23 @@ var addItem = function addItem(e, list, elemName, value) {
     list.appendChild(item);
 };
 
-var sendAjax = function sendAjax(action, data) {
+var sendAjax = function sendAjax(action, data, type, dataType) {
     console.dir(data);
     $.ajax({
         cache: false,
-        type: "POST",
+        type: type,
         url: action,
         data: data,
-        dataType: "json",
+        dataType: dataType,
         success: function success(result, status, xhr) {
             $("#kitMessage").animate({ width: 'hide' }, 350);
 
-            window.location = result.redirect;
+            if (dataType == 'json') {
+                window.location = result.redirect;
+            }
+            if (dataType == 'html') {
+                $("body").html(result);
+            }
         },
         error: function error(xhr, status, _error) {
             var messageObj = JSON.parse(xhr.responseText);
@@ -117,21 +122,43 @@ var sendAjax = function sendAjax(action, data) {
 
 $(document).ready(function () {
     if (document.querySelector('#dynamicContent')) {
-        // set up masonry content
-        var grid = document.querySelector('#dynamicContent');
-        masonry = new Masonry(grid, {
-            columnWidth: 256,
-            gutter: 10,
-            itemSelector: '.grid-item'
-        });
+        (function () {
+            // set up masonry content
+            var grid = document.querySelector('#dynamicContent');
+            masonry = new Masonry(grid, {
+                columnWidth: 256,
+                gutter: 10,
+                itemSelector: '.grid-item'
+            });
 
-        // ensure that we only lay out grid when all images are loaded
-        // Credit: ImagesLoaded Library
-        imagesLoaded('#grid', { background: true }, function () {
+            // ensure that we only lay out grid when all images are loaded
+            // Credit: ImagesLoaded Library
+            imagesLoaded('#grid', { background: true }, function () {
+                masonry.layout();
+            });
+
             masonry.layout();
-        });
 
-        masonry.layout();
+            // assign event listeners to each object
+            var kits = document.getElementsByClassName("grid-item");
+
+            var _loop = function _loop(i) {
+                kits[i].addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    var name = kits[i].querySelector('#kitName').innerHTML;
+                    var owner = kits[i].querySelector('#kitOwner').value;
+                    var csrf = document.querySelector('#csrf').value;
+                    var data = 'name=' + name + '&owner=' + owner + '&csrf=' + csrf;
+
+                    sendAjax('/viewer', data, "GET", "json");
+                });
+            };
+
+            for (var i = 0; i < kits.length; i++) {
+                _loop(i);
+            }
+        })();
     }
 
     $("#signupForm").on("submit", function (e) {
@@ -149,7 +176,7 @@ $(document).ready(function () {
             return false;
         }
 
-        sendAjax($("#signupForm").attr("action"), $("#signupForm").serialize());
+        sendAjax($("#signupForm").attr("action"), $("#signupForm").serialize(), "POST", "json");
 
         return false;
     });
@@ -164,7 +191,7 @@ $(document).ready(function () {
             return false;
         }
 
-        sendAjax($("#loginForm").attr("action"), $("#loginForm").serialize());
+        sendAjax($("#loginForm").attr("action"), $("#loginForm").serialize(), "POST", "json");
 
         return false;
     });
@@ -190,7 +217,7 @@ $(document).ready(function () {
             return image;
         }).then(function (image) {
             document.querySelector('#imageURL').value = image;
-            sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize());
+            sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize(), "POST", "json");
         });
 
         return false;
@@ -211,7 +238,7 @@ $(document).ready(function () {
             return false;
         }
 
-        sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize());
+        sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json");
 
         return false;
     });
@@ -239,7 +266,7 @@ $(document).ready(function () {
             return image;
         }).then(function (image) {
             document.querySelector('#itemImageURL').value = image;
-            sendAjax($("#kitItemForm").attr("action"), $("#kitItemForm").serialize());
+            sendAjax($("#kitItemForm").attr("action"), $("#kitItemForm").serialize(), "POST", "json");
         });
 
         return false;

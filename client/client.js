@@ -93,18 +93,23 @@ const addItem = (e, list, elemName, value) => {
   
 };
 
-const sendAjax = (action, data) => {
+const sendAjax = (action, data, type, dataType) => {
   console.dir(data);
   $.ajax({
     cache: false,
-    type: "POST",
+    type: type,
     url: action,
     data: data,
-    dataType: "json",
+    dataType: dataType,
     success: (result, status, xhr) => {
       $("#kitMessage").animate({width:'hide'},350);
 
-      window.location = result.redirect;
+      if (dataType == 'json') {
+        window.location = result.redirect;
+      }
+      if(dataType == 'html') {
+        $("body").html(result);
+      }
     },
     error: (xhr, status, error) => {
       const messageObj = JSON.parse(xhr.responseText);
@@ -131,6 +136,22 @@ $(document).ready(() => {
     });
 
     masonry.layout();
+
+    // assign event listeners to each object
+    const kits = document.getElementsByClassName("grid-item");
+
+    for(let i = 0; i < kits.length; i++) {
+      kits[i].addEventListener('click', (e) => {
+        e.preventDefault();
+
+        const name = kits[i].querySelector('#kitName').innerHTML;
+        const owner = kits[i].querySelector('#kitOwner').value;
+        const csrf = document.querySelector('#csrf').value;
+        const data = `name=${name}&owner=${owner}&csrf=${csrf}`;
+
+        sendAjax('/viewer', data, "GET", "json");
+      });
+    }
   }
 
   $("#signupForm").on("submit", (e) => {
@@ -148,7 +169,7 @@ $(document).ready(() => {
       return false;           
     }
 
-    sendAjax($("#signupForm").attr("action"), $("#signupForm").serialize());
+    sendAjax($("#signupForm").attr("action"), $("#signupForm").serialize(), "POST", "json");
 
     return false;
   });
@@ -163,7 +184,7 @@ $(document).ready(() => {
       return false;
     }
 
-    sendAjax($("#loginForm").attr("action"), $("#loginForm").serialize());
+    sendAjax($("#loginForm").attr("action"), $("#loginForm").serialize(), "POST", "json");
 
     return false;
   });
@@ -191,7 +212,7 @@ $(document).ready(() => {
     })
     .then((image) => {
       document.querySelector('#imageURL').value = image;
-      sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize());
+      sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize(), "POST", "json");
     });
 
     return false;
@@ -212,12 +233,10 @@ $(document).ready(() => {
       return false;
     }
 
-    sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize());
+    sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json");
 
     return false;
   });
-
-  
 
   $("#kitItemForm").on("submit", (e) => {
     e.preventDefault();
@@ -244,7 +263,7 @@ $(document).ready(() => {
     })
     .then((image) => {
       document.querySelector('#itemImageURL').value = image;
-      sendAjax($("#kitItemForm").attr("action"), $("#kitItemForm").serialize());
+      sendAjax($("#kitItemForm").attr("action"), $("#kitItemForm").serialize(), "POST", "json");
     });
 
     return false;

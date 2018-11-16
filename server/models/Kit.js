@@ -63,6 +63,7 @@ KitSchema.statics.toAPI = (doc) => ({
   endTimePeriod: doc.endTimePeriod,
   public: doc.public,
   image: doc.image,
+  owner: doc.owner,
 });
 
 KitSchema.statics.findByOwner = (ownerId, callback) => {
