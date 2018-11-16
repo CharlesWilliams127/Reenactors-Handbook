@@ -23,14 +23,15 @@
     </ul>
   </nav>
 
-  <section id="login">
-    <form id="loginForm" name="loginForm" action="/login" method="POST" class="mainForm">
-      <label for="username">Username: </label>
-      <input id="user" type="text" name="username" placeholder="username"/>
-      <label for="pass">Password: </label>
-      <input id="pass" type="password" name="pass" placeholder="password"/>
+  <section id="login" class="text-center mt-5 h-25">
+    <form id="loginForm" name="loginForm" action="/login" method="POST" class="form-signin">
+      <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+      <label for="username" class="sr-only">Username: </label>
+      <input id="user" class="form-control" type="text" name="username" placeholder="username"/>
+      <label for="pass" class="sr-only">Password: </label>
+      <input id="pass" class="form-control" type="password" name="pass" placeholder="password"/>
       <input type="hidden" name="_csrf" value={{csrfToken}} />
-      <input class="formSubmit" type="submit" value="Sign In" />
+      <input class="btn btn-large btn-success" type="submit" value="Sign In" />
     </form>
   </section>
 

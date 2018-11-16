@@ -261,9 +261,43 @@ h3.kitName {
     left: 22%;
   }
 
+  /*Input Styling*/
+/*Source - https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/*/
+#imageField, #itemImageField {
+    width: 0.1px;
+      height: 0.1px;
+      opacity: 0;
+      overflow: hidden;
+      position: absolute;
+      z-index: -1;
+  }
+  
+  #imageField + label, #itemImageField + label {
+    display: inline-block;
+  }
+
+  /* BOOTSTRAP OVERLOADING */
   .modal-header {
       color: white;
-      background-color: #340504;
+      background-color: #ae0001;
+  }
+
+  .form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: auto;
+  }
+
+  .form-signin .form-control {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    box-sizing: border-box;
+    height: auto;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 16px;
   }
   
   @keyframes animatetop {
@@ -292,7 +326,7 @@ h3.kitName {
   .grid-item {
     float: left;
     border: 2px solid #E8E8E8;
-    width: 512px; /* Default size, will be adjusted dynamically based on recieved input */
+    width: 450px; /* Default size, will be adjusted dynamically based on recieved input */
     box-shadow: 3px 3px 20px rgb(145, 145, 145);
     border-color: hsla(0, 0%, 0%, 0.5);
     border-radius:15px;
@@ -315,8 +349,6 @@ h3.kitName {
     margin-top: 10px;
     font-size: 18pt;
   }
-  
-  .grid-item--width2 { width: 512px; }
   
   .grid-item--selected {
     width: 512px;

@@ -126,7 +126,7 @@ $(document).ready(function () {
       // set up masonry content
       var grid = document.querySelector('#dynamicContent');
       masonry = new Masonry(grid, {
-        columnWidth: 256,
+        columnWidth: 470,
         gutter: 10,
         itemSelector: '.grid-item'
       });
@@ -180,12 +180,12 @@ $(document).ready(function () {
     $("#kitMessage").animate({ width: 'hide' }, 350);
 
     if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
-      handleError("RAWR! All fields are required");
+      handleError("All fields are required");
       return false;
     }
 
     if ($("#pass").val() !== $("#pass2").val()) {
-      handleError("RAWR! Passwords do not match");
+      handleError("Passwords do not match");
       return false;
     }
 
@@ -200,7 +200,7 @@ $(document).ready(function () {
     $("#kitMessage").animate({ width: 'hide' }, 350);
 
     if ($("#user").val() == '' || $("#pass").val() == '') {
-      handleError("RAWR! Username or password is empty");
+      handleError("Username or password is empty");
       return false;
     }
 
@@ -242,7 +242,7 @@ $(document).ready(function () {
     $("#kitMessage").animate({ width: 'hide' }, 350);
 
     if ($("#user").val() == '' || $("#pass").val() == '' || $("#newPass").val() == '') {
-      handleError("RAWR! All fields are required");
+      handleError("All fields are required");
       return false;
     }
 
@@ -260,6 +260,18 @@ $(document).ready(function () {
 
   if (kitItemForms) {
     var _loop3 = function _loop3(i) {
+
+      var itemInput = kitItemForms[i].querySelector('#itemImageField');
+      var itemLabel = kitItemForms[i].querySelector('#itemImageLabel');
+      var itemLabelVal = itemLabel.innerHTML;
+      input.addEventListener('change', function (e) {
+        if (input.files[0]) {
+          itemLabel.innerHTML = itemInput.files[0].name;
+        } else {
+          itemLabel.innerHTML = itemLabelVal;
+        }
+      });
+
       kitItemForms[i].addEventListener("submit", function (e) {
         e.preventDefault();
 
@@ -297,10 +309,20 @@ $(document).ready(function () {
     }
   }
 
-  $('#addKitForm').on("click", function (e) {
-    return displayHideSection('makeKit', 'block');
-  });
-  $('#hideKitForm').on("click", function (e) {
-    return displayHideSection('makeKit', 'none');
-  });
+  // attach event listener to change text of image label
+  var input = document.querySelector('#imageField');
+  var label = document.querySelector('#imageLabel');
+  if (input && label) {
+    var labelVal = label.innerHTML;
+    input.addEventListener('change', function (e) {
+      if (input.files[0]) {
+        label.innerHTML = input.files[0].name;
+      } else {
+        label.innerHTML = labelVal;
+      }
+    });
+  }
+
+  // $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
+  // $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });
