@@ -21,38 +21,6 @@ html, body {
 	background-attachment: fixed;
 }
 
-nav {
-    width: 100%;
-    background-color: #55acee;
-}
-
-nav:nth-child(1) {
-    padding-left: 25px;
-}
-
-.navlink {
-    padding: 5px;
-    padding-top: 12px;
-    padding-left: 20px;
-    color: white;
-    font-size: 1.3em;
-    float: left;
-}
-
-.navlink a, .navlink a:link, .navlink a:visited, .navlink a:hover, .navlink a:active {
-    color: white;
-    text-decoration: none;
-    padding: 5px;
-    border-radius: 4px;
-    background-color: #55acee;
-    transition: background-color 0.4s ease;
-}
-
-.navlink a:hover {
-    transition: background-color 0.8s ease;
-    background-color: #66bdff;
-}
-
 .text-input{
     background-color: #E8E8E8;
     border-radius: 10px;
@@ -178,19 +146,6 @@ nav:nth-child(1) {
     left: 20px;
 }
 
-#speech {
-    height: 120px;
-    width: 250px;
-    z-index:300;
-}
-
-#errorMessage {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: red;
-    font-style: italic;
-}
-
 #kit {
     z-index: 225;
     margin-top: -20px;
@@ -265,46 +220,6 @@ h3.kitName {
     margin-bottom:10px;
 } 
 
-.button {
-    color: #fff;
-    font-size: 20pt;
-    background-color: #EEC015;
-    border-radius: 10px;
-    border-style: none;
-    margin-bottom: 15px;
-    transition-property: background;
-    transition-duration: 0.25s;
-  }
-  
-  .button:hover {
-    cursor: pointer;
-    background-color: #F8D246;
-  }
-  
-  .button--close {
-    background-color: #303F42;
-  }
-  
-  .button--small {
-    text-align: center;
-    width: 25px;
-  }
-  
-  .button--close:hover {
-    cursor: pointer;
-    background-color: #55676A;
-  }
-  
-  .button--label {
-    position: absolute;
-    left:47%;
-    top: 25%;
-    right:0;
-    font-size: 14pt;
-    margin-left:auto;
-    margin-right:auto;
-  }
-
 .modal-background {
     display: none; 
     position: fixed; 
@@ -317,11 +232,6 @@ h3.kitName {
     border-radius:15px;
     animation-name: fadeIn;
     animation-duration: 0.4s
-  }
-  
-  .modal-body {
-    padding: 2px 16px;
-    border-radius:15px;
   }
   
   .modal-content {
@@ -350,18 +260,10 @@ h3.kitName {
     top: 15%;
     left: 22%;
   }
-  
+
   .modal-header {
-    background-color: #55acee;
-    text-align: center;
-    padding: 2px 16px;
-    color: white;
-  }
-  
-  .modal-footer {
-    width: 100%;
-    padding: 2px 8px;
-    text-align: center;
+      color: white;
+      background-color: #340504;
   }
   
   @keyframes animatetop {

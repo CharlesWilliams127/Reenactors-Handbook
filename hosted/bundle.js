@@ -20,7 +20,7 @@ var counterStruct = {
 
 var handleError = function handleError(message) {
   $("#errorMessage").text(message);
-  $("#kitMessage").animate({ width: 'toggle' }, 350);
+  $('#errorModal').modal();
 };
 
 // wrapper function to submit an image to imgur when posting
