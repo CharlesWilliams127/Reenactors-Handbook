@@ -183,10 +183,10 @@ $(document).ready(() => {
       const myKitItems = myKits[i].getElementsByClassName("KitItem");
       if (myKitItems) {
         for(let j = 0; j < myKitItems.length; j++) {
-          myKitItems[i].querySelector('#deleteKitItemForm').addEventListener('submit', (e) => {
+          myKitItems[j].querySelector('#deleteKitItemForm').addEventListener('submit', (e) => {
             e.preventDefault();
     
-            const $kitItemForm = $(myKitItems[i].querySelector('#deleteKitItemForm'));
+            const $kitItemForm = $(myKitItems[j].querySelector('#deleteKitItemForm'));
     
             sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
     

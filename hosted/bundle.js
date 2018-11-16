@@ -194,16 +194,20 @@ $(document).ready(function () {
       // attach event listeners to each item's edit and delete
       var myKitItems = myKits[i].getElementsByClassName("KitItem");
       if (myKitItems) {
-        for (var j = 0; j < myKitItems.length; j++) {
-          myKitItems[i].querySelector('#deleteKitItemForm').addEventListener('submit', function (e) {
+        var _loop4 = function _loop4(j) {
+          myKitItems[j].querySelector('#deleteKitItemForm').addEventListener('submit', function (e) {
             e.preventDefault();
 
-            var $kitItemForm = $(myKitItems[i].querySelector('#deleteKitItemForm'));
+            var $kitItemForm = $(myKitItems[j].querySelector('#deleteKitItemForm'));
 
             sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
 
             return false;
           });
+        };
+
+        for (var j = 0; j < myKitItems.length; j++) {
+          _loop4(j);
         }
       }
     };
