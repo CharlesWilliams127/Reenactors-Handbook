@@ -84,30 +84,53 @@
         {{#if kits}}
           {{#each kits}}
             <div class="kit">
-              <h3 class="kitName">Name: {{this.name}}</h3>
-              {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
-              {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
-              {{#if this.image}}<img src={{this.image}} alt="My cool pic"></img>{{/if}}
+                <div class="jumbotron jumbotron-fluid">
+                  <h2 class="kitName display-4">Name: {{this.name}}</h2>
+                  {{#if this.startTimePeriod}}
+                  <h3>Time Period: {{this.startTimePeriod}} 
+                  {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3>{{/if}}
+                </div>
+              <div class="row">
+                <div class="col-7">
+                  {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
+                </div>
+                <div class="col-5">
+                  {{#if this.description}}<h5>Description: {{this.description}}</h5>{{/if}}
+                </div>
+              </div>
+              <hr>
               <div class="kit-items-expand">
                 {{#if this.kitItems}}
                 <h3>Kit Items:</h3>
                   {{#each this.kitItems}}
-                    {{#if this.image}}<img src={{this.image}} alt="My cool pic"></img>{{/if}}
-                    <h3>Item Name: {{this.name}}</h3>
-                    {{#if this.description}}<h3>Item Description: {{this.description}}</h3>{{/if}}
-                    {{#if this.price}}<h3>Item Price: {{this.Price}}</h3>{{/if}}
-                    {{#if this.links}}
-                    <h3>Links:</h3>
-                      <ul>
-                        {{#each this.links}}
-                          <li><a href={{this}}>{{this}}</a></li>
-                        {{/each}}
-                      </ul>
-                    {{/if}}
-                  {{/each}}
+                  <div class="row">
+                    <div class="col-4">
+                      {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
+                    </div>
+                    <div class="col-8">
+                      <h4>Item Name: {{this.name}}</h4>
+                      {{#if this.price}}<h5>Item Price: ${{this.price}}</h5>{{/if}}
+                      {{#if this.description}}<h5>Item Description: {{this.description}}</h5>{{/if}}
+                      {{#if this.links}}
+                      <h4>Links:</h4>
+                        <ul>
+                          {{#each this.links}}
+                            <li><a href={{this}}>{{this}}</a></li>
+                          {{/each}}
+                        </ul>
+                      {{/if}}
+                    </div>
+                  </div>
+                  <hr>
+                  {{/each}}         
                   {{else}}
-                  <h3>This Kit has no Items!</h3>
-                  <p>Get Started by adding some.</p>
+                  <div class="row text-center">
+                    <div class="col">
+                      <h3>This Kit has no Items!</h3>
+                      <p>Get Started by adding some.</p>
+                    </div>
+                  </div>
+                  <hr>
                 {{/if}}
                 <!--Option to add a kit item-->
                 <h3 class="text-center">Add a New Kit Item:</h3>
