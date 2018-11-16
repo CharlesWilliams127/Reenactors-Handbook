@@ -154,6 +154,14 @@ $(document).ready(() => {
     }
   }
 
+  const linkButtons = document.getElementsByClassName("addLinkButton");
+  if(linkButtons) {
+    for (let i = 0; i < linkButtons.length; i++) {
+      linkButtons[i].addEventListener("click", (e) => addItem(e, 
+        linkButtons[i].parentElement.parentElement, 'Link', ""));
+    }
+  }
+
   $("#signupForm").on("submit", (e) => {
     e.preventDefault();
 
@@ -238,38 +246,46 @@ $(document).ready(() => {
     return false;
   });
 
-  $("#kitItemForm").on("submit", (e) => {
-    e.preventDefault();
+  const kitItemForms = document.getElementsByClassName("kitItemForm");
 
-    document.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
-   const imageF = document.querySelector('#itemImageField')
-    $("#kitMessage").animate({width:'hide'},350);
+  if (kitItemForms) {
+    for (let i =0; i < kitItemForms.length; i++) {
+      kitItemForms[i].addEventListener("submit", (e) => {
+        e.preventDefault();
+    
+        kitItemForms[i].querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+       const imageF = kitItemForms[i].querySelector('#itemImageField')
+        $("#kitMessage").animate({width:'hide'},350);
+    
+        if(kitItemForms[i].querySelector('#kitItemName') == '') {
+          handleError("Kit name is required");
+          return false;
+        }
 
-    if($("#kitItemName").val() == '') {
-      handleError("Kit name is required");
-      return false;
+        const $kitItemForm = $(kitItemForms[i]);
+    
+        makeImgurRequest(imageF.files[0])
+        .then((imageData) => {
+          let image = "";
+    
+          if (imageData) {
+              const data = JSON.parse(imageData).data;
+              image = data.link;
+          }
+    
+          return image;
+        })
+        .then((image) => {
+          document.querySelector('#itemImageURL').value = image;
+          sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
+        });
+    
+        return false;
+      });
     }
+  }
 
-    makeImgurRequest(imageF.files[0])
-    .then((imageData) => {
-      let image = "";
-
-      if (imageData) {
-          const data = JSON.parse(imageData).data;
-          image = data.link;
-      }
-
-      return image;
-    })
-    .then((image) => {
-      document.querySelector('#itemImageURL').value = image;
-      sendAjax($("#kitItemForm").attr("action"), $("#kitItemForm").serialize(), "POST", "json");
-    });
-
-    return false;
-  });
-
-  $('#addLinkButton').on("click", (e) => addItem(e, document.querySelector('#linkList'), 'Link', ""));
+  
   $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
   $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });

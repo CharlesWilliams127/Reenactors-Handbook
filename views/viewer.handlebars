@@ -47,6 +47,23 @@
             {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
             {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
             {{#if this.image}}<img src={{this.image}} alt="My cool pic"></img>{{/if}}
+            {{#if this.kitItems}}
+              <h3>Kit Items:</h3>
+                {{#each this.kitItems}}
+                  {{#if this.image}}<img src={{this.image}} alt="My cool pic"></img>{{/if}}
+                  <h3>Item Name: {{this.name}}</h3>
+                  {{#if this.description}}<h3>Item Description: {{this.description}}</h3>{{/if}}
+                  {{#if this.price}}<h3>Item Price: {{this.Price}}</h3>{{/if}}
+                  {{#if this.links}}
+                  <h3>Links:</h3>
+                    <ul>
+                      {{#each this.links}}
+                        <li><a href={{this}}>{{this}}</a></li>
+                      {{/each}}
+                    </ul>
+                  {{/if}}
+                {{/each}}
+              {{/if}}
           </div>
         {{/each}}
       {{else}}

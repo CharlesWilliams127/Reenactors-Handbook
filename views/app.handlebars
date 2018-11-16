@@ -72,6 +72,14 @@
                   <h3>Item Name: {{this.name}}</h3>
                   {{#if this.description}}<h3>Item Description: {{this.description}}</h3>{{/if}}
                   {{#if this.price}}<h3>Item Price: {{this.Price}}</h3>{{/if}}
+                  {{#if this.links}}
+                  <h3>Links:</h3>
+                    <ul>
+                      {{#each this.links}}
+                        <li><a href={{this}}>{{this}}</a></li>
+                      {{/each}}
+                    </ul>
+                  {{/if}}
                 {{/each}}
               {{/if}}
               <!--Option to add a kit item-->
@@ -87,8 +95,8 @@
                 <textarea id="kitItemDescription" type="text" class="text-input" name="itemDescription"></textarea>
                 <label for="itemPrice">Price: </label>
                 <input id="kitItemPrice" type="text" name="itemPrice" class="text-input" placeholder="Price"/>
-                <input id="addLinkButton" type="button" class="button" value="Add Link"/>
                 <ul id="linkList">
+                  <li><input type="button" class="addLinkButton button" value="Add Link"/></li>
                 </ul>
                 <input type="hidden" id="newCsrf" name="_csrf" value={{csrfToken}} />
                 <input type="hidden" id="itemImageURL" name="itemImageURL" value="" />
