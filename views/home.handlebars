@@ -60,9 +60,7 @@
           <div class="grid-item text-truncate">
             <input type="hidden" name="kitOwner" id="kitOwner" value={{this.owner}} />
             <input type="hidden" name="_csrf" id="csrf" value={{../csrfToken}} />
-            <h3 class="kitName" id="kitName">{{this.name}}</h3>
-            {{#if this.description}}<h3>Description: {{this.description}}</h3>{{/if}}
-            {{#if this.startTimePeriod}}<h3>Time Period: {{this.startTimePeriod}} {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3> {{/if}}
+            <h3 class="kitName text-center" id="kitName">{{this.name}}</h3>
             {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
           </div>
         {{/each}}

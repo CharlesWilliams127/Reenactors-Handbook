@@ -36,7 +36,7 @@ const login = (request, response) => {
 
     req.session.account = Account.AccountModel.toAPI(account);
 
-    return res.json({ redirect: '/maker' });
+    return res.json({ redirect: '/home' });
   });
 };
 
@@ -93,8 +93,9 @@ const changePass = (request, response) => {
   }
 
   return Account.AccountModel.generateHash(newPassword, (salt, hash) => {
+    console.log(username);
     const query = Account.AccountModel.findOneAndUpdate(
-      { username },
+      { username},
       { salt, password: hash },
       { new: true }
     );
