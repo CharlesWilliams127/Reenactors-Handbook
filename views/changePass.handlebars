@@ -9,29 +9,34 @@
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-light bg-light"> 
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/home">Reenactors Handbook</a> 
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a class="nav-link" href="/home">Home</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="/maker">My Kits</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" href="/logout">Logout</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/maker">My Kits</a>
+        <a class="nav-link" href="/changePass">Change Password</a>
       </li>
     </ul>
   </nav>
-  <section id="changePass">
-    <form id="changePassForm" name="changePassForm" action="/changePass" method="POST" class="mainForm">
-      <label for="username">Username: </label>
-      <input id="user" type="text" name="username" placeholder="username"/>
-      <label for="pass">Old Password: </label>
-      <input id="pass" type="password" name="pass" placeholder="old password"/>
-      <label for="newPass">New Password: </label>
-      <input id="newPass" type="password" name="newPass" placeholder="new password"/>
+  <section id="changePass" class="text-center mt-5 h-25">
+    <form id="changePassForm" name="changePassForm" action="/changePass" method="POST" class="form-signin">
+      <h1 class="h3 mb-3 font-weight-normal">Please enter the following</h1>
+      <label for="username" class="sr-only">Username: </label>
+      <input id="user" class="form-control" type="text" name="username" placeholder="username"/>
+      <label for="pass" class="sr-only">Old Password: </label>
+      <input id="pass" class="form-control" type="password" name="pass" placeholder="old password"/>
+      <label for="newPass" class="sr-only">New Password: </label>
+      <input id="newPass" type="password" name="newPass" class="form-control" placeholder="new password"/>
       <input type="hidden" name="_csrf" value={{csrfToken}} />
-      <input type="submit" value="Change Password" />
+      <input type="submit" class="btn btn-large btn-success" value="Change Password" />
     </form>
   </section>
   <script src="/assets/bundle.js"></script>

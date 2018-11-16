@@ -78,9 +78,11 @@ var addItem = function addItem(e, list, elemName, value) {
   var deleteLabel = document.createElement('label');
   deleteLabel.classList.add('small-button--label');
   var deleteButton = document.createElement('input');
-  deleteButton.classList.add('button');
-  deleteButton.classList.add('button--close');
-  deleteButton.classList.add('button--small');
+  deleteButton.classList.add('btn');
+  deleteButton.classList.add('btn-sm');
+  deleteButton.classList.add('btn-danger');
+  deleteButton.classList.add('text-left');
+  deleteButton.style.width = "28px";
   deleteButton.value = 'X';
   deleteButton.id = 'deleteButton' + count;
   deleteLabel.htmlFor = deleteButton.id;
@@ -88,7 +90,7 @@ var addItem = function addItem(e, list, elemName, value) {
   deleteButton.addEventListener('click', function (e) {
     list.removeChild(item);
   });
-  item.innerHTML = '<input id="' + elemName + count + '" class="text-input" type="text" name="' + elemName + '[' + count + ']" value="' + value + '"/>';
+  item.innerHTML = '<input id="' + elemName + count + '" class="form-control" type="text" name="' + elemName + '[' + count + ']" value="' + value + '"/>';
   deleteLabel.appendChild(deleteButton);
   item.appendChild(deleteLabel);
   list.appendChild(item);
@@ -259,32 +261,75 @@ $(document).ready(function () {
   var kitItemForms = document.getElementsByClassName("kitItemForm");
 
   if (kitItemForms) {
-    var _loop3 = function _loop3(i) {
+    // for (let i =0; i < kitItemForms.length; i++) {
+    //   //const count = counterStruct['imageField']();
 
-      var itemInput = kitItemForms[i].querySelector('#itemImageField');
-      var itemLabel = kitItemForms[i].querySelector('#itemImageLabel');
-      var itemLabelVal = itemLabel.innerHTML;
-      input.addEventListener('change', function (e) {
-        if (input.files[0]) {
-          itemLabel.innerHTML = itemInput.files[0].name;
-        } else {
-          itemLabel.innerHTML = itemLabelVal;
-        }
-      });
+    //   let itemInput = kitItemForms[i].querySelector( '#itemImageField' );
+    //   let itemLabel = kitItemForms[i].querySelector( '#itemImageLabel' );
 
-      kitItemForms[i].addEventListener("submit", function (e) {
+    //   itemInput.id = `${itemInput.id}${i}`;
+    //   itemLabel.id = `${itemLabel.id}${i}`;
+    //   itemLabel.htmlFor = `${itemInput.id}${i}`;
+
+    //   (function() {
+    //     // let itemInput = kitItemForms[i].querySelector( '#itemImageField' );
+    //     // let itemLabel = kitItemForms[i].querySelector( '#itemImageLabel' );
+    //     let itemLabelVal = itemLabel.innerHTML; 
+    //     itemInput.addEventListener( 'change', function() { updateImageField(itemInput, itemLabel, itemLabelVal); }, false)
+
+    //     kitItemForms[i].addEventListener("submit", (e) => {
+    //       e.preventDefault();
+
+    //       kitItemForms[i].querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+    //      const imageF = kitItemForms[i].querySelector(`#itemImageField${i}`)
+    //       $("#kitMessage").animate({width:'hide'},350);
+
+    //       if(kitItemForms[i].querySelector('#kitItemName') == '') {
+    //         handleError("Kit name is required");
+    //         return false;
+    //       }
+
+    //       const $kitItemForm = $(kitItemForms[i]);
+
+    //       makeImgurRequest(imageF.files[0])
+    //       .then((imageData) => {
+    //         let image = "";
+
+    //         if (imageData) {
+    //             const data = JSON.parse(imageData).data;
+    //             image = data.link;
+    //         }
+
+    //         return image;
+    //       })
+    //       .then((image) => {
+    //         document.querySelector('#itemImageURL').value = image;
+    //         sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
+    //       });
+
+    //       return false;
+    //     });
+    //   }());
+    // }
+    Array.prototype.forEach.call(kitItemForms, function (kitItemForm) {
+      // kitItemForm.querySelector( '#itemImageField' )
+      // .addEventListener( 'change', function(e) { 
+      //   updateImageField(e, kitItemForm, "Upload an Image"); 
+      // });
+
+      kitItemForm.addEventListener("submit", function (e) {
         e.preventDefault();
 
-        kitItemForms[i].querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
-        var imageF = kitItemForms[i].querySelector('#itemImageField');
+        kitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+        var imageF = kitItemForm.querySelector('#itemImageField');
         $("#kitMessage").animate({ width: 'hide' }, 350);
 
-        if (kitItemForms[i].querySelector('#kitItemName') == '') {
+        if (kitItemForm.querySelector('#kitItemName') == '') {
           handleError("Kit name is required");
           return false;
         }
 
-        var $kitItemForm = $(kitItemForms[i]);
+        var $kitItemForm = $(kitItemForm);
 
         makeImgurRequest(imageF.files[0]).then(function (imageData) {
           var image = "";
@@ -296,17 +341,13 @@ $(document).ready(function () {
 
           return image;
         }).then(function (image) {
-          document.querySelector('#itemImageURL').value = image;
+          kitItemForm.querySelector('#itemImageURL').value = image;
           sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
         });
 
         return false;
       });
-    };
-
-    for (var i = 0; i < kitItemForms.length; i++) {
-      _loop3(i);
-    }
+    });
   }
 
   // attach event listener to change text of image label

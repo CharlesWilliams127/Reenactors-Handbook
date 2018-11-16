@@ -16,9 +16,16 @@ html, body {
 
 #header {
     color: white;
+}
+
+#header, .backgroundArt {
     background-image: url("./img/-templates.jpg");
 	background-repeat: repeat;
-	background-attachment: fixed;
+	background-attachment: fixed; 
+}
+
+.backgroundArt {
+    height: auto;
 }
 
 .text-input{
@@ -51,6 +58,18 @@ html, body {
 .kitForm input[type=text] {
     float:left;
 }
+
+.small-button--label {
+    position: relative;
+    width: 10px;
+    height: 10px;
+    left: 92%;
+    bottom: 33px;
+    font-size: 14pt;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
 
 .makeDomoSubmit {
     transition: background-color 0.4s ease;
@@ -116,17 +135,6 @@ html, body {
     background-color: #338acc;
 }
 
-#user, #pass, #pass2 {
-    text-align: center;
-    font-size: 1.1em;
-    width: 180px;
-    border-radius: 6px;
-}
-
-#user:focus, #pass:focus, #pass2:focus {
-    outline: none;
-    box-shadow: 0px 0px 1px 1px #55acee;
-}
 
 #kitMessage {
     display:none;
@@ -146,27 +154,7 @@ html, body {
     left: 20px;
 }
 
-#kit {
-    z-index: 225;
-    margin-top: -20px;
-    margin-left: 135px;
-    height: 450px;
-    width: 300px;
-    -ms-transform: rotate(330deg);
-    -webkit-transform: rotate(330deg); 
-    transform: rotate(330deg);
-}
-
-#kits {
-    width: 40%;
-    min-width: 400px;
-    border: 2px solid #55acee;
-    border-radius: 4px;
-    margin: 0 auto;
-    margin-top: 100px;
-}
-
-.kit {
+/* .kit {
     width: 95%;
     margin: 0 auto;
     margin-top: 2px;
@@ -177,14 +165,14 @@ html, body {
     padding: 10px;
     min-height:60px;
     overflow: hidden;
-}
+} */
 
-.kit:hover {
+/* .kit:hover {
     transition: border-color 0.2s ease-out;
     border-color: rgba(255,255,255, 0.8);
     transition: background-color 2.6s ease-out;
     background-color: #66bfff;
-}
+} */
 
 img.kitFace {
     margin-left: 25px;
@@ -263,7 +251,7 @@ h3.kitName {
 
   /*Input Styling*/
 /*Source - https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/*/
-#imageField, #itemImageField {
+#imageField{
     width: 0.1px;
       height: 0.1px;
       opacity: 0;
@@ -272,7 +260,7 @@ h3.kitName {
       z-index: -1;
   }
   
-  #imageField + label, #itemImageField + label {
+  #imageField + label {
     display: inline-block;
   }
 
