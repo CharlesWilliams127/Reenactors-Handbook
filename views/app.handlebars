@@ -110,7 +110,7 @@
                 {{#if this.kitItems}}
                 <h3>Kit Items:</h3>
                   {{#each this.kitItems}}
-                  <div class="row">
+                  <div class="kitItem row">
                     <div class="col-4">
                       {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
                     </div>
@@ -126,7 +126,7 @@
                           {{/each}}
                         </ul>
                       {{/if}}
-                      <form id="deleteKitItemForm" action="/deletKitItem" method="DELETE">
+                      <form id="deleteKitItemForm" action="/deleteKitItem" method="POST">
                         <div class="btn-group text-center">
                           <button type="button" class="btn btn-sm btn-outline-primary">Edit</button>                          
                           <input type="hidden" name="parentKit" value={{../name}} />

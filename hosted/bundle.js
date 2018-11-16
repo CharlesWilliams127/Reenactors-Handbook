@@ -190,6 +190,22 @@ $(document).ready(function () {
 
         return false;
       });
+
+      // attach event listeners to each item's edit and delete
+      var myKitItems = myKits[i].getElementsByClassName("KitItem");
+      if (myKitItems) {
+        for (var j = 0; j < myKitItems.length; j++) {
+          myKitItems[i].querySelector('#deleteKitItemForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            var $kitItemForm = $(myKitItems[i].querySelector('#deleteKitItemForm'));
+
+            sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
+
+            return false;
+          });
+        }
+      }
     };
 
     for (var i = 0; i < myKits.length; i++) {

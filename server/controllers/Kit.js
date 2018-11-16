@@ -155,15 +155,38 @@ const deleteKit = (req, res) => {
     owner: req.session.account._id
   };
 
-  console.log(deleteFilter);
-
   const query = Kit.KitModel.deleteOne(
     deleteFilter
   );
 
   const promise = query.exec();
 
-  promise.then(() => res.json({redirect: '/maker'}))
+  promise.then(() => res.json({redirect: '/maker'}));
+
+  promise.catch((err) => {
+    console.log(err);
+    return res.status(400).json({ error: 'An error occured' });
+  });
+
+  return promise;
+};
+
+const deleteKitItem = (req, res) => {
+  const deleteFilter = {
+    name: req.body.parentKit,
+    owner: req.session.account._id
+  }
+
+  console.log(deleteFilter);
+  console.log(req.body.itemToDelete);
+  const query = Kit.KitModel.update(
+    deleteFilter,
+    {$pull: {kitItems: {name : req.body.itemToDelete} } }
+  );
+
+  const promise = query.exec();
+
+  promise.then(() => res.json({redirect: '/maker'}));
 
   promise.catch((err) => {
     console.log(err);
@@ -180,4 +203,5 @@ module.exports.homePage = homePage;
 module.exports.viewer = viewer;
 module.exports.viewerPage = viewerPage;
 module.exports.deleteKit = deleteKit;
+module.exports.deleteKitItem = deleteKitItem;
 // module.exports.itemMakerPage = itemMakerPage;
