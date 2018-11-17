@@ -193,7 +193,8 @@ var updateImageField = function updateImageField(form, imageField, imageLabel) {
   }
 };
 
-var addKitModalEventListener = function addKitModalEventListener(kitForm) {
+// adds event listeners to things that change or add kits
+var addKitModalEventListener = function addKitModalEventListener(kitForm, imageField) {
   var $kitForm = $(kitForm);
 
   $kitForm.on("submit", function (e) {
@@ -206,7 +207,7 @@ var addKitModalEventListener = function addKitModalEventListener(kitForm) {
       return false;
     }
 
-    var imageF = kitForm.querySelector('#imageField');
+    var imageF = kitForm.querySelector('#' + imageField);
 
     makeImgurRequest(imageF.files[0]).then(function (imageData) {
       var image = "";
@@ -369,8 +370,8 @@ $(document).ready(function () {
   });
 
   // handles attatching listeners to edit and add kits
-  addKitModalEventListener(document.querySelector("#kitForm"));
-  addKitModalEventListener(document.querySelector("#editKitForm"));
+  addKitModalEventListener(document.querySelector("#kitForm"), "imageField");
+  addKitModalEventListener(document.querySelector("#editKitForm"), "editImageField");
 
   $("#changePassForm").on("submit", function (e) {
     e.preventDefault();

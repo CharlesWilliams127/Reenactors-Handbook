@@ -193,7 +193,8 @@ const updateImageField = (form, imageField, imageLabel) => {
   }
 }
 
-const addKitModalEventListener = (kitForm) => {
+// adds event listeners to things that change or add kits
+const addKitModalEventListener = (kitForm, imageField) => {
   const $kitForm = $(kitForm)
 
   $kitForm.on("submit", (e) => {
@@ -206,7 +207,7 @@ const addKitModalEventListener = (kitForm) => {
       return false;
     }
     
-    const imageF = kitForm.querySelector('#imageField');
+    const imageF = kitForm.querySelector(`#${imageField}`);
 
     makeImgurRequest(imageF.files[0])
     .then((imageData) => {
@@ -350,8 +351,8 @@ $(document).ready(() => {
   });
   
   // handles attatching listeners to edit and add kits
-  addKitModalEventListener(document.querySelector("#kitForm"));
-  addKitModalEventListener(document.querySelector("#editKitForm"));
+  addKitModalEventListener(document.querySelector("#kitForm"), "imageField");
+  addKitModalEventListener(document.querySelector("#editKitForm"), "editImageField");
 
   $("#changePassForm").on("submit", (e)=> {
     e.preventDefault();
