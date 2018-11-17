@@ -121,7 +121,7 @@ html, body {
 
   /*Input Styling*/
 /*Source - https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/*/
-#imageField, #editImageField, #editImageItemField{
+#imageField, #editImageField, #editItemImageField{
     width: 0.1px;
       height: 0.1px;
       opacity: 0;
@@ -130,7 +130,7 @@ html, body {
       z-index: -1;
   }
   
-  #imageField + label, #editImageField + label, #editImageItemField + label {
+  #imageField + label, #editImageField + label, #editItemImageField + label {
     display: inline-block;
   }
 

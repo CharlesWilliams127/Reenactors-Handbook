@@ -132,11 +132,12 @@
       </section>
     </div>
 
-    {{!-- <div class="modal fade" id="editKitItem" tabindex="-1" role="dialog" aria-labelledby="makeKitTitle" aria-hidden="true">
+    <!-- Modal for editing kit items -->
+    <div class="modal fade" id="editKitItem" tabindex="-1" role="dialog" aria-labelledby="editkitItemTitle" aria-hidden="true">
       <section class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h2 class="modal-title" id="makeKitTitle">Add a Reeactment Kit</h2>
+            <h2 class="modal-title" id="editkitItemTitle">Editing</h2>
           </div>
           <div class="modal-body">
             <div class = "modal-background" id="recipeSubmitLoading">
@@ -144,44 +145,42 @@
                 <img src="../hosted/img/loading.gif" alt="Loading"/>
               </div>
             </div>
-            <form id="kitForm" name="kitForm" action="/maker" method="POST">
-              <div class="form-group">
-                <input id="imageField" type="file" name="image" />
-                <label for="imageField" class="btn btn-outline-secondary" id="imageLabel">Upload an Image</label>
-              </div>
-              <div class="form-row">
-                <div class="form-group col-md-4 ml-auto">
-                  <label for="name">Name: </label>
-                  <input id="kitName" type="text" name="name" class="form-control" placeholder="Kit Name"/>
-                </div>
-                <div class="form-group col-md-3 ml-5">
-                  <label for="startTimePeriod">Time Period Range Start: </label>
-                  <input id="kitStartTimePeriod" type="text" class="form-control" name="startTimePeriod" placeholder="Start Year"/>
-                </div>
-                <div class="form-group col-md-3 mr-auto">
-                  <label for="endTimePeriod">Time Period Range End: </label>
-                  <input id="kitEndTimePeriod" type="text" class="form-control" name="endTimePeriod" placeholder="End Year"/>
-                </div>
-              </div>
-              <div class="form-row">
-                <div class="form-group col-md-6 ml-auto">
-                  <label for="description">Description: </label>
-                  <textarea id="kitDescription" type="text" class="form-control" name="description"></textarea>
-                </div>
-                <div class="form-check mr-auto mt-5 ml-3">
-                  <input id="kitPublic" class="form-check-input" type="checkbox" name="public" value="Public" checked/>
-                  <label class="form-check-label" for="public">Public</label>
-                </div>
-              </div>
-              <input id="initCsrf" type="hidden" name="_csrf" value={{csrfToken}} />
-              <input id="imageURL" type="hidden" name="imageURL" value="" />
-              <input class="btn btn-lg btn-outline-success" type="submit" value="Add Kit" />
-            </form>
-            <input id="hideKitForm" type="button" class="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
+            <form id="editKitItemForm" name="editKitItemForm" action="/addKitItem" method="POST" class="text-center kitItemForm">
+                  <div class="form-group text-center">
+                    <input id="editItemImageField" type="file" name="image" />
+                    <label for="editItemImageField" class="btn btn-outline-secondary" id="editItemImageLabel">Upload an Image</label>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-4 ml-auto">
+                      <label for="name">Name: </label>
+                      <input id="kitItemName" type="text" name="itemName" class="form-control" placeholder="Kit Item Name"/>
+                    </div>
+                    <div class="form-group col-md-4 mr-auto">
+                      <label for="itemPrice">Price: </label>
+                      <input id="kitItemPrice" type="text" name="itemPrice" class="form-control" placeholder="Price"/>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-md-5 ml-auto">
+                      <label for="itemDescription">Description: </label>
+                      <textarea id="kitItemDescription" type="text" class="form-control" name="itemDescription"></textarea>
+                    </div>
+                    <div class="form-group col-md-5 mr-auto">
+                      <ul id="linkList" class="text-left">
+                        <li><input type="button" class="btn btn-sm btn-outline-secondary addLinkButton" value="Add Link"/></li>
+                      </ul>
+                    </div>
+                  </div>
+                  <input type="hidden" id="newCsrf" name="_csrf" value={{this.csrfToken}} />
+                  <input type="hidden" id="itemImageURL" name="itemImageURL" value="" />
+                  <input type="hidden" id="parentKit" name="parentKit" value="REPLACE THIS" />
+                  <input class="btn btn-outline-success text-center mx-auto" type="submit" value="Add Kit Item" />
+                </form>
+            <input id="hideKitItemForm" type="button" class="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
           </div>
         </div>
       </section>
-    </div> --}}
+    </div>
 
     <section id="kits" class="container bg-light mt-5">
         {{#if kits}}
@@ -216,15 +215,15 @@
                   {{#each this.kitItems}}
                   <div class="kitItem row">
                     <div class="col-4">
-                      {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
+                      {{#if this.image}}<img src={{this.image}} id="kitItemImage" class="img-fluid" alt="My cool pic"></img>{{/if}}
                     </div>
                     <div class="col-8">
-                      <h4>Item Name: {{this.name}}</h4>
-                      {{#if this.price}}<h5>Item Price: ${{this.price}}</h5>{{/if}}
-                      {{#if this.description}}<h5>Item Description: {{this.description}}</h5>{{/if}}
+                      <h4>Item Name: <span id="kitItemName">{{this.name}}</span></h4>
+                      {{#if this.price}}<h5>Item Price: $<span id="kitItemPrice">{{this.price}}</span></h5>{{/if}}
+                      {{#if this.description}}<h5>Item Description: <span id="kitItemDescription">{{this.description}}</span></h5>{{/if}}
                       {{#if this.links}}
                       <h4>Links:</h4>
-                        <ul>
+                        <ul id="kitItemLinkList">
                           {{#each this.links}}
                             <li><a href={{this}}>{{this}}</a></li>
                           {{/each}}
@@ -233,7 +232,7 @@
                       <form id="deleteKitItemForm" action="/deleteKitItem" method="POST">
                         <div class="btn-group text-center">
                           <button type="button" id="editKitItemButton" class="btn btn-sm btn-outline-primary">Edit</button>                          
-                          <input type="hidden" name="parentKit" value={{../name}} />
+                          <input type="hidden" id="parentKit" name="parentKit" value={{../name}} />
                           <input type="hidden" name="itemToDelete" value={{this.name}} />
                           <input id="initCsrf" type="hidden" name="_csrf" value={{../../csrfToken}} />
                           <button type="submit" class="btn btn-sm btn-outline-danger" id="kitItemDeleteButton" name="kitItemDeleteButton">Delete</button>

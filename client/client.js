@@ -93,36 +93,38 @@ const populateEditKitModal = (item) => {
   $('#editKit').modal();
 }
 
+const populateList = (elements, list, type) => {
+  Array.prototype.forEach.call(elements, element => {
+      addItem(null, list, type, element.innerText);
+  });
+}
+
 // a function to handle the user clicking the edit button from
-// within a Kit
-const populateEditKitItemModal = (recipe) => {
-  displayHideSection('addRecipe', 'block');
+// within a Kit Item
+const populateEditKitItemModal = (item) => {
+  const kitItemModal = document.querySelector("#editKitItem");
 
-  const applianceList = document.querySelector('#applianceList');
-  const directionList = document.querySelector('#directionList');
-  const ingredientList = document.querySelector('#ingredientList');
-  const titleField = document.querySelector('#titleField');
-  const descField = document.querySelector('#descriptionField');
-  const priceField = document.querySelector('#priceField');
-  const caloriesField = document.querySelector('#caloriesField');
+  const name = kitItemModal.querySelector('#kitItemName');
+  const price = kitItemModal.querySelector('#kitItemPrice');
+  const desc = kitItemModal.querySelector('#kitItemDescription');
+  const image = kitItemModal.querySelector('#itemImageURL');
+  const linkList = kitItemModal.querySelector('#linkList');
 
-  if (recipe.appliances) {
-      populateList(recipe.appliances, applianceList, 'Appliance');
-  }
-  if (recipe.directions) {
-      populateList(recipe.directions, directionList, 'Direction');
-  }
-  if (recipe.ingredients) {
-      populateList(recipe.ingredients, ingredientList, 'Ingredient');
-  }
+  name.value = item.querySelector('#kitItemName').textContent;
+  desc.value = item.querySelector('#kitItemDescription').textContent;
+  price.value = item.querySelector('#kitItemPrice').textContent;
+  image.value = item.querySelector('#kitItemImage').src;
+  const existingLinkList = item.querySelector('#kitItemLinkList');
 
-  titleField.value = recipe.title;
-  descField.value = recipe.description;
-  priceField.value = recipe.price;
-  caloriesField.value = recipe.calories;
+  if (existingLinkList) {
+    populateList(existingLinkList.getElementsByTagName("li"), linkList, 'Link');
+  }
 
   // change the header
-  document.querySelector('#addEditHeader').textContent = "Edit a Recipe";
+  kitItemModal.querySelector('#editkitItemTitle').textContent = `Editing ${name.value}`;
+
+  // display modal
+  $('#editKitItem').modal();
 }
 
 // creates a new field for the user to add to
@@ -267,7 +269,7 @@ $(document).ready(() => {
   // pull forms for modals to be used for submission and editing
   const addKitForm = document.querySelector("#kitForm");
   const editKitForm = document.querySelector("#editKitForm");
-  const editKitItemForm = document.querySelector("editKitItemForm");
+  const editKitItemForm = document.querySelector("#editKitItemForm");
 
   // allow links to be added to kit items
   const linkButtons = document.getElementsByClassName("addLinkButton");
@@ -310,6 +312,13 @@ $(document).ready(() => {
     
             return false;
           });
+
+          // attach edit event listener
+          const kitItemEditButton = myKitItems[j].querySelector("#editKitItemButton");
+          const parentKit = myKitItems[j].querySelector("#parentKit");
+
+          const itemClickEdit = (e) => populateEditKitItemModal(myKitItems[j], parentKit);
+          kitItemEditButton.addEventListener('click', itemClickEdit);
         }
       }
     }
@@ -416,7 +425,7 @@ $(document).ready(() => {
   // attach event listeners to each kit form
   updateImageField(addKitForm, "imageField", "imageLabel");
   updateImageField(editKitForm, "editImageField", "editImageLabel");
-  //updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
+  updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
   // $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
   // $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });

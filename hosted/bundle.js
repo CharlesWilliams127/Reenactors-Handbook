@@ -95,36 +95,38 @@ var populateEditKitModal = function populateEditKitModal(item) {
   $('#editKit').modal();
 };
 
+var populateList = function populateList(elements, list, type) {
+  Array.prototype.forEach.call(elements, function (element) {
+    addItem(null, list, type, element.innerText);
+  });
+};
+
 // a function to handle the user clicking the edit button from
-// within a Kit
-var populateEditKitItemModal = function populateEditKitItemModal(recipe) {
-  displayHideSection('addRecipe', 'block');
+// within a Kit Item
+var populateEditKitItemModal = function populateEditKitItemModal(item) {
+  var kitItemModal = document.querySelector("#editKitItem");
 
-  var applianceList = document.querySelector('#applianceList');
-  var directionList = document.querySelector('#directionList');
-  var ingredientList = document.querySelector('#ingredientList');
-  var titleField = document.querySelector('#titleField');
-  var descField = document.querySelector('#descriptionField');
-  var priceField = document.querySelector('#priceField');
-  var caloriesField = document.querySelector('#caloriesField');
+  var name = kitItemModal.querySelector('#kitItemName');
+  var price = kitItemModal.querySelector('#kitItemPrice');
+  var desc = kitItemModal.querySelector('#kitItemDescription');
+  var image = kitItemModal.querySelector('#itemImageURL');
+  var linkList = kitItemModal.querySelector('#linkList');
 
-  if (recipe.appliances) {
-    populateList(recipe.appliances, applianceList, 'Appliance');
-  }
-  if (recipe.directions) {
-    populateList(recipe.directions, directionList, 'Direction');
-  }
-  if (recipe.ingredients) {
-    populateList(recipe.ingredients, ingredientList, 'Ingredient');
-  }
+  name.value = item.querySelector('#kitItemName').textContent;
+  desc.value = item.querySelector('#kitItemDescription').textContent;
+  price.value = item.querySelector('#kitItemPrice').textContent;
+  image.value = item.querySelector('#kitItemImage').src;
+  var existingLinkList = item.querySelector('#kitItemLinkList');
 
-  titleField.value = recipe.title;
-  descField.value = recipe.description;
-  priceField.value = recipe.price;
-  caloriesField.value = recipe.calories;
+  if (existingLinkList) {
+    populateList(existingLinkList.getElementsByTagName("li"), linkList, 'Link');
+  }
 
   // change the header
-  document.querySelector('#addEditHeader').textContent = "Edit a Recipe";
+  kitItemModal.querySelector('#editkitItemTitle').textContent = 'Editing ' + name.value;
+
+  // display modal
+  $('#editKitItem').modal();
 };
 
 // creates a new field for the user to add to
@@ -271,7 +273,7 @@ $(document).ready(function () {
   // pull forms for modals to be used for submission and editing
   var addKitForm = document.querySelector("#kitForm");
   var editKitForm = document.querySelector("#editKitForm");
-  var editKitItemForm = document.querySelector("editKitItemForm");
+  var editKitItemForm = document.querySelector("#editKitItemForm");
 
   // allow links to be added to kit items
   var linkButtons = document.getElementsByClassName("addLinkButton");
@@ -321,6 +323,15 @@ $(document).ready(function () {
 
             return false;
           });
+
+          // attach edit event listener
+          var kitItemEditButton = myKitItems[j].querySelector("#editKitItemButton");
+          var parentKit = myKitItems[j].querySelector("#parentKit");
+
+          var itemClickEdit = function itemClickEdit(e) {
+            return populateEditKitItemModal(myKitItems[j], parentKit);
+          };
+          kitItemEditButton.addEventListener('click', itemClickEdit);
         };
 
         for (var j = 0; j < myKitItems.length; j++) {
@@ -433,7 +444,7 @@ $(document).ready(function () {
   // attach event listeners to each kit form
   updateImageField(addKitForm, "imageField", "imageLabel");
   updateImageField(editKitForm, "editImageField", "editImageLabel");
-  //updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
+  updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
   // $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
   // $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });
