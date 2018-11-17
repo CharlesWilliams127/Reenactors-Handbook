@@ -69,6 +69,62 @@ const displayHideSection = (sectionID, displayStyle) => {
   section.style.display = displayStyle;
 };
 
+// a function to handle the user clicking the edit button from
+// within a Kit
+const populateEditKitModal = (item) => {
+  const kitModal = document.querySelector("#editKit");
+
+  const name = kitModal.querySelector('#kitName');
+  const desc = kitModal.querySelector('#kitDescription');
+  const startTime = kitModal.querySelector('#kitStartTimePeriod');
+  const endTime = kitModal.querySelector('#kitEndTimePeriod');
+  const image = kitModal.querySelector('#imageURL');
+
+  name.value = item.querySelector('#kitName').textContent;
+  desc.value = item.querySelector('#kitDescription').textContent;
+  startTime.value = item.querySelector('#kitStartTimePeriod').textContent;
+  endTime.value = item.querySelector('#kitEndTimePeriod').textContent;
+  image.value = item.querySelector('#kitImage').src;
+
+  // change the header
+  kitModal.querySelector('#editKitTitle').textContent = `Editing ${name.value}`;
+
+  // display modal
+  $('#editKit').modal();
+}
+
+// a function to handle the user clicking the edit button from
+// within a Kit
+const populateEditKitItemModal = (recipe) => {
+  displayHideSection('addRecipe', 'block');
+
+  const applianceList = document.querySelector('#applianceList');
+  const directionList = document.querySelector('#directionList');
+  const ingredientList = document.querySelector('#ingredientList');
+  const titleField = document.querySelector('#titleField');
+  const descField = document.querySelector('#descriptionField');
+  const priceField = document.querySelector('#priceField');
+  const caloriesField = document.querySelector('#caloriesField');
+
+  if (recipe.appliances) {
+      populateList(recipe.appliances, applianceList, 'Appliance');
+  }
+  if (recipe.directions) {
+      populateList(recipe.directions, directionList, 'Direction');
+  }
+  if (recipe.ingredients) {
+      populateList(recipe.ingredients, ingredientList, 'Ingredient');
+  }
+
+  titleField.value = recipe.title;
+  descField.value = recipe.description;
+  priceField.value = recipe.price;
+  caloriesField.value = recipe.calories;
+
+  // change the header
+  document.querySelector('#addEditHeader').textContent = "Edit a Recipe";
+}
+
 // creates a new field for the user to add to
 const addItem = (e, list, elemName, value) => {
   const count = counterStruct[elemName]();
@@ -119,6 +175,57 @@ const sendAjax = (action, data, type, dataType) => {
       handleError(messageObj.error);
     }
   });        
+};
+
+const updateImageField = (form, imageField, imageLabel) => {
+  const input = form.querySelector( `#${imageField}` );
+  const label = form.querySelector( `#${imageLabel}` );
+  if (input && label) {
+    let labelVal = label.innerHTML;
+    input.addEventListener( 'change', (e) =>{
+        if( input.files[0] ) {
+            label.innerHTML = input.files[0].name;
+        }
+        else {
+            label.innerHTML = labelVal;
+        }
+    });
+  }
+}
+
+const addKitModalEventListener = (kitForm) => {
+  const $kitForm = $(kitForm)
+
+  $kitForm.on("submit", (e) => {
+    e.preventDefault();
+
+    $("#kitMessage").animate({width:'hide'},350);
+
+    if(kitForm.querySelector("#kitName") == '') {
+      handleError("Kit name is required");
+      return false;
+    }
+    
+    const imageF = kitForm.querySelector('#imageField');
+
+    makeImgurRequest(imageF.files[0])
+    .then((imageData) => {
+      let image = "";
+
+      if (imageData) {
+          const data = JSON.parse(imageData).data;
+          image = data.link;
+      }
+
+      return image;
+    })
+    .then((image) => {
+      imageF.value = image;
+      sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json");
+    });
+
+    return false;
+  });
 }
 
 $(document).ready(() => {
@@ -156,6 +263,11 @@ $(document).ready(() => {
     }
   }
 
+  // pull forms for modals to be used for submission and editing
+  const addKitForm = document.querySelector("#kitForm");
+  const editKitForm = document.querySelector("#editKitForm");
+  const editKitItemForm = document.querySelector("editKitItemForm");
+
   // allow links to be added to kit items
   const linkButtons = document.getElementsByClassName("addLinkButton");
   if(linkButtons) {
@@ -165,7 +277,7 @@ $(document).ready(() => {
     }
   }
 
-  // attatch event listeners on each kit on the myKits page
+  // attach event listeners on each kit on the myKits page
   const myKits = document.getElementsByClassName("kit");
   if(myKits) {
     for(let i = 0; i < myKits.length; i++) {
@@ -178,6 +290,11 @@ $(document).ready(() => {
 
         return false;
       });
+
+      // attach kit event listener
+      const editButton = myKits[i].querySelector('#editKitButton');
+      const clickEdit = (e) => populateEditKitModal(myKits[i]);
+      editButton.addEventListener('click', clickEdit);
 
       // attach event listeners to each item's edit and delete
       const myKitItems = myKits[i].getElementsByClassName("KitItem");
@@ -232,34 +349,9 @@ $(document).ready(() => {
     return false;
   });
   
-  $("#kitForm").on("submit", (e) => {
-    e.preventDefault();
-
-    $("#kitMessage").animate({width:'hide'},350);
-
-    if($("#kitName").val() == '') {
-      handleError("Kit name is required");
-      return false;
-    }
-
-    makeImgurRequest(document.querySelector('#imageField').files[0])
-    .then((imageData) => {
-      let image = "";
-
-      if (imageData) {
-          const data = JSON.parse(imageData).data;
-          image = data.link;
-      }
-
-      return image;
-    })
-    .then((image) => {
-      document.querySelector('#imageURL').value = image;
-      sendAjax($("#kitForm").attr("action"), $("#kitForm").serialize(), "POST", "json");
-    });
-
-    return false;
-  });
+  // handles attatching listeners to edit and add kits
+  addKitModalEventListener(document.querySelector("#kitForm"));
+  addKitModalEventListener(document.querySelector("#editKitForm"));
 
   $("#changePassForm").on("submit", (e)=> {
     e.preventDefault();
@@ -284,62 +376,7 @@ $(document).ready(() => {
   const kitItemForms = document.getElementsByClassName("kitItemForm");
 
   if (kitItemForms) {
-    // for (let i =0; i < kitItemForms.length; i++) {
-    //   //const count = counterStruct['imageField']();
-
-    //   let itemInput = kitItemForms[i].querySelector( '#itemImageField' );
-    //   let itemLabel = kitItemForms[i].querySelector( '#itemImageLabel' );
-
-    //   itemInput.id = `${itemInput.id}${i}`;
-    //   itemLabel.id = `${itemLabel.id}${i}`;
-    //   itemLabel.htmlFor = `${itemInput.id}${i}`;
-
-    //   (function() {
-    //     // let itemInput = kitItemForms[i].querySelector( '#itemImageField' );
-    //     // let itemLabel = kitItemForms[i].querySelector( '#itemImageLabel' );
-    //     let itemLabelVal = itemLabel.innerHTML; 
-    //     itemInput.addEventListener( 'change', function() { updateImageField(itemInput, itemLabel, itemLabelVal); }, false)
-
-    //     kitItemForms[i].addEventListener("submit", (e) => {
-    //       e.preventDefault();
-      
-    //       kitItemForms[i].querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
-    //      const imageF = kitItemForms[i].querySelector(`#itemImageField${i}`)
-    //       $("#kitMessage").animate({width:'hide'},350);
-      
-    //       if(kitItemForms[i].querySelector('#kitItemName') == '') {
-    //         handleError("Kit name is required");
-    //         return false;
-    //       }
-  
-    //       const $kitItemForm = $(kitItemForms[i]);
-      
-    //       makeImgurRequest(imageF.files[0])
-    //       .then((imageData) => {
-    //         let image = "";
-      
-    //         if (imageData) {
-    //             const data = JSON.parse(imageData).data;
-    //             image = data.link;
-    //         }
-      
-    //         return image;
-    //       })
-    //       .then((image) => {
-    //         document.querySelector('#itemImageURL').value = image;
-    //         sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
-    //       });
-      
-    //       return false;
-    //     });
-    //   }());
-    // }
     Array.prototype.forEach.call(kitItemForms, kitItemForm => {
-      // kitItemForm.querySelector( '#itemImageField' )
-      // .addEventListener( 'change', function(e) { 
-      //   updateImageField(e, kitItemForm, "Upload an Image"); 
-      // });
-
       kitItemForm.addEventListener("submit", (e) => {
         e.preventDefault();
     
@@ -375,22 +412,10 @@ $(document).ready(() => {
     });
   }
 
-  // attach event listener to change text of image label
-  const input = document.querySelector( '#imageField' );
-  const label =document.querySelector( '#imageLabel' );
-  if (input && label) {
-    let labelVal = label.innerHTML;
-    input.addEventListener( 'change', (e) =>{
-        if( input.files[0] ) {
-            label.innerHTML = input.files[0].name;
-        }
-        else {
-            label.innerHTML = labelVal;
-        }
-    });
-  }
-
-  
+  // attach event listeners to each kit form
+  updateImageField(addKitForm, "imageField", "imageLabel");
+  updateImageField(editKitForm, "editImageField", "editImageLabel");
+  //updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
   // $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
   // $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });

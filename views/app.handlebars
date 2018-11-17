@@ -26,7 +26,9 @@
     </ul>
     <input id="addKitForm" type="button" class="btn btn-outline-success my-2 my-sm-0" data-toggle="modal" data-target="#makeKit" value="Add New Reeactment Kit"/>
   </nav>
-  <div >
+  <div>
+
+    <!--Modal for adding kits-->
     <div class="modal fade" id="makeKit" tabindex="-1" role="dialog" aria-labelledby="makeKitTitle" aria-hidden="true">
       <section class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
@@ -75,29 +77,131 @@
             <input id="hideKitForm" type="button" class="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
           </div>
         </div>
-        
       </section>
     </div>
+
+    <!--Modal for editing kits-->
+    <div class="modal fade" id="editKit" tabindex="-1" role="dialog" aria-labelledby="editKitTitle" aria-hidden="true">
+      <section class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title" id="editKitTitle">Editing</h2>
+          </div>
+          <div class="modal-body">
+            <div class = "modal-background" id="recipeSubmitLoading">
+              <div class="modal-content load-gif">
+                <img src="../hosted/img/loading.gif" alt="Loading"/>
+              </div>
+            </div>
+            <form id="editKitForm" name="editKitForm" action="/maker" method="POST">
+              <div class="form-group">
+                <input id="editImageField" type="file" name="image" />
+                <label for="editImageField" class="btn btn-outline-secondary" id="editImageLabel">Upload an Image</label>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4 ml-auto">
+                  <label for="name">Name: </label>
+                  <input id="kitName" type="text" name="name" class="form-control" placeholder="Kit Name"/>
+                </div>
+                <div class="form-group col-md-3 ml-5">
+                  <label for="startTimePeriod">Time Period Range Start: </label>
+                  <input id="kitStartTimePeriod" type="text" class="form-control" name="startTimePeriod" placeholder="Start Year"/>
+                </div>
+                <div class="form-group col-md-3 mr-auto">
+                  <label for="endTimePeriod">Time Period Range End: </label>
+                  <input id="kitEndTimePeriod" type="text" class="form-control" name="endTimePeriod" placeholder="End Year"/>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6 ml-auto">
+                  <label for="description">Description: </label>
+                  <textarea id="kitDescription" type="text" class="form-control" name="description"></textarea>
+                </div>
+                <div class="form-check mr-auto mt-5 ml-3">
+                  <input id="kitPublic" class="form-check-input" type="checkbox" name="public" value="Public" checked/>
+                  <label class="form-check-label" for="public">Public</label>
+                </div>
+              </div>
+              <input id="initCsrf" type="hidden" name="_csrf" value={{csrfToken}} />
+              <input id="imageURL" type="hidden" name="imageURL" value="" />
+              <input class="btn btn-lg btn-outline-success" type="submit" value="Add Kit" />
+            </form>
+            <input id="hideKitForm" type="button" class="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    {{!-- <div class="modal fade" id="editKitItem" tabindex="-1" role="dialog" aria-labelledby="makeKitTitle" aria-hidden="true">
+      <section class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title" id="makeKitTitle">Add a Reeactment Kit</h2>
+          </div>
+          <div class="modal-body">
+            <div class = "modal-background" id="recipeSubmitLoading">
+              <div class="modal-content load-gif">
+                <img src="../hosted/img/loading.gif" alt="Loading"/>
+              </div>
+            </div>
+            <form id="kitForm" name="kitForm" action="/maker" method="POST">
+              <div class="form-group">
+                <input id="imageField" type="file" name="image" />
+                <label for="imageField" class="btn btn-outline-secondary" id="imageLabel">Upload an Image</label>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-4 ml-auto">
+                  <label for="name">Name: </label>
+                  <input id="kitName" type="text" name="name" class="form-control" placeholder="Kit Name"/>
+                </div>
+                <div class="form-group col-md-3 ml-5">
+                  <label for="startTimePeriod">Time Period Range Start: </label>
+                  <input id="kitStartTimePeriod" type="text" class="form-control" name="startTimePeriod" placeholder="Start Year"/>
+                </div>
+                <div class="form-group col-md-3 mr-auto">
+                  <label for="endTimePeriod">Time Period Range End: </label>
+                  <input id="kitEndTimePeriod" type="text" class="form-control" name="endTimePeriod" placeholder="End Year"/>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-6 ml-auto">
+                  <label for="description">Description: </label>
+                  <textarea id="kitDescription" type="text" class="form-control" name="description"></textarea>
+                </div>
+                <div class="form-check mr-auto mt-5 ml-3">
+                  <input id="kitPublic" class="form-check-input" type="checkbox" name="public" value="Public" checked/>
+                  <label class="form-check-label" for="public">Public</label>
+                </div>
+              </div>
+              <input id="initCsrf" type="hidden" name="_csrf" value={{csrfToken}} />
+              <input id="imageURL" type="hidden" name="imageURL" value="" />
+              <input class="btn btn-lg btn-outline-success" type="submit" value="Add Kit" />
+            </form>
+            <input id="hideKitForm" type="button" class="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
+          </div>
+        </div>
+      </section>
+    </div> --}}
 
     <section id="kits" class="container bg-light mt-5">
         {{#if kits}}
           {{#each kits}}
             <div class="kit">
                 <div class="jumbotron jumbotron-fluid">
-                  <h2 class="kitName display-4">Name: {{this.name}}</h2>
+                  <h2 class="kitName display-4">Name: <span id="kitName">{{this.name}}</span></h2>
                   {{#if this.startTimePeriod}}
-                  <h3>Time Period: {{this.startTimePeriod}} 
-                  {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3>{{/if}}
+                  <h3>Time Period: <span id="kitStartTimePeriod">{{this.startTimePeriod}}</span>
+                  {{#if this.endTimePeriod}} - <span id="kitEndTimePeriod">{{this.endTimePeriod}}</span> {{/if}}</h3>{{/if}}
                 </div>
               <div class="row">
                 <div class="col-7">
-                  {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
+                  {{#if this.image}}<img src={{this.image}} id="kitImage" class="img-fluid" alt="My cool pic"></img>{{/if}}
                 </div>
                 <div class="col-5">
-                  {{#if this.description}}<h5>Description: {{this.description}}</h5>{{/if}}
+                  {{#if this.description}}<h5>Description: <span id="kitDescription">{{this.description}}</span></h5>{{/if}}
                     <form id="deleteKitForm" action="/deleteKit" method="DELETE">
                       <div class="btn-group text-center">
-                        <button type="button" class="btn btn-sm btn-outline-primary">Edit</button>                          
+                        <button type="button" id="editKitButton" class="btn btn-sm btn-outline-primary">Edit</button>                          
                         <input type="hidden" name="itemToDelete" value={{this.name}} />
                         <input id="initCsrf" type="hidden" name="_csrf" value={{../csrfToken}} />
                         <button type="submit" class="btn btn-sm btn-outline-danger" id="kitDeleteButton" name="kitDeleteButton">Delete</button>
@@ -128,7 +232,7 @@
                       {{/if}}
                       <form id="deleteKitItemForm" action="/deleteKitItem" method="POST">
                         <div class="btn-group text-center">
-                          <button type="button" class="btn btn-sm btn-outline-primary">Edit</button>                          
+                          <button type="button" id="editKitItemButton" class="btn btn-sm btn-outline-primary">Edit</button>                          
                           <input type="hidden" name="parentKit" value={{../name}} />
                           <input type="hidden" name="itemToDelete" value={{this.name}} />
                           <input id="initCsrf" type="hidden" name="_csrf" value={{../../csrfToken}} />
