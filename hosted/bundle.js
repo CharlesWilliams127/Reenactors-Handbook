@@ -83,10 +83,18 @@ var populateEditKitModal = function populateEditKitModal(item) {
   var image = kitModal.querySelector('#imageURL');
 
   name.value = item.querySelector('#kitName').textContent;
-  desc.value = item.querySelector('#kitDescription').textContent;
-  startTime.value = item.querySelector('#kitStartTimePeriod').textContent;
-  endTime.value = item.querySelector('#kitEndTimePeriod').textContent;
-  image.value = item.querySelector('#kitImage').src;
+  if (item.querySelector('#kitDescription')) {
+    desc.value = item.querySelector('#kitDescription').textContent;
+  }
+  if (item.querySelector('#kitStartTimePeriod')) {
+    startTime.value = item.querySelector('#kitStartTimePeriod').textContent;
+  }
+  if (item.querySelector('#kitEndTimePeriod')) {
+    endTime.value = item.querySelector('#kitEndTimePeriod').textContent;
+  }
+  if (item.querySelector('#kitImage')) {
+    image.value = item.querySelector('#kitImage').src;
+  }
 
   // change the header
   kitModal.querySelector('#editKitTitle').textContent = 'Editing ' + name.value;
@@ -110,12 +118,23 @@ var populateEditKitItemModal = function populateEditKitItemModal(item) {
   var price = kitItemModal.querySelector('#kitItemPrice');
   var desc = kitItemModal.querySelector('#kitItemDescription');
   var image = kitItemModal.querySelector('#itemImageURL');
+  var parentKit = kitItemModal.querySelector('#parentKit');
   var linkList = kitItemModal.querySelector('#linkList');
+  var button = linkList.querySelector("#addLinkButton");
+  linkList.innerHTML = "";
+  linkList.appendChild(button);
 
   name.value = item.querySelector('#kitItemName').textContent;
-  desc.value = item.querySelector('#kitItemDescription').textContent;
-  price.value = item.querySelector('#kitItemPrice').textContent;
-  image.value = item.querySelector('#kitItemImage').src;
+  if (item.querySelector('#kitItemDescription')) {
+    desc.value = item.querySelector('#kitItemDescription').textContent;
+  }
+  if (price.value = item.querySelector('#kitItemPrice')) {
+    price.value = item.querySelector('#kitItemPrice').textContent;
+  }
+  if (item.querySelector('#kitItemImage')) {
+    image.value = item.querySelector('#kitItemImage').src;
+  }
+  parentKit.value = item.querySelector('#parentKit').value;
   var existingLinkList = item.querySelector('#kitItemLinkList');
 
   if (existingLinkList) {
@@ -221,7 +240,9 @@ var addKitModalEventListener = function addKitModalEventListener(kitForm, imageF
 
       return image;
     }).then(function (image) {
-      imageF.value = image;
+      if (image) {
+        kitForm.querySelector("#imageURL").value = image;
+      }
       sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json");
     });
 
@@ -384,6 +405,40 @@ $(document).ready(function () {
   addKitModalEventListener(document.querySelector("#kitForm"), "imageField");
   addKitModalEventListener(document.querySelector("#editKitForm"), "editImageField");
 
+  // attach submit listener
+  editKitItemForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    editKitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+    var imageF = editKitItemForm.querySelector('#editItemImageField');
+    $("#kitMessage").animate({ width: 'hide' }, 350);
+
+    if (editKitItemForm.querySelector('#kitItemName') == '') {
+      handleError("Kit name is required");
+      return false;
+    }
+
+    var $editKitItemForm = $(editKitItemForm);
+
+    makeImgurRequest(imageF.files[0]).then(function (imageData) {
+      var image = "";
+
+      if (imageData) {
+        var data = JSON.parse(imageData).data;
+        image = data.link;
+      }
+
+      return image;
+    }).then(function (image) {
+      if (image) {
+        editKitItemForm.querySelector('#itemImageURL').value = image;
+      }
+      sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json");
+    });
+
+    return false;
+  });
+
   $("#changePassForm").on("submit", function (e) {
     e.preventDefault();
 
@@ -442,9 +497,11 @@ $(document).ready(function () {
   }
 
   // attach event listeners to each kit form
-  updateImageField(addKitForm, "imageField", "imageLabel");
-  updateImageField(editKitForm, "editImageField", "editImageLabel");
-  updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
+  if (addKitForm && editKitForm && editKitItemForm) {
+    updateImageField(addKitForm, "imageField", "imageLabel");
+    updateImageField(editKitForm, "editImageField", "editImageLabel");
+    updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
+  }
   // $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
   // $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });

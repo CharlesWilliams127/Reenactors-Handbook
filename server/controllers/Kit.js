@@ -109,6 +109,11 @@ const addKitItem = (req, res) => {
     return res.status(400).json({ error: 'Kit Item needs a name' });
   }
 
+  const deleteFilter = {
+    name: req.body.parentKit,
+    owner: req.session.account._id
+  };
+
   const kitItemData = {
     name: req.body.itemName,
     description: req.body.itemDescription,
@@ -117,20 +122,37 @@ const addKitItem = (req, res) => {
     image: req.body.itemImageURL,
   };
 
-  const query = Kit.KitModel.findOneAndUpdate(
-    { name: req.body.parentKit },
-    { $push: { kitItems: kitItemData } }
+  const pullQuery = Kit.KitModel.update(
+    deleteFilter,
+    {$pull: {kitItems: {name : req.body.itemName} } }
   );
 
-  const promise = query.exec();
-  promise.then(() => res.json({ redirect: '/maker' }));
+  const pullPromise = pullQuery.exec();
+  pullPromise.then(() => {
+    console.log(req.body);
 
-  promise.catch((err) => {
-    console.log(err);
-    return res.status(400).json({ error: 'An error occured' });
+    const query = Kit.KitModel.findOneAndUpdate(
+      { name: req.body.parentKit },
+      { $push: { kitItems: kitItemData } }
+    );
+
+    const promise = query.exec();
+    promise.then(() => res.json({ redirect: '/maker' }));
+
+    promise.catch((err) => {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured pushing' });
+    });
+
+    return promise;
   });
 
-  return promise;
+  pullPromise.catch((err) => {
+    console.log(err);
+    return res.status(400).json({ error: 'An error occured pulling' });
+  });
+  return pullPromise;
+  
 };
 
 const deleteKit = (req, res) => {

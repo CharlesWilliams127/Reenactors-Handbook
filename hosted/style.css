@@ -24,6 +24,10 @@ html, body {
 	background-attachment: fixed; 
 }
 
+#linkList, #kitItemLinkList {
+  list-style-type: none;
+}
+
 .backgroundArt {
     height: auto;
 }

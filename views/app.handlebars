@@ -96,7 +96,7 @@
             <form id="editKitForm" name="editKitForm" action="/maker" method="POST">
               <div class="form-group">
                 <input id="editImageField" type="file" name="image" />
-                <label for="editImageField" class="btn btn-outline-secondary" id="editImageLabel">Upload an Image</label>
+                <label for="editImageField" class="btn btn-outline-secondary" id="editImageLabel">Change Image</label>
               </div>
               <div class="form-row">
                 <div class="form-group col-md-4 ml-auto">
@@ -124,7 +124,7 @@
               </div>
               <input id="initCsrf" type="hidden" name="_csrf" value={{csrfToken}} />
               <input id="imageURL" type="hidden" name="imageURL" value="" />
-              <input class="btn btn-lg btn-outline-success" type="submit" value="Add Kit" />
+              <input class="btn btn-lg btn-outline-success" type="submit" value="Update Kit" />
             </form>
             <input id="hideKitForm" type="button" class="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
           </div>
@@ -148,12 +148,12 @@
             <form id="editKitItemForm" name="editKitItemForm" action="/addKitItem" method="POST" class="text-center kitItemForm">
                   <div class="form-group text-center">
                     <input id="editItemImageField" type="file" name="image" />
-                    <label for="editItemImageField" class="btn btn-outline-secondary" id="editItemImageLabel">Upload an Image</label>
+                    <label for="editItemImageField" class="btn btn-outline-secondary" id="editItemImageLabel">Change Image</label>
                   </div>
                   <div class="form-row">
                     <div class="form-group col-md-4 ml-auto">
                       <label for="name">Name: </label>
-                      <input id="kitItemName" type="text" name="itemName" class="form-control" placeholder="Kit Item Name"/>
+                      <input id="kitItemName" type="text" name="itemName" class="form-control" placeholder="Kit Item Name" readonly/>
                     </div>
                     <div class="form-group col-md-4 mr-auto">
                       <label for="itemPrice">Price: </label>
@@ -167,14 +167,14 @@
                     </div>
                     <div class="form-group col-md-5 mr-auto">
                       <ul id="linkList" class="text-left">
-                        <li><input type="button" class="btn btn-sm btn-outline-secondary addLinkButton" value="Add Link"/></li>
+                        <li id="addLinkButton"><input type="button" class="btn btn-sm btn-outline-secondary addLinkButton" value="Add Link"/></li>
                       </ul>
                     </div>
                   </div>
                   <input type="hidden" id="newCsrf" name="_csrf" value={{this.csrfToken}} />
                   <input type="hidden" id="itemImageURL" name="itemImageURL" value="" />
                   <input type="hidden" id="parentKit" name="parentKit" value="REPLACE THIS" />
-                  <input class="btn btn-outline-success text-center mx-auto" type="submit" value="Add Kit Item" />
+                  <input class="btn btn-outline-success text-center mx-auto" type="submit" value="Update Kit Item" />
                 </form>
             <input id="hideKitItemForm" type="button" class="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
           </div>
