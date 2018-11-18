@@ -406,38 +406,40 @@ $(document).ready(function () {
   addKitModalEventListener(document.querySelector("#editKitForm"), "editImageField");
 
   // attach submit listener
-  editKitItemForm.addEventListener("submit", function (e) {
-    e.preventDefault();
+  if (editKitForm) {
+    editKitItemForm.addEventListener("submit", function (e) {
+      e.preventDefault();
 
-    editKitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
-    var imageF = editKitItemForm.querySelector('#editItemImageField');
-    $("#kitMessage").animate({ width: 'hide' }, 350);
+      editKitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+      var imageF = editKitItemForm.querySelector('#editItemImageField');
+      $("#kitMessage").animate({ width: 'hide' }, 350);
 
-    if (editKitItemForm.querySelector('#kitItemName') == '') {
-      handleError("Kit name is required");
+      if (editKitItemForm.querySelector('#kitItemName') == '') {
+        handleError("Kit name is required");
+        return false;
+      }
+
+      var $editKitItemForm = $(editKitItemForm);
+
+      makeImgurRequest(imageF.files[0]).then(function (imageData) {
+        var image = "";
+
+        if (imageData) {
+          var data = JSON.parse(imageData).data;
+          image = data.link;
+        }
+
+        return image;
+      }).then(function (image) {
+        if (image) {
+          editKitItemForm.querySelector('#itemImageURL').value = image;
+        }
+        sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json");
+      });
+
       return false;
-    }
-
-    var $editKitItemForm = $(editKitItemForm);
-
-    makeImgurRequest(imageF.files[0]).then(function (imageData) {
-      var image = "";
-
-      if (imageData) {
-        var data = JSON.parse(imageData).data;
-        image = data.link;
-      }
-
-      return image;
-    }).then(function (image) {
-      if (image) {
-        editKitItemForm.querySelector('#itemImageURL').value = image;
-      }
-      sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json");
     });
-
-    return false;
-  });
+  }
 
   $("#changePassForm").on("submit", function (e) {
     e.preventDefault();

@@ -66,7 +66,7 @@ const signup = (request, response) => {
     const savePromise = newAccount.save();
     savePromise.then(() => {
       req.session.account = Account.AccountModel.toAPI(newAccount);
-      res.json({ redirect: '/maker' });
+      res.json({ redirect: '/home' });
     });
 
     savePromise.catch((err) => {
@@ -92,26 +92,32 @@ const changePass = (request, response) => {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  return Account.AccountModel.generateHash(newPassword, (salt, hash) => {
-    console.log(username);
-    const query = Account.AccountModel.findOneAndUpdate(
-      { username},
-      { salt, password: hash },
-      { new: true }
-    );
+  Account.AccountModel.authenticate(username, password, (err, account) => {
+    if (err || !account) {
+      return res.status(401).json({ error: 'Wrong username or password' });
+    }
 
-    const updatePassPromise = query.exec();
-    updatePassPromise.then((doc) => {
-      req.session.account = Account.AccountModel.toAPI(doc);
-      res.json({ redirect: '/maker' });
+    return Account.AccountModel.generateHash(newPassword, (salt, hash) => {
+      console.log(username);
+      const query = Account.AccountModel.findOneAndUpdate(
+        { username},
+        { salt, password: hash },
+        { new: true }
+      );
+  
+      const updatePassPromise = query.exec();
+      updatePassPromise.then((doc) => {
+        req.session.account = Account.AccountModel.toAPI(doc);
+        res.json({ redirect: '/home' });
+      });
+  
+      updatePassPromise.catch((err) => {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occured' });
+      });
+  
+      return updatePassPromise;
     });
-
-    updatePassPromise.catch((err) => {
-      console.log(err);
-      return res.status(400).json({ error: 'An error occured' });
-    });
-
-    return updatePassPromise;
   });
 };
 
