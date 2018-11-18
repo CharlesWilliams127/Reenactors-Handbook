@@ -1,9 +1,3 @@
-const handleNotFound = (req, res, next) => {
-  app.use(function (req, res, next) {
-    res.status(404).send("Sorry can't find that!")
-  });
-}
-
 const requiresLogin = (req, res, next) => {
   if (!req.session.account) {
     return res.redirect('/');
@@ -31,7 +25,6 @@ const bypassSecure = (req, res, next) => {
 
 module.exports.requiresLogin = requiresLogin;
 module.exports.requiresLogout = requiresLogout;
-module.exports.handleNotFound = handleNotFound;
 
 if (process.env.NODE_ENV === 'production') {
   module.exports.requiresSecure = requiresSecure;
