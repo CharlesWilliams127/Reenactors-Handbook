@@ -44,67 +44,88 @@
       </nav>
     {{/if}}
   </nav>
-  <section id="kits" class="container bg-light mt-5">
-      <div class="kit">
-        {{#if kits}}
-          {{#each kits}}
-            <div class="kit">
-                <div class="jumbotron jumbotron-fluid">
-                  <h2 class="kitName display-4">Name: {{this.name}}</h2>
-                  {{#if this.startTimePeriod}}
-                  <h3>Time Period: {{this.startTimePeriod}} 
-                  {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3>{{/if}}
-                </div>
-              <div class="row">
-                <div class="col-7">
-                  {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
-                </div>
-                <div class="col-5">
-                  {{#if this.description}}<h5>Description: {{this.description}}</h5>{{/if}}
-                </div>
-              </div>
-              <hr>
-              <div class="kit-items-expand">
-                {{#if this.kitItems}}
-                <h3>Kit Items:</h3>
-                  {{#each this.kitItems}}
-                  <div class="row">
-                    <div class="col-4">
-                      {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
-                    </div>
-                    <div class="col-8">
-                      <h4>Item Name: {{this.name}}</h4>
-                      {{#if this.price}}<h5>Item Price: ${{this.price}}</h5>{{/if}}
-                      {{#if this.description}}<h5>Item Description: {{this.description}}</h5>{{/if}}
-                      {{#if this.links}}
-                      <h4>Links:</h4>
-                        <ul>
-                          {{#each this.links}}
-                            <li><a href={{this}}>{{this}}</a></li>
-                          {{/each}}
-                        </ul>
-                      {{/if}}
-                    </div>
-                  </div>
-                  <hr>
-                  {{/each}}         
-                  {{else}}
-                  <div class="row text-center">
-                    <div class="col">
-                      <h3>This Kit has no Items!</h3>
-                    </div>
-                  </div>
-                  <hr>
-                {{/if}}
-              </div>
-            </div>
-            <hr class=""/>
-          {{/each}}
-        {{else}}
-          <h3 class="emptyDomo">No Reenactment Kits yet</h3>
-        {{/if}}
+
+
+  <div class="row">
+    <div class="col-2 ml-auto side-ad ad">
+      <div class="text-center container">
+        <h1>Placeholder for an Ad</h1>
+        <h2><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">This is where a link for the product I'm advertising would go. But don't click me, I don't do anything</a></h2>
       </div>
-    </section>
+    </div>
+
+  <div class="col-8">
+    <section id="kits" class="container bg-light mt-5">
+        <div class="kit">
+          {{#if kits}}
+            {{#each kits}}
+              <div class="kit">
+                  <div class="jumbotron jumbotron-fluid">
+                    <h2 class="kitName display-4">Name: {{this.name}}</h2>
+                    {{#if this.startTimePeriod}}
+                    <h3>Time Period: {{this.startTimePeriod}} 
+                    {{#if this.endTimePeriod}} - {{this.endTimePeriod}} {{/if}}</h3>{{/if}}
+                  </div>
+                <div class="row">
+                  <div class="col-7">
+                    {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
+                  </div>
+                  <div class="col-5">
+                    {{#if this.description}}<h5>Description: {{this.description}}</h5>{{/if}}
+                  </div>
+                </div>
+                <hr>
+                <div class="kit-items-expand">
+                  {{#if this.kitItems}}
+                  <h3>Kit Items:</h3>
+                    {{#each this.kitItems}}
+                    <div class="row">
+                      <div class="col-4">
+                        {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
+                      </div>
+                      <div class="col-8">
+                        <h4>Item Name: {{this.name}}</h4>
+                        {{#if this.price}}<h5>Item Price: ${{this.price}}</h5>{{/if}}
+                        {{#if this.description}}<h5>Item Description: {{this.description}}</h5>{{/if}}
+                        {{#if this.links}}
+                        <h4>Links:</h4>
+                          <ul>
+                            {{#each this.links}}
+                              <li><a href={{this}}>{{this}}</a></li>
+                            {{/each}}
+                          </ul>
+                        {{/if}}
+                      </div>
+                    </div>
+                    <hr>
+                    {{/each}}         
+                    {{else}}
+                    <div class="row text-center">
+                      <div class="col">
+                        <h3>This Kit has no Items!</h3>
+                      </div>
+                    </div>
+                    <hr>
+                  {{/if}}
+                </div>
+              </div>
+              <hr class=""/>
+            {{/each}}
+          {{else}}
+            <h3 class="emptyDomo">No Reenactment Kits yet</h3>
+          {{/if}}
+        </div>
+      </section>
+    </div>
+
+    <div class="col-2 mr-auto side-ad ad">
+      <div class="text-center container">
+        <h1>Placeholder for an Ad</h1>
+        <h2><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">This is where a link for the product I'm advertising would go. But don't click me, I don't do anything</a></h2>
+      </div>
+    </div>
+  </div>
+
   <script src="/assets/bundle.js"></script>
 </body>
 </html>

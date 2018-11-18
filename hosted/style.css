@@ -56,6 +56,16 @@ html, body {
     margin-right: auto;
   }
 
+.ad a {
+  color: inherit;
+  text-decoration: inherit;
+}
+
+.ad a:hover {
+  cursor: default;
+}
+
+
 .kit:first-child {
     margin-top: 10px;
 }
