@@ -1,23 +1,28 @@
 const models = require('../models');
 const Account = models.Account;
 
+// function for rendering login page
 const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
 
+// function for rendering signup page
 const signupPage = (req, res) => {
   res.render('signup', { csrfToken: req.csrfToken() });
 };
 
+// function for rendering change password page
 const changePassPage = (req, res) => {
   res.render('changePass', { csrfToken: req.csrfToken() });
 };
 
+// function for rendering logout page
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
+// function responsible for logging the user in
 const login = (request, response) => {
   const req = request;
   const res = response;
@@ -40,6 +45,7 @@ const login = (request, response) => {
   });
 };
 
+// function responsible for registering a new user
 const signup = (request, response) => {
   const req = request;
   const res = response;
@@ -80,6 +86,7 @@ const signup = (request, response) => {
   });
 };
 
+// function responsible for changing a user's password
 const changePass = (request, response) => {
   const req = request;
   const res = response;

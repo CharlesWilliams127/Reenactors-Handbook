@@ -71,6 +71,21 @@ app.use((err, req, res, next) => {
 
 router(app);
 
+app.use(function (req, res, next) {
+  if (req.accepts('html')) {
+    // Respond with html page.
+      res.render('login', { csrfToken: req.csrfToken() });
+  }
+  else if (req.accepts('json')) {
+      // Respond with json.
+      res.status(404).send({ error: 'Not found' });
+  }
+  else {
+      // Default to plain-text. send()
+      res.status(404).type('txt').send('Not found');
+  }
+});
+
 app.listen(port, (err) => {
   if (err) {
     throw err;

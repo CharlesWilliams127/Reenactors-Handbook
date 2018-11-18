@@ -2,6 +2,7 @@ const models = require('../models');
 
 const Kit = models.Kit;
 
+// function for rendering the making kits page
 const makerPage = (req, res) => {
   Kit.KitModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
@@ -12,6 +13,7 @@ const makerPage = (req, res) => {
   });
 };
 
+// function for rendering the home page with all public kits
 const homePage = (req, res) => {
   const search = {
     public: true,
@@ -31,6 +33,7 @@ const homePage = (req, res) => {
     });
 };
 
+// redirect for when the user wants to view an individual kit
 const viewer = (req, res) => {
   const search = {
     owner: req.query.owner,
@@ -47,6 +50,7 @@ const viewer = (req, res) => {
   return promise;
 };
 
+// function for rendering an individual kit
 const viewerPage = (req, res) => {
   const search = {
     owner: req.query.owner,
@@ -68,6 +72,7 @@ const viewerPage = (req, res) => {
     });
 };
 
+// function for adding or editing a kit
 const makeKit = (req, res) => {
   if (!req.body.name) {
     return res.status(400).json({ error: 'Kit needs a name' });
@@ -104,6 +109,7 @@ const makeKit = (req, res) => {
   return kitPromise;
 };
 
+// function for adding or editing a kit item
 const addKitItem = (req, res) => {
   if (!req.body.itemName) {
     return res.status(400).json({ error: 'Kit Item needs a name' });
@@ -154,6 +160,7 @@ const addKitItem = (req, res) => {
   return pullPromise;
 };
 
+// function for deleting a kit and its associated items
 const deleteKit = (req, res) => {
   const deleteFilter = {
     name: req.body.itemToDelete,
@@ -176,14 +183,13 @@ const deleteKit = (req, res) => {
   return promise;
 };
 
+// function for deleting an individual kit item
 const deleteKitItem = (req, res) => {
   const deleteFilter = {
     name: req.body.parentKit,
     owner: req.session.account._id,
   };
 
-  console.log(deleteFilter);
-  console.log(req.body.itemToDelete);
   const query = Kit.KitModel.update(
     deleteFilter,
     { $pull: { kitItems: { name: req.body.itemToDelete } } }
@@ -209,4 +215,3 @@ module.exports.viewer = viewer;
 module.exports.viewerPage = viewerPage;
 module.exports.deleteKit = deleteKit;
 module.exports.deleteKitItem = deleteKitItem;
-// module.exports.itemMakerPage = itemMakerPage;

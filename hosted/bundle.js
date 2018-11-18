@@ -1,5 +1,6 @@
 'use strict';
 
+// counts how many links are currently added
 var linkCounter = 0;
 
 // for use with the imgur API
@@ -65,11 +66,10 @@ var makeImgurRequest = function makeImgurRequest(image) {
   });
 };
 
-// helper method for displaying or hiding a small section
+// helper method for displaying or hiding sections with the same clas name
 var displayHideSections = function displayHideSections(sectionClass, displayStyle) {
   var sections = document.getElementsByClassName('' + sectionClass);
   for (var i = 0; i < sections.length; i++) {
-    //sections[i].style.display = displayStyle;
     $(sections[i]).modal('toggle');
   }
 };
@@ -176,6 +176,8 @@ var addItem = function addItem(e, list, elemName, value) {
   list.appendChild(item);
 };
 
+// function responsible for sending AJAX requests to our server
+// the external Imgur request is handled in another function
 var sendAjax = function sendAjax(action, data, type, dataType) {
   console.dir(data);
   $.ajax({
@@ -202,6 +204,7 @@ var sendAjax = function sendAjax(action, data, type, dataType) {
   });
 };
 
+// a helper function used for updating various image modals
 var updateImageField = function updateImageField(form, imageField, imageLabel) {
   var input = form.querySelector('#' + imageField);
   var label = form.querySelector('#' + imageLabel);

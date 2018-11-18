@@ -1,3 +1,4 @@
+// counts how many links are currently added
 let linkCounter = 0;
 
 // for use with the imgur API
@@ -63,11 +64,10 @@ const makeImgurRequest = (image) => {
   });
 };
 
-// helper method for displaying or hiding a small section
+// helper method for displaying or hiding sections with the same clas name
 const displayHideSections = (sectionClass, displayStyle) => {
   const sections = document.getElementsByClassName(`${sectionClass}`);
   for (let i = 0; i < sections.length; i++) {
-    //sections[i].style.display = displayStyle;
     $(sections[i]).modal('toggle');
   }
 };
@@ -175,6 +175,8 @@ const addItem = (e, list, elemName, value) => {
   
 };
 
+// function responsible for sending AJAX requests to our server
+// the external Imgur request is handled in another function
 const sendAjax = (action, data, type, dataType) => {
   console.dir(data);
   $.ajax({
@@ -201,6 +203,7 @@ const sendAjax = (action, data, type, dataType) => {
   });        
 };
 
+// a helper function used for updating various image modals
 const updateImageField = (form, imageField, imageLabel) => {
   const input = form.querySelector( `#${imageField}` );
   const label = form.querySelector( `#${imageLabel}` );
@@ -360,8 +363,6 @@ $(document).ready(() => {
       }
     }
   }
-
-
 
   $("#signupForm").on("submit", (e) => {
     e.preventDefault();

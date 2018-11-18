@@ -65,12 +65,11 @@ html, body {
   cursor: default;
 }
 
-
-.kit:first-child {
+.kits:first-child {
     margin-top: 10px;
 }
 
-.kit:last-child {
+.kits:last-child {
     margin-bottom:10px;
 } 
 
@@ -81,7 +80,6 @@ html, body {
     left: 0;
     top: 0;
     width: 50%; 
-    /*height: 100%; */
     background-color: rgba(0,0,0,0.4); 
     border-radius:15px;
     animation-name: fadeIn;
@@ -110,10 +108,10 @@ html, body {
   /* BOOTSTRAP OVERLOADING */
   .modal-header {
       color: white;
-      background-color: #ae0001;
+      background-color: #740001;
   }
 
-  .col-7 img, .col-4 img {
+  .col-6 img, .col-4 img {
     width: 100%;
 }
 
@@ -170,6 +168,7 @@ html, body {
   }
 
   .grid-item img {
+    width: 100%;
     border-radius:15px;
   }
 
