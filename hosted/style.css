@@ -28,6 +28,11 @@ html, body {
   list-style-type: none;
 }
 
+.side-ad {
+  color: white;
+  background-color: #740001;
+}
+
 .backgroundArt {
     height: auto;
 }
@@ -74,16 +79,7 @@ html, body {
   }
   
   .modal-content {
-    /* position: fixed;
-    background-color: #fefefe;
-    padding: 0%;
-    margin: auto;
-    overflow: auto; */
     text-align: center;
-    /* border: 1px solid #888;
-    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
-    animation-name: animatetop;
-    animation-duration: 0.4s */
   }
 
   /*Input Styling*/
@@ -142,7 +138,7 @@ html, body {
   /* MASONRY STYLING */
 .grid {
     width: 100%;
-    padding: 0% 10% 0% 10%;
+    /*margin: 0% 10% 0% 10%;*/
   }
   
   /* clearfix */
@@ -155,14 +151,26 @@ html, body {
   .grid-item {
     float: left;
     border: 2px solid #E8E8E8;
-    width: 450px; /* Default size, will be adjusted dynamically based on recieved input */
+    width: 390px;
     box-shadow: 3px 3px 20px rgb(145, 145, 145);
-    border-color: hsla(0, 0%, 0%, 0.5);
+    border-color: hsla(46, 80%, 60%, 0.5);
     border-radius:15px;
     margin-bottom: 10px;
     word-wrap: break-word;
     overflow: hidden;
-    transition-property: filter;
+  }
+
+  .grid-item .grid-item-overlay {
+    z-index: 1;
+    color: white;
+    visibility: hidden; 
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: rgba(0, 0, 0, 0.0);
+    transition: all;
     transition-duration: 0.25s;
   }
   
@@ -179,16 +187,6 @@ html, body {
     font-size: 18pt;
   }
   
-  .grid-item--selected {
-    width: 512px;
-    z-index: 2;
-  }
-  
-  .grid-item--selected .grid-item-inner-content{
-    display: block;
-    text-align: left;
-  }
-  
   .grid-item:before {
     display: block;
     color: white;
@@ -197,8 +195,9 @@ html, body {
     font-size: 1.4rem;
   }
   
-  .grid-item:hover {
-    filter: opacity(.9);
+  .grid-item:hover .grid-item-overlay{
+    visibility: visible;
+    background: rgba(0, 0, 0, 0.8);
     border-color: white;
     cursor: pointer;
   }

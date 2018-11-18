@@ -245,6 +245,8 @@ var addKitModalEventListener = function addKitModalEventListener(kitForm, imageF
     }).then(function (image) {
       if (image) {
         kitForm.querySelector("#imageURL").value = image;
+      } else {
+        kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
       }
       displayHideSections('submitLoading', 'none');
       sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json");
@@ -260,7 +262,7 @@ $(document).ready(function () {
       // set up masonry content
       var grid = document.querySelector('#dynamicContent');
       masonry = new Masonry(grid, {
-        columnWidth: 470,
+        columnWidth: 410,
         gutter: 10,
         itemSelector: '.grid-item'
       });
@@ -444,6 +446,8 @@ $(document).ready(function () {
       }).then(function (image) {
         if (image) {
           editKitItemForm.querySelector('#itemImageURL').value = image;
+        } else {
+          editKitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
         }
         displayHideSections('submitLoading', 'none');
         sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json");
@@ -501,7 +505,11 @@ $(document).ready(function () {
 
           return image;
         }).then(function (image) {
-          kitItemForm.querySelector('#itemImageURL').value = image;
+          if (image) {
+            kitItemForm.querySelector('#itemImageURL').value = image;
+          } else {
+            kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
+          }
           sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
         });
 
