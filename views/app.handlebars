@@ -38,7 +38,7 @@
           <div class="modal-body">
             <div class = "modal-background" id="recipeSubmitLoading">
               <div class="modal-content load-gif">
-                <img src="../hosted/img/loading.gif" alt="Loading"/>
+                <img src="/assets/img/loading.gif" alt="Loading"/>
               </div>
             </div>
             <form id="kitForm" name="kitForm" action="/maker" method="POST">
@@ -90,7 +90,7 @@
           <div class="modal-body">
             <div class = "modal-background" id="recipeSubmitLoading">
               <div class="modal-content load-gif">
-                <img src="../hosted/img/loading.gif" alt="Loading"/>
+                <img src="/assets/img/loading.gif" alt="Loading"/>
               </div>
             </div>
             <form id="editKitForm" name="editKitForm" action="/maker" method="POST">
@@ -142,7 +142,7 @@
           <div class="modal-body">
             <div class = "modal-background" id="recipeSubmitLoading">
               <div class="modal-content load-gif">
-                <img src="../hosted/img/loading.gif" alt="Loading"/>
+                <img src="/assets/img/loading.gif" alt="Loading"/>
               </div>
             </div>
             <form id="editKitItemForm" name="editKitItemForm" action="/addKitItem" method="POST" class="text-center kitItemForm">
@@ -201,7 +201,7 @@
                     <form id="deleteKitForm" action="/deleteKit" method="DELETE">
                       <div class="btn-group text-center">
                         <button type="button" id="editKitButton" class="btn btn-sm btn-outline-primary">Edit</button>                          
-                        <input type="hidden" name="itemToDelete" value={{this.name}} />
+                        <input type="hidden" name="itemToDelete" value="{{this.name}}" />
                         <input id="initCsrf" type="hidden" name="_csrf" value={{../csrfToken}} />
                         <button type="submit" class="btn btn-sm btn-outline-danger" id="kitDeleteButton" name="kitDeleteButton">Delete</button>
                       </div>
@@ -232,8 +232,8 @@
                       <form id="deleteKitItemForm" action="/deleteKitItem" method="POST">
                         <div class="btn-group text-center">
                           <button type="button" id="editKitItemButton" class="btn btn-sm btn-outline-primary">Edit</button>                          
-                          <input type="hidden" id="parentKit" name="parentKit" value={{../name}} />
-                          <input type="hidden" name="itemToDelete" value={{this.name}} />
+                          <input type="hidden" id="parentKit" name="parentKit" value="{{../name}}" />
+                          <input type="hidden" name="itemToDelete" value="{{this.name}}" />
                           <input id="initCsrf" type="hidden" name="_csrf" value={{../../csrfToken}} />
                           <button type="submit" class="btn btn-sm btn-outline-danger" id="kitItemDeleteButton" name="kitItemDeleteButton">Delete</button>
                         </div>
@@ -280,7 +280,7 @@
                   </div>
                   <input type="hidden" id="newCsrf" name="_csrf" value={{../csrfToken}} />
                   <input type="hidden" id="itemImageURL" name="itemImageURL" value="" />
-                  <input type="hidden" name="parentKit" value={{this.name}} />
+                  <input type="hidden" name="parentKit" value="{{this.name}}" />
                   <input class="btn btn-outline-success text-center mx-auto" type="submit" value="Add Kit Item" />
                 </form>
               </div>
