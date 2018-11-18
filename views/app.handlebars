@@ -36,11 +36,11 @@
             <h2 class="modal-title" id="makeKitTitle">Add a Reeactment Kit</h2>
           </div>
           <div class="modal-body">
-            <div class = "modal-background" id="recipeSubmitLoading">
-              <div class="modal-content load-gif">
-                <img src="/assets/img/loading.gif" alt="Loading"/>
+            {{!-- <div class = "modal-background submitLoading" id="addSubmitLoading">
+              <div class="modal-content load-gif mx-auto">
+                <img src="/assets/img/loading.gif" alt="Loading" class="img-fluid mx-auto"/>
               </div>
-            </div>
+            </div> --}}
             <form id="kitForm" name="kitForm" action="/maker" method="POST">
               <div class="form-group">
                 <input id="imageField" type="file" name="image" />
@@ -88,11 +88,11 @@
             <h2 class="modal-title" id="editKitTitle">Editing</h2>
           </div>
           <div class="modal-body">
-            <div class = "modal-background" id="recipeSubmitLoading">
-              <div class="modal-content load-gif">
-                <img src="/assets/img/loading.gif" alt="Loading"/>
+            {{!-- <div class = "modal-background submitLoading" id="editSubmitLoading">
+              <div class="modal-content load-gif mx-auto">
+                <img src="/assets/img/loading.gif" alt="Loading" class="img-fluid"/>
               </div>
-            </div>
+            </div> --}}
             <form id="editKitForm" name="editKitForm" action="/maker" method="POST">
               <div class="form-group">
                 <input id="editImageField" type="file" name="image" />
@@ -140,11 +140,11 @@
             <h2 class="modal-title" id="editkitItemTitle">Editing</h2>
           </div>
           <div class="modal-body">
-            <div class = "modal-background" id="recipeSubmitLoading">
-              <div class="modal-content load-gif">
-                <img src="/assets/img/loading.gif" alt="Loading"/>
+            {{!-- <div class = "modal-background submitLoading" id="editKitSubmitLoading">
+              <div class="modal-content load-gif mx-auto">
+                <img src="/assets/img/loading.gif" alt="Loading" class="img-fluid"/>
               </div>
-            </div>
+            </div> --}}
             <form id="editKitItemForm" name="editKitItemForm" action="/addKitItem" method="POST" class="text-center kitItemForm">
                   <div class="form-group text-center">
                     <input id="editItemImageField" type="file" name="image" />
@@ -182,6 +182,15 @@
       </section>
     </div>
 
+    <div class="modal fade submitLoading" id="submitLoading" tabindex="-1" role="dialog" aria-labelledby="editKitTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content load-gif mx-auto">
+          <img src="/assets/img/loading.gif" alt="Loading" class="img-fluid mx-auto"/>
+        </div>
+      </div>
+    </div>
+
+
     <section id="kits" class="container bg-light mt-5">
         {{#if kits}}
           {{#each kits}}
@@ -208,8 +217,11 @@
                     </form>
                 </div>
               </div>
+              <div class="row">
+                <button type="button" class="btn btn-lg btn-primary mx-auto mt-3" id="expandKitItemsButton">Toggle Display Kit Items</button>
+              </div>
               <hr>
-              <div class="kit-items-expand">
+              <div class="kit-items-expand collapse" id="collapseableContent">
                 {{#if this.kitItems}}
                 <h3>Kit Items:</h3>
                   {{#each this.kitItems}}

@@ -20,7 +20,7 @@ const handleError = (message) => {
 }
 
 // wrapper function to submit an image to imgur when posting
-// will upload image to imgur if recipe upload was successful
+// will upload image to imgur if upload was successful
 // before calling default handler function
 const makeImgurRequest = (image) => {
   return new Promise((resolve, reject) => {
@@ -54,7 +54,7 @@ const makeImgurRequest = (image) => {
           }
           xhr.setRequestHeader('Authorization', `Client-ID ${imgurClientID}`);
           // display loading widget
-          displayHideSection('recipeSubmitLoading', 'block');
+          displayHideSections('submitLoading', 'block');
           xhr.send(fd);
       }
       else {
@@ -64,9 +64,12 @@ const makeImgurRequest = (image) => {
 };
 
 // helper method for displaying or hiding a small section
-const displayHideSection = (sectionID, displayStyle) => {
-  const section = document.querySelector(`#${sectionID}`);
-  section.style.display = displayStyle;
+const displayHideSections = (sectionClass, displayStyle) => {
+  const sections = document.getElementsByClassName(`${sectionClass}`);
+  for (let i = 0; i < sections.length; i++) {
+    //sections[i].style.display = displayStyle;
+    $(sections[i]).modal('toggle');
+  }
 };
 
 // a function to handle the user clicking the edit button from
@@ -245,6 +248,7 @@ const addKitModalEventListener = (kitForm, imageField) => {
       if (image) {
         kitForm.querySelector("#imageURL").value = image;
       }
+      displayHideSections('submitLoading', 'none');
       sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json");
     });
 
@@ -305,6 +309,13 @@ $(document).ready(() => {
   const myKits = document.getElementsByClassName("kit");
   if(myKits) {
     for(let i = 0; i < myKits.length; i++) {
+      // attach expand event listener
+      const expandButton = myKits[i].querySelector("#expandKitItemsButton");
+      expandButton.addEventListener('click', (e) => {
+        $(myKits[i].querySelector("#collapseableContent")).collapse('toggle');
+      })
+
+      // attach delete event listener
       myKits[i].querySelector('#deleteKitForm').addEventListener('submit', (e) => {
         e.preventDefault();
 
@@ -417,6 +428,7 @@ $(document).ready(() => {
         if (image) {
           editKitItemForm.querySelector('#itemImageURL').value = image;
         }
+        displayHideSections('submitLoading', 'none');
         sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json");
       });
 
@@ -489,6 +501,4 @@ $(document).ready(() => {
     updateImageField(editKitForm, "editImageField", "editImageLabel");
     updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
   }
-  // $('#addKitForm').on("click", (e) => displayHideSection('makeKit', 'block'));
-  // $('#hideKitForm').on("click", (e) => displayHideSection('makeKit', 'none'));
 });
