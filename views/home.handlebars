@@ -67,15 +67,14 @@
           {{#if kits}}
             {{#each kits}}
             
-              <div class="grid-item text-truncate">
-                {{!-- <div class = "grid-item-overlay" id="grid-item-overlay"></div> --}}
+              <div class="grid-item">
                 <input type="hidden" name="kitOwner" id="kitOwner" value={{this.owner}} />
                 <input type="hidden" name="_csrf" id="csrf" value={{../csrfToken}} />
                 <div class="grid-item-overlay" id="grid-item-overlay">
                   <h3 class="kitName text-center" id="kitName">{{this.name}}</h3>
                   {{#if this.startTimePeriod}} <h4>Time Period: <span id="kitStartTimePeriod">{{this.startTimePeriod}}</span>
                   {{#if this.endTimePeriod}} - <span id="kitEndTimePeriod">{{this.endTimePeriod}}</span> {{/if}}</h4>{{/if}}
-                  {{#if this.description}}<h5>Description: <span id="kitDescription">{{this.description}}</span></h5>{{/if}}
+                  {{#if this.description}}<p>Description: <span id="kitDescription">{{this.description}}</span></p>{{/if}}
                 </div>
                 {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
               </div>

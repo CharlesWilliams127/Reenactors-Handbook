@@ -243,11 +243,14 @@ var addKitModalEventListener = function addKitModalEventListener(kitForm, imageF
 
       return image;
     }).then(function (image) {
+      // user uploaded a new image
       if (image) {
         kitForm.querySelector("#imageURL").value = image;
-      } else {
-        kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
       }
+      // user already has an image
+      else if (!kitForm.querySelector("#imageURL").value) {
+          kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
+        }
       displayHideSections('submitLoading', 'none');
       sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json");
     });
@@ -446,7 +449,7 @@ $(document).ready(function () {
       }).then(function (image) {
         if (image) {
           editKitItemForm.querySelector('#itemImageURL').value = image;
-        } else {
+        } else if (!editKitItemForm.querySelector("#itemImageURL").value) {
           editKitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
         }
         displayHideSections('submitLoading', 'none');
@@ -507,7 +510,7 @@ $(document).ready(function () {
         }).then(function (image) {
           if (image) {
             kitItemForm.querySelector('#itemImageURL').value = image;
-          } else {
+          } else if (!kitItemForm.querySelector("#itemImageURL").value) {
             kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
           }
           sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");

@@ -157,7 +157,10 @@ html, body {
     border-radius:15px;
     margin-bottom: 10px;
     word-wrap: break-word;
-    overflow: hidden;
+  }
+
+  .grid-item img {
+    border-radius:15px;
   }
 
   .grid-item .grid-item-overlay {
@@ -167,6 +170,7 @@ html, body {
     height: 100%;
     width: 100%;
     position: absolute;
+    border-radius:15px;
     top: 0px;
     left: 0px;
     background: rgba(0, 0, 0, 0.0);

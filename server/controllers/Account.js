@@ -92,7 +92,7 @@ const changePass = (request, response) => {
     return res.status(400).json({ error: 'All fields are required' });
   }
 
-  Account.AccountModel.authenticate(username, password, (err, account) => {
+  return Account.AccountModel.authenticate(username, password, (err, account) => {
     if (err || !account) {
       return res.status(401).json({ error: 'Wrong username or password' });
     }
@@ -100,22 +100,22 @@ const changePass = (request, response) => {
     return Account.AccountModel.generateHash(newPassword, (salt, hash) => {
       console.log(username);
       const query = Account.AccountModel.findOneAndUpdate(
-        { username},
+        { username },
         { salt, password: hash },
         { new: true }
       );
-  
+
       const updatePassPromise = query.exec();
       updatePassPromise.then((doc) => {
         req.session.account = Account.AccountModel.toAPI(doc);
         res.json({ redirect: '/home' });
       });
-  
-      updatePassPromise.catch((err) => {
-        console.log(err);
+
+      updatePassPromise.catch((updateErr) => {
+        console.log(updateErr);
         return res.status(400).json({ error: 'An error occured' });
       });
-  
+
       return updatePassPromise;
     });
   });

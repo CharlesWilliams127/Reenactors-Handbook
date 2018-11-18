@@ -111,7 +111,7 @@ const addKitItem = (req, res) => {
 
   const deleteFilter = {
     name: req.body.parentKit,
-    owner: req.session.account._id
+    owner: req.session.account._id,
   };
 
   const kitItemData = {
@@ -124,7 +124,7 @@ const addKitItem = (req, res) => {
 
   const pullQuery = Kit.KitModel.update(
     deleteFilter,
-    {$pull: {kitItems: {name : req.body.itemName} } }
+    { $pull: { kitItems: { name: req.body.itemName } } }
   );
 
   const pullPromise = pullQuery.exec();
@@ -152,13 +152,12 @@ const addKitItem = (req, res) => {
     return res.status(400).json({ error: 'An error occured pulling' });
   });
   return pullPromise;
-  
 };
 
 const deleteKit = (req, res) => {
   const deleteFilter = {
     name: req.body.itemToDelete,
-    owner: req.session.account._id
+    owner: req.session.account._id,
   };
 
   const query = Kit.KitModel.deleteOne(
@@ -167,7 +166,7 @@ const deleteKit = (req, res) => {
 
   const promise = query.exec();
 
-  promise.then(() => res.json({redirect: '/maker'}));
+  promise.then(() => res.json({ redirect: '/maker' }));
 
   promise.catch((err) => {
     console.log(err);
@@ -180,19 +179,19 @@ const deleteKit = (req, res) => {
 const deleteKitItem = (req, res) => {
   const deleteFilter = {
     name: req.body.parentKit,
-    owner: req.session.account._id
-  }
+    owner: req.session.account._id,
+  };
 
   console.log(deleteFilter);
   console.log(req.body.itemToDelete);
   const query = Kit.KitModel.update(
     deleteFilter,
-    {$pull: {kitItems: {name : req.body.itemToDelete} } }
+    { $pull: { kitItems: { name: req.body.itemToDelete } } }
   );
 
   const promise = query.exec();
 
-  promise.then(() => res.json({redirect: '/maker'}));
+  promise.then(() => res.json({ redirect: '/maker' }));
 
   promise.catch((err) => {
     console.log(err);
