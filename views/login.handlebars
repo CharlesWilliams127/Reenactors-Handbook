@@ -13,13 +13,13 @@
     <a class="navbar-brand" href="/home">Reenactors Handbook</a>
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link" href="/home">Home</a>
+        <a class="nav-link" id="homeButton" href="/home">Home</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/login">Login</a>
+        <a class="nav-link" id="loginButton" href="/login">Login</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/signup">Sign up</a>
+        <a class="nav-link" id="signupButton" href="/signup">Sign up</a>
       </li>
     </ul>
   </nav>
@@ -29,17 +29,8 @@
       <h3>I AM BECOME AD, DESTROYER OF PAGE LAYOUT</h3>
     </div>
   </div>
-  <section id="login" class="container bg-white text-center mt-5">
-    <form id="loginForm" name="loginForm" action="/login" method="POST" class="form-signin">
-      <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-      <label for="username" class="sr-only">Username: </label>
-      <input id="user" class="form-control" type="text" name="username" placeholder="username"/>
-      <label for="pass" class="sr-only">Password: </label>
-      <input id="pass" class="form-control" type="password" name="pass" placeholder="password"/>
-      <input type="hidden" name="_csrf" value={{csrfToken}} />
-      <input class="btn btn-large btn-success" type="submit" value="Sign In" />
-    </form>
-  </section>
+
+  <section id="content"></section>
 
   <script src="/assets/bundle.js"></script>
 </body>

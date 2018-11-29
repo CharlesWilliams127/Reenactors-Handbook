@@ -385,41 +385,6 @@ $(document).ready(function () {
     }
   }
 
-  $("#signupForm").on("submit", function (e) {
-    e.preventDefault();
-
-    $("#kitMessage").animate({ width: 'hide' }, 350);
-
-    if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
-      handleError("All fields are required");
-      return false;
-    }
-
-    if ($("#pass").val() !== $("#pass2").val()) {
-      handleError("Passwords do not match");
-      return false;
-    }
-
-    sendAjax($("#signupForm").attr("action"), $("#signupForm").serialize(), "POST", "json");
-
-    return false;
-  });
-
-  $("#loginForm").on("submit", function (e) {
-    e.preventDefault();
-
-    $("#kitMessage").animate({ width: 'hide' }, 350);
-
-    if ($("#user").val() == '' || $("#pass").val() == '') {
-      handleError("Username or password is empty");
-      return false;
-    }
-
-    sendAjax($("#loginForm").attr("action"), $("#loginForm").serialize(), "POST", "json");
-
-    return false;
-  });
-
   // handles attatching listeners to edit and add kits
   addKitModalEventListener(document.querySelector("#kitForm"), "imageField");
   addKitModalEventListener(document.querySelector("#editKitForm"), "editImageField");
@@ -531,3 +496,33 @@ $(document).ready(function () {
     updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
   }
 });
+"use strict";
+
+var handleError = function handleError(message) {
+  $("#errorMessage").text(message);
+  $('#errorModal').modal();
+};
+
+var redirect = function redirect(response) {
+  $("#kitMessage").animate({ width: 'hide' }, 350);
+  window.location = response.redirect;
+};
+
+// function responsible for sending AJAX requests to our server
+// the external Imgur request is handled in another function
+var sendAjax = function sendAjax(action, data, type, dataType, success) {
+  console.dir(data);
+  $.ajax({
+    cache: false,
+    type: type,
+    url: action,
+    data: data,
+    dataType: dataType,
+    success: success,
+    error: function error(xhr, status, _error) {
+      var messageObj = JSON.parse(xhr.responseText);
+
+      handleError(messageObj.error);
+    }
+  });
+};
