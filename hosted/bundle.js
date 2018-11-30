@@ -496,33 +496,3 @@ $(document).ready(function () {
     updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
   }
 });
-"use strict";
-
-var handleError = function handleError(message) {
-  $("#errorMessage").text(message);
-  $('#errorModal').modal();
-};
-
-var redirect = function redirect(response) {
-  $("#kitMessage").animate({ width: 'hide' }, 350);
-  window.location = response.redirect;
-};
-
-// function responsible for sending AJAX requests to our server
-// the external Imgur request is handled in another function
-var sendAjax = function sendAjax(action, data, type, dataType, success) {
-  console.dir(data);
-  $.ajax({
-    cache: false,
-    type: type,
-    url: action,
-    data: data,
-    dataType: dataType,
-    success: success,
-    error: function error(xhr, status, _error) {
-      var messageObj = JSON.parse(xhr.responseText);
-
-      handleError(messageObj.error);
-    }
-  });
-};

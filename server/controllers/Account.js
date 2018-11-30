@@ -128,6 +128,17 @@ const changePass = (request, response) => {
   });
 };
 
+const getToken = (request, response) => {
+  const req = request;
+  const res = response;
+
+  const csrfJSON = {
+    csrfToken: req.csrfToken(),
+  };
+
+  res.json(csrfJSON);
+};
+
 module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
@@ -135,3 +146,4 @@ module.exports.signupPage = signupPage;
 module.exports.signup = signup;
 module.exports.changePass = changePass;
 module.exports.changePassPage = changePassPage;
+module.exports.getToken = getToken;
