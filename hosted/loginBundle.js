@@ -12,7 +12,7 @@ var handleLogin = function handleLogin(e) {
 
     console.log($("input[name=_csrf]").val());
 
-    sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), "json", redirect);
+    sendAjax($("#loginForm").attr("action"), $("#loginForm").serialize(), 'POST', "json", redirect);
 
     return false;
 };
@@ -34,7 +34,7 @@ var handleSignup = function handleSignup(e) {
 
     console.log($("input[name=_csrf]").val());
 
-    sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), "json", redirect);
+    sendAjax($("#signupForm").attr("action"), $("#signupForm").serialize(), 'POST', "json", redirect);
 
     return false;
 };
@@ -72,7 +72,7 @@ var LoginWindow = function LoginWindow(props) {
 var SignupWindow = function SignupWindow(props) {
     return React.createElement(
         "section",
-        { id: "signup", "class": "container bg-white text-center mt-5" },
+        { id: "signup", className: "container bg-white text-center mt-5" },
         React.createElement(
             "form",
             { id: "signupForm", name: "signupForm", action: "/signup", method: "POST", className: "form-signin", onSubmit: handleSignup },
@@ -133,7 +133,7 @@ var setup = function setup(csrf) {
 };
 
 var getToken = function getToken() {
-    sendAjax('GET', '/getToken', null, "json", function (result) {
+    sendAjax('/getToken', null, 'GET', "json", function (result) {
         setup(result.csrfToken);
     });
 };

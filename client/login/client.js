@@ -10,7 +10,7 @@ const handleLogin= (e) =>{
 
     console.log($("input[name=_csrf]").val());
 
-    sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), "json", redirect);
+    sendAjax($("#loginForm").attr("action"), $("#loginForm").serialize(), 'POST', "json", redirect);
 
     return false;
 };
@@ -32,7 +32,7 @@ const handleSignup = (e) => {
 
     console.log($("input[name=_csrf]").val());
 
-    sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), "json", redirect);
+    sendAjax($("#signupForm").attr("action"), $("#signupForm").serialize(), 'POST', "json", redirect);
 
     return false;
 }
@@ -55,7 +55,7 @@ const LoginWindow = (props) => {
 
 const SignupWindow = (props) => {
     return (
-        <section id="signup" class="container bg-white text-center mt-5">
+        <section id="signup" className="container bg-white text-center mt-5">
         <form id="signupForm" name="signupForm" action="/signup" method="POST" className="form-signin" onSubmit={handleSignup}>
         <h1 className="h3 mb-3 font-weight-normal">Please create an account</h1>
         <label for="username" className="sr-only">Username: </label>
@@ -105,7 +105,7 @@ const setup=(csrf) => {
 };
 
 const getToken = () => {
-    sendAjax('GET', '/getToken', null, "json", (result) => {
+    sendAjax('/getToken', null, 'GET', "json", (result) => {
         setup(result.csrfToken);
     });
 };
