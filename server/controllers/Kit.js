@@ -138,7 +138,8 @@ const addKitItem = (req, res) => {
     console.log(req.body);
 
     const query = Kit.KitModel.findOneAndUpdate(
-      { name: req.body.parentKit },
+      { name: req.body.parentKit,
+        owner: req.session.account._id },
       { $push: { kitItems: kitItemData } }
     );
 
