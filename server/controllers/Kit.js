@@ -208,6 +208,24 @@ const deleteKitItem = (req, res) => {
   return promise;
 };
 
+const getKits = (req, res) => {
+  const search = {
+    public: true,
+  };
+
+  return Kit.KitModel.find(search,
+    'name description kitItems startTimePeriod endTimePeriod public image owner',
+    (err, docs) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occured' });
+      }
+
+      return res.json(
+        { kits: docs });
+    });
+}
+
 module.exports.makerPage = makerPage;
 module.exports.make = makeKit;
 module.exports.addKitItem = addKitItem;
@@ -216,3 +234,4 @@ module.exports.viewer = viewer;
 module.exports.viewerPage = viewerPage;
 module.exports.deleteKit = deleteKit;
 module.exports.deleteKitItem = deleteKitItem;
+module.exports.getKits = getKits;
