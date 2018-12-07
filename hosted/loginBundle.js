@@ -371,7 +371,7 @@ var setup = function setup(csrf) {
 
 var getToken = function getToken() {
     sendAjax('/getToken', null, 'GET', "json", function (result) {
-        setup(result.csrf);
+        setup(result.csrfToken);
     });
 };
 

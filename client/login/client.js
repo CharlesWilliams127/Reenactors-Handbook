@@ -295,7 +295,7 @@ const setup=(csrf) => {
 
 const getToken = () => {
     sendAjax('/getToken', null, 'GET', "json", (result) => {
-        setup(result.csrf);
+        setup(result.csrfToken);
     });
 };
 
