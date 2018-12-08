@@ -362,21 +362,21 @@ const addNavbarEventListeners = (csrf, account) => {
     signupButton.addEventListener('click', (e) => {
         e.preventDefault();
         createSignupWindow(csrf);
-        addNavbarEventListeners(account);
+        addNavbarEventListeners(csrf, account);
         return false
     });
 
     loginButton.addEventListener("click", (e) => {
         e.preventDefault();
         createLoginWindow(csrf);
-        addNavbarEventListeners(account);
+        addNavbarEventListeners(csrf, account);
         return false;
     });
 
     homeButton.addEventListener("click", (e) => {
         e.preventDefault();
         createHomeWindow(account);
-        addNavbarEventListeners(account);
+        addNavbarEventListeners(csrf, account);
         return false;
     });
 

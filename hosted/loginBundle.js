@@ -595,21 +595,21 @@ var addNavbarEventListeners = function addNavbarEventListeners(csrf, account) {
   signupButton.addEventListener('click', function (e) {
     e.preventDefault();
     createSignupWindow(csrf);
-    addNavbarEventListeners(account);
+    addNavbarEventListeners(csrf, account);
     return false;
   });
 
   loginButton.addEventListener("click", function (e) {
     e.preventDefault();
     createLoginWindow(csrf);
-    addNavbarEventListeners(account);
+    addNavbarEventListeners(csrf, account);
     return false;
   });
 
   homeButton.addEventListener("click", function (e) {
     e.preventDefault();
     createHomeWindow(account);
-    addNavbarEventListeners(account);
+    addNavbarEventListeners(csrf, account);
     return false;
   });
 
