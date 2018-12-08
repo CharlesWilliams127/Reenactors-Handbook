@@ -141,6 +141,17 @@ const getToken = (request, response) => {
   res.json(csrfJSON);
 };
 
+const getAccount = (request, response) => {
+  const req = request;
+  const res = response;
+
+  const accountJSON = {
+    account: req.session.account,
+  }
+
+  res.json(accountJSON);
+}
+
 module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
@@ -149,3 +160,4 @@ module.exports.signup = signup;
 module.exports.changePass = changePass;
 module.exports.changePassPage = changePassPage;
 module.exports.getToken = getToken;
+module.exports.getAccount = getAccount;

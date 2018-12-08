@@ -41,6 +41,45 @@ const KitList = function(props) {
   </div>);
 };
 
+// const navbar = function(props) {
+//     return (
+//         <div>
+//         {props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
+//         <a className="navbar-brand" id="homeButton" href="/home">Reenactors Handbook</a>
+//         <ul className="navbar-nav mr-auto">
+//           <li className="nav-item">
+//             <a className="nav-link" id="homeButton" href="/home">Home</a>
+//           </li>
+//           <li className="nav-item">
+//             <a className="nav-link"  href="/maker">My Kits</a>
+//           </li>
+//           <li className="nav-item">
+//             <a className="nav-link" href="/logout">Logout</a>
+//           </li>
+//           <li className="nav-item">
+//             <a className="nav-link" href="/changePass">Change Password</a>
+//           </li>
+//         </ul>
+//       </nav>}
+      
+//     {!props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
+//         <a className="navbar-brand" id="homeButton">Reenactors Handbook</a>
+//         <ul className="navbar-nav mr-auto">
+//           <li className="nav-item">
+//             <a className="nav-link" id="homeButton" href="/home">Home</a>
+//           </li>
+//           <li className="nav-item text-right">
+//             <a className="nav-link" id="loginButton" href="/login">Login</a>
+//           </li>
+//           <li className="nav-item text-right">
+//             <a className="nav-link" id="signupButton" href="/signup">Sign up</a>
+//           </li>
+//         </ul>
+//       </nav>}
+//       </div>
+//     );
+// }
+
 const getKits = () => {
   sendAjax('/getKits', null, 'GET', "json", (data) => {
       ReactDOM.render(
@@ -82,42 +121,43 @@ const getKits = () => {
   });
 };
 
-const HomeWindow = () => {
+const HomeWindow = (props) => {
     return (
     <div>
-      {/* {props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
-          <a className="navbar-brand" id="homeButton" href="/home">Reenactors Handbook</a>
-          <ul className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <a className="nav-link" id="homeButton" href="/home">Home</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link"  href="/maker">My Kits</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/logout">Logout</a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/changePass">Change Password</a>
-            </li>
-          </ul>
-        </nav>}
-        
-      {!props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
-          <a className="navbar-brand" id="homeButton" href="/home">Reenactors Handbook</a>
-          <ul className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <a className="nav-link" id="homeButton" href="/home">Home</a>
-            </li>
-            <li className="nav-item text-right">
-              <a className="nav-link" id="loginButton" href="/login">Login</a>
-            </li>
-            <li className="nav-item text-right">
-              <a className="nav-link" id="signupButton" href="/signup">Sign up</a>
-            </li>
-          </ul>
-        </nav>} */}
-  
+
+            {props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
+        <a className="navbar-brand" id="homeButton" href="/home">Reenactors Handbook</a>
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item">
+            <a className="nav-link" id="homeButton" href="/home">Home</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link"  href="/maker">My Kits</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="/logout">Logout</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="/changePass">Change Password</a>
+          </li>
+        </ul>
+      </nav>}
+      
+    {!props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
+        <a className="navbar-brand" id="homeButton">Reenactors Handbook</a>
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item">
+            <a className="nav-link" id="homeButton" href="/home">Home</a>
+          </li>
+          <li className="nav-item text-right">
+            <a className="nav-link" id="loginButton" href="/login">Login</a>
+          </li>
+          <li className="nav-item text-right">
+            <a className="nav-link" id="signupButton" href="/signup">Sign up</a>
+          </li>
+        </ul>
+      </nav>}
+
     <section id="header" className="jumbotron">
       <h1 className="display-4">Welcome to the Reenactors' Handbook</h1>
       <p className="lead">A resource for reenactors of all periods to share their kits and resources.</p>
@@ -152,9 +192,9 @@ const HomeWindow = () => {
   };
 
 // add account passing to this
-const createHomeWindow = (csrf) => {
+const createHomeWindow = (account) => {
   ReactDOM.render(
-      <HomeWindow/>,
+      <HomeWindow account={account}/>,
       document.querySelector('#content')
   );
 
@@ -221,6 +261,28 @@ const handleSignup = (e) => {
 
 const LoginWindow = (props) => {
     return (
+        <div className="backgroundArt">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
+        <a className="navbar-brand" href="/home">Reenactors Handbook</a>
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item">
+            <a className="nav-link" id="homeButton" href="/home">Home</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" id="loginButton" href="/login">Login</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" id="signupButton" href="/signup">Sign up</a>
+          </li>
+        </ul>
+      </nav>
+    
+      <div className="container my-5">
+        <div className="jumbotron jumbotron-fluid">
+          <h3>I AM BECOME AD, DESTROYER OF PAGE LAYOUT</h3>
+        </div>
+      </div>
+
         <section id="login" className="container bg-white text-center mt-5">
         <form id="loginForm" name="loginForm" action="/login" method="POST" className="form-signin" onSubmit={handleLogin}>
         <h1 className="h3 mb-3 font-weight-normal">Please sign in</h1>
@@ -232,11 +294,33 @@ const LoginWindow = (props) => {
         <input className="btn btn-large btn-success" type="submit" value="Sign In" />
         </form>
         </section>
+        </div>
     );
 };
 
 const SignupWindow = (props) => {
     return (
+        <div className="backgroundArt">
+        <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
+        <a className="navbar-brand" href="/home">Reenactors Handbook</a>
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item">
+            <a className="nav-link" id="homeButton" href="/home">Home</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" id="loginButton" href="/login">Login</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" id="signupButton" href="/signup">Sign up</a>
+          </li>
+        </ul>
+      </nav>
+    
+      <div className="container my-5">
+        <div className="jumbotron jumbotron-fluid">
+          <h3>I AM BECOME AD, DESTROYER OF PAGE LAYOUT</h3>
+        </div>
+      </div>
         <section id="signup" className="container bg-white text-center mt-5">
         <form id="signupForm" name="signupForm" action="/signup" method="POST" className="form-signin" onSubmit={handleSignup}>
         <h1 className="h3 mb-3 font-weight-normal">Please create an account</h1>
@@ -250,6 +334,7 @@ const SignupWindow = (props) => {
         <input className="btn btn-large btn-success" type="submit" value="Sign Up" />
         </form> 
         </section>
+        </div>
     );
 };
 
@@ -267,35 +352,55 @@ const createSignupWindow = (csrf) =>{
     );
 };
 
-const setup=(csrf) => {
+// since we have to re-render the navbar each time we change page, we need to re-attach our event listeners
+const addNavbarEventListeners = (csrf, account) => {
     const loginButton = document.querySelector('#loginButton');
     const signupButton = document.querySelector('#signupButton');
     const homeButton = document.querySelector('#homeButton');
+    // const homeLogo = document.querySelector('#homeLogo');
 
     signupButton.addEventListener('click', (e) => {
         e.preventDefault();
         createSignupWindow(csrf);
+        addNavbarEventListeners(account);
         return false
     });
 
     loginButton.addEventListener("click", (e) => {
         e.preventDefault();
         createLoginWindow(csrf);
+        addNavbarEventListeners(account);
         return false;
     });
 
     homeButton.addEventListener("click", (e) => {
         e.preventDefault();
-        createHomeWindow(csrf);
+        createHomeWindow(account);
+        addNavbarEventListeners(account);
         return false;
     });
 
-    createHomeWindow(csrf);
+    // homeLogo.addEventListener("click", (e) => {
+    //     e.preventDefault();
+    //     createHomeWindow(account);
+    //     return false;
+    // });
+}
+
+const setup=(csrf, account) => {
+    createHomeWindow(account);
+    addNavbarEventListeners(csrf, account);
 };
+
+const getAccount = (csrf) => {
+    sendAjax('/getAccount', null, 'GET', "json", (result) => {
+        setup(csrf, result.account);
+    });
+}
 
 const getToken = () => {
     sendAjax('/getToken', null, 'GET', "json", (result) => {
-        setup(result.csrfToken);
+        getAccount(result.csrfToken);
     });
 };
 

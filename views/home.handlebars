@@ -2,100 +2,23 @@
 <head>
   <meta charset="utf-8"/>
   <title>Reenactors Handbook</title>
+  <script crossorigin src="https://unpkg.com/react@15/dist/react.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@15/dist/react-dom.min.js"></script>
+  <script crossorigin src="https://unpkg.com/prop-types/prop-types.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.6.2/remarkable.min.js"></script>
   <script src="/masonry"></script>
   <script src="/imagesLoaded"></script>
+  <link rel="shortcut icon" href="/assets/img/favicon.png"/>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
   <link rel="stylesheet" type="text/css" href="/assets/style.css"/>
 </head>
 <body>
-  <div>
-    <nav>
-    {{#if account}}
-      <nav class="navbar navbar-expand-lg navbar-light bg-light"> 
-        <a class="navbar-brand" href="/home">Reenactors Handbook</a>
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/home">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/maker">My Kits</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/logout">Logout</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/changePass">Change Password</a>
-          </li>
-        </ul>
-      </nav>
-    {{else}}
-      <nav class="navbar navbar-expand-lg navbar-light bg-light"> 
-        <a class="navbar-brand" href="/home">Reenactors Handbook</a>
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="/home">Home</a>
-          </li>
-          <li class="nav-item text-right">
-            <a class="nav-link" href="/login">Login</a>
-          </li>
-          <li class="nav-item text-right">
-            <a class="nav-link" href="/signup">Sign up</a>
-          </li>
-        </ul>
-      </nav>
-    {{/if}}
-  </nav>
 
-  <section id="header" class="jumbotron">
-    <h1 class="display-4">Welcome to the Reenactors' Handbook</h1>
-    <p class="lead">A resource for reenactors of all periods to share their kits and resources.</p>
-    <hr class="my-4">
-  </section>
+  <section id="content"></section>
 
-
-  <div class="row">
-    <div class="col-2 ml-auto side-ad ad">
-      <div class="text-center">
-        <h1>Placeholder for an Ad</h1>
-        <h2><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">This is where a link for the product I'm advertising would go. But don't click me, I don't do anything</a></h2>
-      </div>
-    </div>
-
-    <div class="col-8">
-      <section class="grid">
-        <div id="dynamicContent">
-          {{#if kits}}
-            {{#each kits}}
-            
-              <div class="grid-item">
-                <input type="hidden" name="kitOwner" id="kitOwner" value={{this.owner}} />
-                <input type="hidden" name="_csrf" id="csrf" value={{../csrfToken}} />
-                <div class="grid-item-overlay" id="grid-item-overlay">
-                  <h3 class="kitName text-center" id="kitName">{{this.name}}</h3>
-                  {{#if this.startTimePeriod}} <h4>Time Period: <span id="kitStartTimePeriod">{{this.startTimePeriod}}</span>
-                  {{#if this.endTimePeriod}} - <span id="kitEndTimePeriod">{{this.endTimePeriod}}</span> {{/if}}</h4>{{/if}}
-                  {{#if this.description}}<p>Description: <span id="kitDescription">{{this.description}}</span></p>{{/if}}
-                </div>
-                {{#if this.image}}<img src={{this.image}} class="img-fluid" alt="My cool pic"></img>{{/if}}
-              </div>
-            {{/each}}
-          {{else}}
-            <h3 class="emptyDomo">No Reenactment Kits yet</h3>
-          {{/if}}
-        </div>
-      </section>
-    </div>
-
-    <div class="col-2 mr-auto side-ad ad">
-      <div class="text-center">
-        <h1>Placeholder for an Ad</h1>
-        <h2><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">This is where a link for the product I'm advertising would go. But don't click me, I don't do anything</a></h2>
-      </div>
-    </div>
-
-  </div>
-  <script src="/assets/bundle.js"></script>
+  <script src="/assets/loginBundle.js"></script>
 </body>
 </html>
