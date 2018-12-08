@@ -115,7 +115,7 @@ var getKits = function getKits() {
                 var csrf = document.querySelector('#csrf').value;
                 var kitData = "name=" + name + "&owner=" + owner + "&csrf=" + csrf;
 
-                sendAjax('/viewer', kitData, "GET", "json");
+                sendAjax('/viewer', kitData, "GET", "json", redirect);
             });
         };
 

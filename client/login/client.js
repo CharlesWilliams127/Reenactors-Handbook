@@ -76,7 +76,7 @@ const getKits = () => {
           const csrf = document.querySelector('#csrf').value;
           const kitData = `name=${name}&owner=${owner}&csrf=${csrf}`;
 
-          sendAjax('/viewer', kitData, "GET", "json", );
+          sendAjax('/viewer', kitData, "GET", "json", redirect);
         });
       }
   });
