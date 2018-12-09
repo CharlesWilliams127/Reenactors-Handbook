@@ -224,7 +224,28 @@ const getKits = (req, res) => {
       return res.json(
         { kits: docs });
     });
-}
+};
+
+// function for rendering an individual kit
+const getKitByOwner = (req, res) => {
+  const search = {
+    owner: req.query.owner,
+    name: req.query.name,
+    public: true,
+  };
+
+  Kit.KitModel.find(search,
+    'name description kitItems startTimePeriod endTimePeriod public image',
+    (err, doc) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).json({ error: 'An error occured' });
+      }
+
+      return res.json(
+        { kit: doc });
+    });
+};
 
 module.exports.makerPage = makerPage;
 module.exports.make = makeKit;
@@ -235,3 +256,4 @@ module.exports.viewerPage = viewerPage;
 module.exports.deleteKit = deleteKit;
 module.exports.deleteKitItem = deleteKitItem;
 module.exports.getKits = getKits;
+module.exports.getKitByOwner = getKitByOwner;

@@ -10,6 +10,165 @@ const redirect = (response) => {
     window.location = response.redirect;
 };
 
+const ViewKitWindow = function(props) {
+    return(
+        <div className="backgroundArt">
+            {props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
+        <a className="navbar-brand" id="homeLogo" href="/home">Reenactors Handbook</a>
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item">
+            <a className="nav-link" id="homeButton" href="/home">Home</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link"  href="/maker">My Kits</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="/logout">Logout</a>
+          </li>
+          <li className="nav-item">
+            <a className="nav-link" href="/changePass">Change Password</a>
+          </li>
+        </ul>
+      </nav>}
+      
+    {!props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
+        <a className="navbar-brand" id="homeLogo">Reenactors Handbook</a>
+        <ul className="navbar-nav mr-auto">
+          <li className="nav-item">
+            <a className="nav-link" id="homeButton" href="/home">Home</a>
+          </li>
+          <li className="nav-item text-right">
+            <a className="nav-link" id="loginButton" href="/login">Login</a>
+          </li>
+          <li className="nav-item text-right">
+            <a className="nav-link" id="signupButton" href="/signup">Sign up</a>
+          </li>
+        </ul>
+      </nav>}
+
+
+        <div className="row">
+            <div className="col-2 ml-auto side-ad ad">
+            <div className="text-center container">
+                <h1>Placeholder for an Ad</h1>
+                <h2><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">This is where a link for the product I'm advertising would go. But don't click me, I don't do anything</a></h2>
+            </div>
+            </div>
+
+        <div className="col-8">
+            <section id="kits" className="container bg-light mt-5">
+                <div className="kit">
+                    <div className="kit">
+                        <div className="jumbotron jumbotron-fluid">
+                            <h2 className="kitName display-4">Name: {props.kit.name}</h2>
+                            {props.kit.startTimePeriod && <h4>Time Period: {props.kit.startTimePeriod}
+                            {props.kit.endTimePeriod && <span>{props.kit.endTimePeriod} - {props.kit.endTimePeriod}</span>} </h4>}
+                        </div>
+                        <div className="row">
+                        <div className="col-6">
+                            {props.kit.image && <img src={props.kit.image} className="img-fluid" alt="My cool pic"></img>}
+                        </div>
+                        <div className="col-5">
+                            {props.kit.description && <h5>Description: {props.kit.description}</h5>}
+                        </div>
+                        </div>
+                        <hr/>
+
+                        <div className="kit-items-expand" id="kitItemDisplay">
+                        </div>
+
+                    </div>
+                    <hr/>
+                </div>
+            </section>
+            </div>
+
+            <div className="col-2 mr-auto side-ad ad">
+            <div className="text-center container">
+                <h1>Placeholder for an Ad</h1>
+                <h2><a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">This is where a link for the product I'm advertising would go. But don't click me, I don't do anything</a></h2>
+            </div>
+            </div>
+        </div>
+        </div>
+    );
+}
+
+const KitItemsList = function(props) {
+    // return the empty display if the kit has no items
+    if (props.kit.kitItems.length === 0) {
+        return (
+            <div className="row text-center">
+            <div className="col">
+              <h3>This Kit has no Items!</h3>
+            </div>
+          </div>
+        );
+      }
+
+      // construct the links object to insert into the kit
+      let kitItemLinks = null;
+      if (props.kit.kitItems.links) {
+        kitItemLinks = props.kit.kitItems.links.map(function(link) {
+            return(
+                <li><a href={link}>{link}</a></li>
+            );
+        }); 
+      }
+
+      // finally map the items to the proper JSX
+      const kitItemNodes = props.kit.kitItems.map(function(kitItem) {
+        return (
+            <div class="row" key={kitItem._id}>
+                <div class="col-4">
+                {kitItem.image && <img src={kitItem.image} class="img-fluid" alt="My cool pic"></img>}
+                </div>
+                <div class="col-8">
+                <h4>Item Name: {kitItem.name}</h4>
+                {kitItem.price && <h5>Item Price: ${kitItem.price}</h5>}
+                {kitItem.description && <h5>Item Description: {kitItem.description}</h5>}
+                {kitItem.links && <div><h4>Links:</h4>
+                    <ul id="linkList">
+                        {kitItemLinks}
+                    </ul>
+                    </div>
+                }
+                </div>
+                <hr/>
+            </div>
+          );
+      });
+
+      return (
+          <div>
+              {kitItemNodes}
+          </div>
+      );
+      
+};
+
+const getViewer = (filterData, csrf, account) => {
+    sendAjax('/getKitByOwner', filterData, 'GET', 'json', (data) => {
+        // first render the kit
+        ReactDOM.render(
+            <ViewKitWindow kit={data.kit} account={account}/>,
+            document.querySelector('#content')
+        );
+
+        // first check if the kit has any items to render
+        if(document.querySelector('#kitItemDisplay')) {
+            // next, render the kit's items
+            ReactDOM.render(
+                <KitItemsList kit={data.kit}/>,
+                document.querySelector('#kitItemDisplay')
+            );
+        }
+
+        // attach event listeners
+        addNavbarEventListeners(csrf, account);
+    });
+}
+
 const KitList = function(props) {
   if (props.kits.length === 0) {
     return (
@@ -41,49 +200,10 @@ const KitList = function(props) {
   </div>);
 };
 
-// const navbar = function(props) {
-//     return (
-//         <div>
-//         {props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
-//         <a className="navbar-brand" id="homeButton" href="/home">Reenactors Handbook</a>
-//         <ul className="navbar-nav mr-auto">
-//           <li className="nav-item">
-//             <a className="nav-link" id="homeButton" href="/home">Home</a>
-//           </li>
-//           <li className="nav-item">
-//             <a className="nav-link"  href="/maker">My Kits</a>
-//           </li>
-//           <li className="nav-item">
-//             <a className="nav-link" href="/logout">Logout</a>
-//           </li>
-//           <li className="nav-item">
-//             <a className="nav-link" href="/changePass">Change Password</a>
-//           </li>
-//         </ul>
-//       </nav>}
-      
-//     {!props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
-//         <a className="navbar-brand" id="homeButton">Reenactors Handbook</a>
-//         <ul className="navbar-nav mr-auto">
-//           <li className="nav-item">
-//             <a className="nav-link" id="homeButton" href="/home">Home</a>
-//           </li>
-//           <li className="nav-item text-right">
-//             <a className="nav-link" id="loginButton" href="/login">Login</a>
-//           </li>
-//           <li className="nav-item text-right">
-//             <a className="nav-link" id="signupButton" href="/signup">Sign up</a>
-//           </li>
-//         </ul>
-//       </nav>}
-//       </div>
-//     );
-// }
-
-const getKits = () => {
+const getKits = (csrf, account) => {
   sendAjax('/getKits', null, 'GET', "json", (data) => {
       ReactDOM.render(
-        <KitList kits={data.kits} />,
+        <KitList kits={data.kits} csrfToken={csrf}/>,
         document.querySelector("#dynamicContent")
       );
 
@@ -112,10 +232,12 @@ const getKits = () => {
 
           const name = kits[i].querySelector('#kitName').innerHTML;
           const owner = kits[i].querySelector('#kitOwner').value;
-          const csrf = document.querySelector('#csrf').value;
-          const kitData = `name=${name}&owner=${owner}&csrf=${csrf}`;
+          const kitCsrf = document.querySelector('#csrf').value;
+          const kitData = `name=${name}&owner=${owner}&csrf=${kitCsrf}`;
 
-          sendAjax('/viewer', kitData, "GET", "json", redirect);
+          //sendAjax('/viewer', kitData, "GET", "json", redirect);
+          // call getViewer to handle getting the kit data
+          getViewer(kitData, csrf, account);
         });
       }
   });
@@ -126,7 +248,7 @@ const HomeWindow = (props) => {
     <div>
 
             {props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
-        <a className="navbar-brand" id="homeButton" href="/home">Reenactors Handbook</a>
+        <a className="navbar-brand" id="homeLogo" href="/home">Reenactors Handbook</a>
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
             <a className="nav-link" id="homeButton" href="/home">Home</a>
@@ -144,7 +266,7 @@ const HomeWindow = (props) => {
       </nav>}
       
     {!props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
-        <a className="navbar-brand" id="homeButton">Reenactors Handbook</a>
+        <a className="navbar-brand" id="homeLogo">Reenactors Handbook</a>
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
             <a className="nav-link" id="homeButton" href="/home">Home</a>
@@ -192,13 +314,13 @@ const HomeWindow = (props) => {
   };
 
 // add account passing to this
-const createHomeWindow = (account) => {
+const createHomeWindow = (csrf, account) => {
   ReactDOM.render(
       <HomeWindow account={account}/>,
       document.querySelector('#content')
   );
 
-  getKits();
+  getKits(csrf, account);
 };
 
 // function responsible for sending AJAX requests to our server
@@ -263,7 +385,7 @@ const LoginWindow = (props) => {
     return (
         <div className="backgroundArt">
         <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
-        <a className="navbar-brand" href="/home">Reenactors Handbook</a>
+        <a className="navbar-brand" id="homeLogo" href="/home">Reenactors Handbook</a>
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
             <a className="nav-link" id="homeButton" href="/home">Home</a>
@@ -302,7 +424,7 @@ const SignupWindow = (props) => {
     return (
         <div className="backgroundArt">
         <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
-        <a className="navbar-brand" href="/home">Reenactors Handbook</a>
+        <a className="navbar-brand" id="homeLogo" href="/home">Reenactors Handbook</a>
         <ul className="navbar-nav mr-auto">
           <li className="nav-item">
             <a className="nav-link" id="homeButton" href="/home">Home</a>
@@ -354,41 +476,56 @@ const createSignupWindow = (csrf) =>{
 
 // since we have to re-render the navbar each time we change page, we need to re-attach our event listeners
 const addNavbarEventListeners = (csrf, account) => {
+    // these should appear when a user is logged out
     const loginButton = document.querySelector('#loginButton');
     const signupButton = document.querySelector('#signupButton');
+
+    // these should appear when a user is logged in
+    const logoutButton = document.querySelector('#logoutButton');
+    const myKitsButton = document.querySelector('#myKitsButton');
+    const changePassButton = document.querySelector('#changePassButton');
+
+    // these should always appear
     const homeButton = document.querySelector('#homeButton');
-    // const homeLogo = document.querySelector('#homeLogo');
+    const homeLogo = document.querySelector('#homeLogo');
 
-    signupButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        createSignupWindow(csrf);
-        addNavbarEventListeners(csrf, account);
-        return false
-    });
+    if (signupButton && loginButton) {
+        signupButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            createSignupWindow(csrf);
+            addNavbarEventListeners(csrf, account);
+            return false
+        });
 
-    loginButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        createLoginWindow(csrf);
-        addNavbarEventListeners(csrf, account);
-        return false;
-    });
+        loginButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            createLoginWindow(csrf);
+            addNavbarEventListeners(csrf, account);
+            return false;
+        });
+    }
+
+    if (logoutButton && myKitsButton && changePassButton) {
+        //  TODO: add listeners for these
+    }
 
     homeButton.addEventListener("click", (e) => {
         e.preventDefault();
-        createHomeWindow(account);
+        createHomeWindow(csrf, account);
         addNavbarEventListeners(csrf, account);
         return false;
     });
 
-    // homeLogo.addEventListener("click", (e) => {
-    //     e.preventDefault();
-    //     createHomeWindow(account);
-    //     return false;
-    // });
+    homeLogo.addEventListener("click", (e) => {
+        e.preventDefault();
+        createHomeWindow(csrf, account);
+        addNavbarEventListeners(csrf, account);
+        return false;
+    });
 }
 
 const setup=(csrf, account) => {
-    createHomeWindow(account);
+    createHomeWindow(csrf, account);
     addNavbarEventListeners(csrf, account);
 };
 
