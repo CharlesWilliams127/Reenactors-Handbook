@@ -159,7 +159,6 @@ var ViewKitWindow = function ViewKitWindow(props) {
                                     props.kit.endTimePeriod && React.createElement(
                                         "span",
                                         null,
-                                        props.kit.endTimePeriod,
                                         " - ",
                                         props.kit.endTimePeriod
                                     ),
@@ -236,35 +235,35 @@ var KitItemsList = function KitItemsList(props) {
         );
     }
 
-    // construct the links object to insert into the kit
-    var kitItemLinks = null;
-    if (props.kit.kitItems.links) {
-        kitItemLinks = props.kit.kitItems.links.map(function (link) {
-            return React.createElement(
-                "li",
-                null,
-                React.createElement(
-                    "a",
-                    { href: link },
-                    link
-                )
-            );
-        });
-    }
-
     // finally map the items to the proper JSX
     var kitItemNodes = props.kit.kitItems.map(function (kitItem) {
+        // construct the links object to insert into the kit
+        var kitItemLinks = null;
+        if (kitItem.links.length !== 0) {
+            kitItemLinks = kitItem.links.map(function (link) {
+                return React.createElement(
+                    "li",
+                    null,
+                    React.createElement(
+                        "a",
+                        { href: link },
+                        link
+                    )
+                );
+            });
+        }
+
         return React.createElement(
             "div",
-            { "class": "row", key: kitItem._id },
+            { className: "row", key: kitItem._id },
             React.createElement(
                 "div",
-                { "class": "col-4" },
-                kitItem.image && React.createElement("img", { src: kitItem.image, "class": "img-fluid", alt: "My cool pic" })
+                { className: "col-4" },
+                kitItem.image && React.createElement("img", { src: kitItem.image, className: "img-fluid", alt: "My cool pic" })
             ),
             React.createElement(
                 "div",
-                { "class": "col-8" },
+                { className: "col-8" },
                 React.createElement(
                     "h4",
                     null,
@@ -312,12 +311,12 @@ var KitItemsList = function KitItemsList(props) {
 var getViewer = function getViewer(filterData, csrf, account) {
     sendAjax('/getKitByOwner', filterData, 'GET', 'json', function (data) {
         // first render the kit
-        ReactDOM.render(React.createElement(ViewKitWindow, { kit: data.kit, account: account }), document.querySelector('#content'));
+        ReactDOM.render(React.createElement(ViewKitWindow, { kit: data.kit[0], account: account }), document.querySelector('#content'));
 
         // first check if the kit has any items to render
         if (document.querySelector('#kitItemDisplay')) {
             // next, render the kit's items
-            ReactDOM.render(React.createElement(KitItemsList, { kit: data.kit }), document.querySelector('#kitItemDisplay'));
+            ReactDOM.render(React.createElement(KitItemsList, { kit: data.kit[0] }), document.querySelector('#kitItemDisplay'));
         }
 
         // attach event listeners
@@ -364,7 +363,6 @@ var KitList = function KitList(props) {
                     kit.endTimePeriod && React.createElement(
                         "span",
                         null,
-                        kit.endTimePeriod,
                         " - ",
                         React.createElement(
                             "span",

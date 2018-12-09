@@ -62,7 +62,7 @@ const ViewKitWindow = function(props) {
                         <div className="jumbotron jumbotron-fluid">
                             <h2 className="kitName display-4">Name: {props.kit.name}</h2>
                             {props.kit.startTimePeriod && <h4>Time Period: {props.kit.startTimePeriod}
-                            {props.kit.endTimePeriod && <span>{props.kit.endTimePeriod} - {props.kit.endTimePeriod}</span>} </h4>}
+                            {props.kit.endTimePeriod && <span> - {props.kit.endTimePeriod}</span>} </h4>}
                         </div>
                         <div className="row">
                         <div className="col-6">
@@ -106,24 +106,24 @@ const KitItemsList = function(props) {
         );
       }
 
-      // construct the links object to insert into the kit
-      let kitItemLinks = null;
-      if (props.kit.kitItems.links) {
-        kitItemLinks = props.kit.kitItems.links.map(function(link) {
+      // finally map the items to the proper JSX
+      const kitItemNodes = props.kit.kitItems.map(function(kitItem) {
+        // construct the links object to insert into the kit
+        let kitItemLinks = null;
+        if (kitItem.links.length !== 0) {
+        kitItemLinks = kitItem.links.map(function(link) {
             return(
                 <li><a href={link}>{link}</a></li>
             );
         }); 
-      }
+        }
 
-      // finally map the items to the proper JSX
-      const kitItemNodes = props.kit.kitItems.map(function(kitItem) {
         return (
-            <div class="row" key={kitItem._id}>
-                <div class="col-4">
-                {kitItem.image && <img src={kitItem.image} class="img-fluid" alt="My cool pic"></img>}
+            <div className="row" key={kitItem._id}>
+                <div className="col-4">
+                {kitItem.image && <img src={kitItem.image} className="img-fluid" alt="My cool pic"></img>}
                 </div>
-                <div class="col-8">
+                <div className="col-8">
                 <h4>Item Name: {kitItem.name}</h4>
                 {kitItem.price && <h5>Item Price: ${kitItem.price}</h5>}
                 {kitItem.description && <h5>Item Description: {kitItem.description}</h5>}
@@ -151,7 +151,7 @@ const getViewer = (filterData, csrf, account) => {
     sendAjax('/getKitByOwner', filterData, 'GET', 'json', (data) => {
         // first render the kit
         ReactDOM.render(
-            <ViewKitWindow kit={data.kit} account={account}/>,
+            <ViewKitWindow kit={data.kit[0]} account={account}/>,
             document.querySelector('#content')
         );
 
@@ -159,7 +159,7 @@ const getViewer = (filterData, csrf, account) => {
         if(document.querySelector('#kitItemDisplay')) {
             // next, render the kit's items
             ReactDOM.render(
-                <KitItemsList kit={data.kit}/>,
+                <KitItemsList kit={data.kit[0]}/>,
                 document.querySelector('#kitItemDisplay')
             );
         }
@@ -186,7 +186,7 @@ const KitList = function(props) {
         <div className="grid-item-overlay" id="grid-item-overlay">
           <h3 className="kitName text-center" id="kitName">{kit.name}</h3>
           {kit.startTimePeriod && <h4>Time Period: <span id="kitStartTimePeriod">{kit.startTimePeriod}</span> 
-          {kit.endTimePeriod && <span>{kit.endTimePeriod} - <span id="kitEndTimePeriod">{kit.endTimePeriod}</span></span>} </h4>} 
+          {kit.endTimePeriod && <span> - <span id="kitEndTimePeriod">{kit.endTimePeriod}</span></span>} </h4>} 
           
           {kit.description && <p>Description: <span id="kitDescription">{kit.description}</span></p>}
         </div>
