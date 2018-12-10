@@ -50,6 +50,7 @@ const handleAddkit = (e) => {
     }
     $('#submitLoading').modal('hide');
     $('#makeKit').modal('hide');
+    $(document.getElementsByClassName('modal-backdrop')[0]).remove();
     sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function(){
       getToken();
     });
@@ -226,25 +227,25 @@ const MakerWindow = (props) => {
         <form id="kitForm" name="kitForm" action="/maker" method="POST" onSubmit={handleAddkit}>
           <div className="form-group">
             <input id="imageField" type="file" name="image" />
-            <label for="imageField" className="btn btn-outline-secondary" id="imageLabel">Upload an Image</label>
+            <label htmlFor="imageField" className="btn btn-outline-secondary" id="imageLabel">Upload an Image</label>
           </div>
           <div className="form-row">
             <div className="form-group col-md-4 ml-auto">
-              <label for="name">Name: </label>
+              <label htmlFor="name">Name: </label>
               <input id="kitName" type="text" name="name" className="form-control" placeholder="Kit Name"/>
             </div>
             <div className="form-group col-md-3 ml-5">
-              <label for="startTimePeriod">Time Period Range Start: </label>
+              <label htmlFor="startTimePeriod">Time Period Range Start: </label>
               <input id="kitStartTimePeriod" type="text" className="form-control" name="startTimePeriod" placeholder="Start Year"/>
             </div>
             <div className="form-group col-md-3 mr-auto">
-              <label for="endTimePeriod">Time Period Range End: </label>
+              <label htmlFor="endTimePeriod">Time Period Range End: </label>
               <input id="kitEndTimePeriod" type="text" className="form-control" name="endTimePeriod" placeholder="End Year"/>
             </div>
           </div>
           <div className="form-row">
             <div className="form-group col-md-6 ml-auto">
-              <label for="description">Description: </label>
+              <label htmlFor="description">Description: </label>
               <textarea id="kitDescription" type="text" className="form-control" name="description"></textarea>
             </div>
             <div className="form-check mr-auto mt-5 ml-3">
@@ -272,25 +273,25 @@ const MakerWindow = (props) => {
         <form id="editKitForm" name="editKitForm" action="/maker" method="POST" onSubmit={handleEditKit}>
           <div className="form-group">
             <input id="editImageField" type="file" name="image" />
-            <label for="editImageField" className="btn btn-outline-secondary" id="editImageLabel">Change Image</label>
+            <label htmlFor="editImageField" className="btn btn-outline-secondary" id="editImageLabel">Change Image</label>
           </div>
           <div className="form-row">
             <div className="form-group col-md-4 ml-auto">
-              <label for="name">Name: </label>
+              <label htmlFor="name">Name: </label>
               <input id="kitName" type="text" name="name" className="form-control" placeholder="Kit Name" readOnly/>
             </div>
             <div className="form-group col-md-3 ml-5">
-              <label for="startTimePeriod">Time Period Range Start: </label>
+              <label htmlFor="startTimePeriod">Time Period Range Start: </label>
               <input id="kitStartTimePeriod" type="text" className="form-control" name="startTimePeriod" placeholder="Start Year"/>
             </div>
             <div className="form-group col-md-3 mr-auto">
-              <label for="endTimePeriod">Time Period Range End: </label>
+              <label htmlFor="endTimePeriod">Time Period Range End: </label>
               <input id="kitEndTimePeriod" type="text" className="form-control" name="endTimePeriod" placeholder="End Year"/>
             </div>
           </div>
           <div className="form-row">
             <div className="form-group col-md-6 ml-auto">
-              <label for="description">Description: </label>
+              <label htmlFor="description">Description: </label>
               <textarea id="kitDescription" type="text" className="form-control" name="description"></textarea>
             </div>
             <div className="form-check mr-auto mt-5 ml-3">
@@ -318,21 +319,21 @@ const MakerWindow = (props) => {
         <form id="editKitItemForm" name="editKitItemForm" action="/addKitItem" method="POST" className="text-center kitItemForm" onSubmit={handleEditKitItem}>
               <div className="form-group text-center">
                 <input id="editItemImageField" type="file" name="image" />
-                <label for="editItemImageField" className="btn btn-outline-secondary" id="editItemImageLabel">Change Image</label>
+                <label htmlFor="editItemImageField" className="btn btn-outline-secondary" id="editItemImageLabel">Change Image</label>
               </div>
               <div className="form-row">
                 <div className="form-group col-md-4 ml-auto">
-                  <label for="name">Name: </label>
+                  <label htmlFor="name">Name: </label>
                   <input id="kitItemName" type="text" name="itemName" className="form-control" placeholder="Kit Item Name" readOnly/>
                 </div>
                 <div className="form-group col-md-4 mr-auto">
-                  <label for="itemPrice">Price: </label>
+                  <label htmlFor="itemPrice">Price: </label>
                   <input id="kitItemPrice" type="text" name="itemPrice" className="form-control" placeholder="Price"/>
                 </div>
               </div>
               <div className="form-row">
                 <div className="form-group col-md-5 ml-auto">
-                  <label for="itemDescription">Description: </label>
+                  <label htmlFor="itemDescription">Description: </label>
                   <textarea id="kitItemDescription" type="text" className="form-control" name="itemDescription"></textarea>
                 </div>
                 <div className="form-group col-md-5 mr-auto">

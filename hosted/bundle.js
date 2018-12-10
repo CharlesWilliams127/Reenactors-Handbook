@@ -50,6 +50,7 @@ var counterStruct = {
       }
     $('#submitLoading').modal('hide');
     $('#makeKit').modal('hide');
+    $(document.getElementsByClassName('modal-backdrop')[0]).remove();
     sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function () {
       getToken();
     });
@@ -238,7 +239,7 @@ var MakerWindow = function MakerWindow(props) {
                 React.createElement('input', { id: 'imageField', type: 'file', name: 'image' }),
                 React.createElement(
                   'label',
-                  { 'for': 'imageField', className: 'btn btn-outline-secondary', id: 'imageLabel' },
+                  { htmlFor: 'imageField', className: 'btn btn-outline-secondary', id: 'imageLabel' },
                   'Upload an Image'
                 )
               ),
@@ -250,7 +251,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-4 ml-auto' },
                   React.createElement(
                     'label',
-                    { 'for': 'name' },
+                    { htmlFor: 'name' },
                     'Name: '
                   ),
                   React.createElement('input', { id: 'kitName', type: 'text', name: 'name', className: 'form-control', placeholder: 'Kit Name' })
@@ -260,7 +261,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-3 ml-5' },
                   React.createElement(
                     'label',
-                    { 'for': 'startTimePeriod' },
+                    { htmlFor: 'startTimePeriod' },
                     'Time Period Range Start: '
                   ),
                   React.createElement('input', { id: 'kitStartTimePeriod', type: 'text', className: 'form-control', name: 'startTimePeriod', placeholder: 'Start Year' })
@@ -270,7 +271,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-3 mr-auto' },
                   React.createElement(
                     'label',
-                    { 'for': 'endTimePeriod' },
+                    { htmlFor: 'endTimePeriod' },
                     'Time Period Range End: '
                   ),
                   React.createElement('input', { id: 'kitEndTimePeriod', type: 'text', className: 'form-control', name: 'endTimePeriod', placeholder: 'End Year' })
@@ -284,7 +285,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-6 ml-auto' },
                   React.createElement(
                     'label',
-                    { 'for': 'description' },
+                    { htmlFor: 'description' },
                     'Description: '
                   ),
                   React.createElement('textarea', { id: 'kitDescription', type: 'text', className: 'form-control', name: 'description' })
@@ -339,7 +340,7 @@ var MakerWindow = function MakerWindow(props) {
                 React.createElement('input', { id: 'editImageField', type: 'file', name: 'image' }),
                 React.createElement(
                   'label',
-                  { 'for': 'editImageField', className: 'btn btn-outline-secondary', id: 'editImageLabel' },
+                  { htmlFor: 'editImageField', className: 'btn btn-outline-secondary', id: 'editImageLabel' },
                   'Change Image'
                 )
               ),
@@ -351,7 +352,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-4 ml-auto' },
                   React.createElement(
                     'label',
-                    { 'for': 'name' },
+                    { htmlFor: 'name' },
                     'Name: '
                   ),
                   React.createElement('input', { id: 'kitName', type: 'text', name: 'name', className: 'form-control', placeholder: 'Kit Name', readOnly: true })
@@ -361,7 +362,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-3 ml-5' },
                   React.createElement(
                     'label',
-                    { 'for': 'startTimePeriod' },
+                    { htmlFor: 'startTimePeriod' },
                     'Time Period Range Start: '
                   ),
                   React.createElement('input', { id: 'kitStartTimePeriod', type: 'text', className: 'form-control', name: 'startTimePeriod', placeholder: 'Start Year' })
@@ -371,7 +372,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-3 mr-auto' },
                   React.createElement(
                     'label',
-                    { 'for': 'endTimePeriod' },
+                    { htmlFor: 'endTimePeriod' },
                     'Time Period Range End: '
                   ),
                   React.createElement('input', { id: 'kitEndTimePeriod', type: 'text', className: 'form-control', name: 'endTimePeriod', placeholder: 'End Year' })
@@ -385,7 +386,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-6 ml-auto' },
                   React.createElement(
                     'label',
-                    { 'for': 'description' },
+                    { htmlFor: 'description' },
                     'Description: '
                   ),
                   React.createElement('textarea', { id: 'kitDescription', type: 'text', className: 'form-control', name: 'description' })
@@ -440,7 +441,7 @@ var MakerWindow = function MakerWindow(props) {
                 React.createElement('input', { id: 'editItemImageField', type: 'file', name: 'image' }),
                 React.createElement(
                   'label',
-                  { 'for': 'editItemImageField', className: 'btn btn-outline-secondary', id: 'editItemImageLabel' },
+                  { htmlFor: 'editItemImageField', className: 'btn btn-outline-secondary', id: 'editItemImageLabel' },
                   'Change Image'
                 )
               ),
@@ -452,7 +453,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-4 ml-auto' },
                   React.createElement(
                     'label',
-                    { 'for': 'name' },
+                    { htmlFor: 'name' },
                     'Name: '
                   ),
                   React.createElement('input', { id: 'kitItemName', type: 'text', name: 'itemName', className: 'form-control', placeholder: 'Kit Item Name', readOnly: true })
@@ -462,7 +463,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-4 mr-auto' },
                   React.createElement(
                     'label',
-                    { 'for': 'itemPrice' },
+                    { htmlFor: 'itemPrice' },
                     'Price: '
                   ),
                   React.createElement('input', { id: 'kitItemPrice', type: 'text', name: 'itemPrice', className: 'form-control', placeholder: 'Price' })
@@ -476,7 +477,7 @@ var MakerWindow = function MakerWindow(props) {
                   { className: 'form-group col-md-5 ml-auto' },
                   React.createElement(
                     'label',
-                    { 'for': 'itemDescription' },
+                    { htmlFor: 'itemDescription' },
                     'Description: '
                   ),
                   React.createElement('textarea', { id: 'kitItemDescription', type: 'text', className: 'form-control', name: 'itemDescription' })

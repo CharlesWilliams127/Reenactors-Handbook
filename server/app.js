@@ -74,7 +74,7 @@ router(app);
 app.use((req, res) => {
   if (req.accepts('html')) {
     // Respond with html page.
-    res.render('login', { csrfToken: req.csrfToken() });
+    res.render('home', { csrfToken: req.csrfToken() });
   } else if (req.accepts('json')) {
       // Respond with json.
     res.status(404).send({ error: 'Not found' });
