@@ -263,7 +263,7 @@ var KitCommentsList = function KitCommentsList(props) {
                 { className: "form-row" },
                 React.createElement(
                     "div",
-                    { className: "form-group col-md-4 ml-auto" },
+                    { className: "form-group text-center mx-auto" },
                     React.createElement(
                         "label",
                         { htmlFor: "commentText" },

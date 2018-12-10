@@ -127,7 +127,7 @@ const KitCommentsList = function(props) {
 
             <form id="kitCommentForm" name="kitCommentForm" action="/addKitComment" method="POST" className="text-center kitItemForm" onSubmit={handleKitComment}>
             <div className="form-row">
-              <div className="form-group col-md-4 ml-auto">
+              <div className="form-group text-center mx-auto">
                 <label htmlFor="commentText">Comment: </label>
                 <textarea id="commentText" type="text" className="form-control" name="commentText"></textarea>
               </div>
