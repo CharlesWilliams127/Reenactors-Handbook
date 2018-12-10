@@ -91,7 +91,8 @@ const handleAddkitItem = (e) => {
     else if (!kitItemForm.querySelector("#itemImageURL").value){
       kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
     }
-    $('submitLoading').toggle();
+    $('#submitLoading').modal('hide');
+    //$('#makeKit').modal('hide');
     sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function(){
       getToken();
     });
@@ -276,7 +277,7 @@ const MakerWindow = (props) => {
           <div className="form-row">
             <div className="form-group col-md-4 ml-auto">
               <label for="name">Name: </label>
-              <input id="kitName" type="text" name="name" className="form-control" placeholder="Kit Name" readonly/>
+              <input id="kitName" type="text" name="name" className="form-control" placeholder="Kit Name" readOnly/>
             </div>
             <div className="form-group col-md-3 ml-5">
               <label for="startTimePeriod">Time Period Range Start: </label>
@@ -322,7 +323,7 @@ const MakerWindow = (props) => {
               <div className="form-row">
                 <div className="form-group col-md-4 ml-auto">
                   <label for="name">Name: </label>
-                  <input id="kitItemName" type="text" name="itemName" className="form-control" placeholder="Kit Item Name" readonly/>
+                  <input id="kitItemName" type="text" name="itemName" className="form-control" placeholder="Kit Item Name" readOnly/>
                 </div>
                 <div className="form-group col-md-4 mr-auto">
                   <label for="itemPrice">Price: </label>
@@ -441,7 +442,7 @@ const KitList = function(props) {
         }
 
         return (
-          <div>
+          <div className="kitItem">
             <div className="row" key={kitItem._id}>
                 <div className="col-4">
                 {kitItem.image && <img src={kitItem.image} className="img-fluid" alt="My cool pic"></img>}
@@ -595,7 +596,7 @@ const createMakerWindow = (csrf) => {
         // attach expand event listener
         const expandButton = myKits[i].querySelector("#expandKitItemsButton");
         expandButton.addEventListener('click', (e) => {
-          $(myKits[i].querySelector("#collapseableContent")).collapse('toggle');
+          $(myKits[i].querySelector("#kitItemDisplay")).collapse('toggle');
         })
 
         // attach kit event listener

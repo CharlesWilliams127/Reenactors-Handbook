@@ -88,7 +88,8 @@ var handleAddkitItem = function handleAddkitItem(e) {
     } else if (!kitItemForm.querySelector("#itemImageURL").value) {
       kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
     }
-    $('submitLoading').toggle();
+    $('#submitLoading').modal('hide');
+    //$('#makeKit').modal('hide');
     sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function () {
       getToken();
     });
@@ -353,7 +354,7 @@ var MakerWindow = function MakerWindow(props) {
                     { 'for': 'name' },
                     'Name: '
                   ),
-                  React.createElement('input', { id: 'kitName', type: 'text', name: 'name', className: 'form-control', placeholder: 'Kit Name', readonly: true })
+                  React.createElement('input', { id: 'kitName', type: 'text', name: 'name', className: 'form-control', placeholder: 'Kit Name', readOnly: true })
                 ),
                 React.createElement(
                   'div',
@@ -454,7 +455,7 @@ var MakerWindow = function MakerWindow(props) {
                     { 'for': 'name' },
                     'Name: '
                   ),
-                  React.createElement('input', { id: 'kitItemName', type: 'text', name: 'itemName', className: 'form-control', placeholder: 'Kit Item Name', readonly: true })
+                  React.createElement('input', { id: 'kitItemName', type: 'text', name: 'itemName', className: 'form-control', placeholder: 'Kit Item Name', readOnly: true })
                 ),
                 React.createElement(
                   'div',
@@ -660,7 +661,7 @@ var KitList = function KitList(props) {
 
         return React.createElement(
           'div',
-          null,
+          { className: 'kitItem' },
           React.createElement(
             'div',
             { className: 'row', key: kitItem._id },
@@ -960,7 +961,7 @@ var createMakerWindow = function createMakerWindow(csrf) {
         // attach expand event listener
         var expandButton = myKits[i].querySelector("#expandKitItemsButton");
         expandButton.addEventListener('click', function (e) {
-          $(myKits[i].querySelector("#collapseableContent")).collapse('toggle');
+          $(myKits[i].querySelector("#kitItemDisplay")).collapse('toggle');
         });
 
         // attach kit event listener
