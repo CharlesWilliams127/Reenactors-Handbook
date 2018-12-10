@@ -174,13 +174,12 @@ const getKits = (req, res) => {
   console.log(req.query.name);
 
   // search through the DB using Regex
-  if(req.query.name) {
+  if (req.query.name) {
     search = {
       public: true,
-      name: new RegExp(req.query.name, 'i')
+      name: new RegExp(req.query.name, 'i'),
     };
-  }
-  else {
+  } else {
     search = {
       public: true,
     };
@@ -222,8 +221,8 @@ const getKitByOwner = (req, res) => {
     });
 };
 
-const getKitsByOwner = (req, res) => {
-  return Kit.KitModel.findByOwner(req.session.account._id, (err, docs) => {
+const getKitsByOwner = (req, res) => Kit.KitModel.findByOwner(
+  req.session.account._id, (err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occured' });
@@ -231,7 +230,6 @@ const getKitsByOwner = (req, res) => {
 
     return res.json({ kits: docs });
   });
-}
 
 module.exports.makerPage = makerPage;
 module.exports.make = makeKit;

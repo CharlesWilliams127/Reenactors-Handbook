@@ -132,10 +132,10 @@ const getAccount = (request, response) => {
 
   const accountJSON = {
     account: req.session.account,
-  }
+  };
 
   res.json(accountJSON);
-}
+};
 
 module.exports.login = login;
 module.exports.logout = logout;
