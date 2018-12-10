@@ -5,19 +5,627 @@ let linkCounter = 0;
 const imgurClientID = '879ac2e671a727c';
 const imgurClientSecret = '524c709be991cd1fc64f474056b8802ea09e18b0';
 
-// get reference to masonry.js
-// Credit: Masonry Library
-let masonry;
-
 const getLinkCount = () => {return linkCounter++;};
 
 const counterStruct = {
   'Link': getLinkCount,
 }
 
-const handleError = (message) => {
-  $("#errorMessage").text(message);
-  $('#errorModal').modal();
+
+// handles for POST
+const handleAddkit = (e) => {
+  e.preventDefault();
+  const kitForm = document.querySelector("#kitForm");
+
+  $("#kitMessage").animate({width:'hide'},350);
+
+  if(kitForm.querySelector("#kitName") == '') {
+    handleError("Kit name is required");
+    return false;
+  }
+  
+  const imageF = kitForm.querySelector('#imageField');
+
+  makeImgurRequest(imageF.files[0])
+  .then((imageData) => {
+    let image = "";
+
+    if (imageData) {
+        const data = JSON.parse(imageData).data;
+        image = data.link;
+    }
+
+    return image;
+  })
+  .then((image) => {
+    // user uploaded a new image
+    if (image) {
+      kitForm.querySelector("#imageURL").value = image;
+    }
+    // user already has an image
+    else if (!kitForm.querySelector("#imageURL").value) {
+      kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
+    }
+    displayHideSections('submitLoading', 'none');
+    sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function(){
+      getToken();
+    });
+  });
+
+  return false;
+}
+
+const handleAddkitItem = (e) => {
+  e.preventDefault();
+  const kitItemForm = e.target;
+
+  //kitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+  const imageF = kitItemForm.querySelector('#itemImageField')
+  $("#kitMessage").animate({width:'hide'},350);
+
+  if(kitItemForm.querySelector('#kitItemName') == '') {
+    handleError("Kit name is required");
+    return false;
+  }
+
+  const $kitItemForm = $(kitItemForm);
+
+  makeImgurRequest(imageF.files[0])
+  .then((imageData) => {
+    let image = "";
+
+    if (imageData) {
+        const data = JSON.parse(imageData).data;
+        image = data.link;
+    }
+
+    return image;
+  })
+  .then((image) => {
+    if (image) {
+      kitItemForm.querySelector('#itemImageURL').value = image;
+    }
+    else if (!kitItemForm.querySelector("#itemImageURL").value){
+      kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
+    }
+    sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function(){
+      getToken();
+    });
+  });
+
+  return false;
+}
+
+const handleEditKit = (e) => {
+  e.preventDefault();
+  const kitForm = document.querySelector("#editKitForm");
+
+  $("#kitMessage").animate({width:'hide'},350);
+
+  if(kitForm.querySelector("#kitName") == '') {
+    handleError("Kit name is required");
+    return false;
+  }
+  
+  const imageF = kitForm.querySelector('#editImageField');
+
+  makeImgurRequest(imageF.files[0])
+  .then((imageData) => {
+    let image = "";
+
+    if (imageData) {
+        const data = JSON.parse(imageData).data;
+        image = data.link;
+    }
+
+    return image;
+  })
+  .then((image) => {
+    // user uploaded a new image
+    if (image) {
+      kitForm.querySelector("#imageURL").value = image;
+    }
+    // user already has an image
+    else if (!kitForm.querySelector("#imageURL").value) {
+      kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
+    }
+    displayHideSections('submitLoading', 'none');
+    sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function(){
+      getToken();
+    });
+  });
+
+  return false;
+}
+
+const handleEditKitItem = (e) => {
+  e.preventDefault();
+  const editKitItemForm = document.querySelector("#editKitItemForm");
+  const $editKitItemForm = $(editKitItemForm);
+
+  //editKitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+  const imageF = editKitItemForm.querySelector('#editItemImageField')
+  $("#kitMessage").animate({width:'hide'},350);
+
+  if(editKitItemForm.querySelector('#kitItemName') == '') {
+    handleError("Kit name is required");
+    return false;
+  }
+
+  makeImgurRequest(imageF.files[0])
+  .then((imageData) => {
+    let image = "";
+
+    if (imageData) {
+        const data = JSON.parse(imageData).data;
+        image = data.link;
+    }
+
+    return image;
+  })
+  .then((image) => {
+    if (image) {
+      editKitItemForm.querySelector('#itemImageURL').value = image;
+    }
+    else if (!editKitItemForm.querySelector("#itemImageURL").value){
+      editKitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
+    }
+    displayHideSections('submitLoading', 'none');
+    sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json", function(){
+      getToken();
+    });
+  });
+
+  return false;
+}
+
+const handleDeleteKit = (e) => {
+  e.preventDefault();
+
+  const $kitForm = $(e.target.querySelector('#deleteKitForm'));
+
+  sendAjax($kitForm.attr("action"), $kitForm.serialize(), "DELETE", "json", function(){
+    getToken();
+  });
+
+  return false;
+}
+
+const handleDeleteKitItem = (e) => {
+  e.preventDefault();
+    
+  const $kitItemForm = $(e.target.querySelector('#deleteKitItemForm'));
+
+  sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function(){
+    getToken();
+  });
+
+  return false;
+}
+
+// React Views
+const MakerWindow = (props) => {
+  return (
+<div>
+
+<div className="modal fade" id="makeKit" tabindex="-1" role="dialog" aria-labelledby="makeKitTitle" aria-hidden="true">
+  <section className="modal-dialog modal-lg" role="document">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h2 className="modal-title" id="makeKitTitle">Add a Reeactment Kit</h2>
+      </div>
+      <div className="modal-body">
+        <form id="kitForm" name="kitForm" action="/maker" method="POST" onSubmit={handleAddkit}>
+          <div className="form-group">
+            <input id="imageField" type="file" name="image" />
+            <label for="imageField" className="btn btn-outline-secondary" id="imageLabel">Upload an Image</label>
+          </div>
+          <div className="form-row">
+            <div className="form-group col-md-4 ml-auto">
+              <label for="name">Name: </label>
+              <input id="kitName" type="text" name="name" className="form-control" placeholder="Kit Name"/>
+            </div>
+            <div className="form-group col-md-3 ml-5">
+              <label for="startTimePeriod">Time Period Range Start: </label>
+              <input id="kitStartTimePeriod" type="text" className="form-control" name="startTimePeriod" placeholder="Start Year"/>
+            </div>
+            <div className="form-group col-md-3 mr-auto">
+              <label for="endTimePeriod">Time Period Range End: </label>
+              <input id="kitEndTimePeriod" type="text" className="form-control" name="endTimePeriod" placeholder="End Year"/>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group col-md-6 ml-auto">
+              <label for="description">Description: </label>
+              <textarea id="kitDescription" type="text" className="form-control" name="description"></textarea>
+            </div>
+            <div className="form-check mr-auto mt-5 ml-3">
+              <input id="kitPublic" className="form-check-input" type="checkbox" name="public" value="Public" checked/>
+              <label className="form-check-label" for="public">Public</label>
+            </div>
+          </div>
+          <input id="initCsrf" type="hidden" name="_csrf" value={props.csrf} />
+          <input id="imageURL" type="hidden" name="imageURL" value="" />
+          <input className="btn btn-lg btn-outline-success" type="submit" value="Add Kit" />
+        </form>
+        <input id="hideKitForm" type="button" className="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div className="modal fade" id="editKit" tabindex="-1" role="dialog" aria-labelledby="editKitTitle" aria-hidden="true">
+  <section className="modal-dialog modal-lg" role="document">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h2 className="modal-title" id="editKitTitle">Editing</h2>
+      </div>
+      <div className="modal-body">
+        <form id="editKitForm" name="editKitForm" action="/maker" method="POST" onSubmit={handleEditKit}>
+          <div className="form-group">
+            <input id="editImageField" type="file" name="image" />
+            <label for="editImageField" className="btn btn-outline-secondary" id="editImageLabel">Change Image</label>
+          </div>
+          <div className="form-row">
+            <div className="form-group col-md-4 ml-auto">
+              <label for="name">Name: </label>
+              <input id="kitName" type="text" name="name" className="form-control" placeholder="Kit Name" readonly/>
+            </div>
+            <div className="form-group col-md-3 ml-5">
+              <label for="startTimePeriod">Time Period Range Start: </label>
+              <input id="kitStartTimePeriod" type="text" className="form-control" name="startTimePeriod" placeholder="Start Year"/>
+            </div>
+            <div className="form-group col-md-3 mr-auto">
+              <label for="endTimePeriod">Time Period Range End: </label>
+              <input id="kitEndTimePeriod" type="text" className="form-control" name="endTimePeriod" placeholder="End Year"/>
+            </div>
+          </div>
+          <div className="form-row">
+            <div className="form-group col-md-6 ml-auto">
+              <label for="description">Description: </label>
+              <textarea id="kitDescription" type="text" className="form-control" name="description"></textarea>
+            </div>
+            <div className="form-check mr-auto mt-5 ml-3">
+              <input id="kitPublic" className="form-check-input" type="checkbox" name="public" value="Public" checked/>
+              <label className="form-check-label" for="public">Public</label>
+            </div>
+          </div>
+          <input id="initCsrf" type="hidden" name="_csrf" value={props.csrf} />
+          <input id="imageURL" type="hidden" name="imageURL" value="" />
+          <input className="btn btn-lg btn-outline-success" type="submit" value="Update Kit" />
+        </form>
+        <input id="hideKitForm" type="button" className="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div className="modal fade" id="editKitItem" tabindex="-1" role="dialog" aria-labelledby="editkitItemTitle" aria-hidden="true">
+  <section className="modal-dialog modal-lg" role="document">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h2 className="modal-title" id="editkitItemTitle">Editing</h2>
+      </div>
+      <div className="modal-body">
+        <form id="editKitItemForm" name="editKitItemForm" action="/addKitItem" method="POST" className="text-center kitItemForm" onSubmit={handleEditKitItem}>
+              <div className="form-group text-center">
+                <input id="editItemImageField" type="file" name="image" />
+                <label for="editItemImageField" className="btn btn-outline-secondary" id="editItemImageLabel">Change Image</label>
+              </div>
+              <div className="form-row">
+                <div className="form-group col-md-4 ml-auto">
+                  <label for="name">Name: </label>
+                  <input id="kitItemName" type="text" name="itemName" className="form-control" placeholder="Kit Item Name" readonly/>
+                </div>
+                <div className="form-group col-md-4 mr-auto">
+                  <label for="itemPrice">Price: </label>
+                  <input id="kitItemPrice" type="text" name="itemPrice" className="form-control" placeholder="Price"/>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group col-md-5 ml-auto">
+                  <label for="itemDescription">Description: </label>
+                  <textarea id="kitItemDescription" type="text" className="form-control" name="itemDescription"></textarea>
+                </div>
+                <div className="form-group col-md-5 mr-auto">
+                  <ul id="linkList" className="text-left">
+                    <li id="addLinkButton"><input type="button" className="btn btn-sm btn-outline-secondary addLinkButton" value="Add Link"/></li>
+                  </ul>
+                </div>
+              </div>
+              <input type="hidden" id="newCsrf" name="_csrf" value={props.csrf} />
+              <input type="hidden" id="itemImageURL" name="itemImageURL" value="" />
+              <input type="hidden" id="parentKit" name="parentKit" value="REPLACE THIS" />
+              <input className="btn btn-outline-success text-center mx-auto" type="submit" value="Update Kit Item" />
+            </form>
+        <input id="hideKitItemForm" type="button" className="btn btn-lg btn-outline-danger" data-dismiss="modal" value="Cancel"/>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div className="modal fade submitLoading" id="submitLoading" tabindex="-1" role="dialog" aria-labelledby="editKitTitle" aria-hidden="true">
+  <div className="modal-dialog modal-dialog-centered" role="document">
+    <div className="modal-content load-gif mx-auto">
+      <img src="/assets/img/loading.gif" alt="Loading" className="img-fluid mx-auto"/>
+    </div>
+  </div>
+</div>
+
+
+  <section id="kits" className="container bg-light mt-5">
+  </section>
+  </div>
+  );
+}
+
+const KitList = function(props) {
+  if (props.kits.length === 0) {
+    return (
+      <div className="container bg-light mt-5">
+      <div className="jumbotron jumbotron-fluid">
+        <h4 className="display-4">You Don't Have Any Reenactment Kits!</h4>
+        <h4>Get Started by Adding Some.</h4>
+      </div>
+    </div>
+    );
+  }
+
+  const kitNodes = props.kits.map(function(kit) {
+    // return the empty display if the kit has no items
+    let kitItems = null;
+    if (kit.kitItems.length === 0) {
+      kitItems =  (
+        <div>
+        <div className="row text-center">
+          <div className="col">
+            <h3>This Kit has no Items!</h3>
+            <p>Get Started by adding some.</p>
+          </div>
+          </div>
+
+          <hr/>
+
+          <h3 className="text-center">Add a New Kit Item:</h3>
+          <form id="kitItemForm" name="kitItemForm" action="/addKitItem" method="POST" className="text-center kitItemForm" onSubmit={handleAddkitItem}>
+            <div className="form-group text-center">
+              <input id="itemImageField" type="file" name="itemImage" />
+            </div>
+            <div className="form-row">
+              <div className="form-group col-md-4 ml-auto">
+                <label for="name">Name: </label>
+                <input id="kitItemName" type="text" name="itemName" className="form-control" placeholder="Kit Item Name"/>
+              </div>
+              <div className="form-group col-md-4 mr-auto">
+                <label for="itemPrice">Price: </label>
+                <input id="kitItemPrice" type="text" name="itemPrice" className="form-control" placeholder="Price"/>
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="form-group col-md-5 ml-auto">
+                <label for="itemDescription">Description: </label>
+                <textarea id="kitItemDescription" type="text" className="form-control" name="itemDescription"></textarea>
+              </div>
+              <div className="form-group col-md-5 mr-auto">
+                <ul id="linkList" className="text-left">
+                  <li><input type="button" className="btn btn-sm btn-outline-secondary addLinkButton" value="Add Link"/></li>
+                </ul>
+              </div>
+            </div>
+            <input type="hidden" id="newCsrf" name="_csrf" value={props.csrf} />
+            <input type="hidden" id="itemImageURL" name="itemImageURL" value="" />
+            <input type="hidden" name="parentKit" value={kit.name} />
+            <input className="btn btn-outline-success text-center mx-auto" type="submit" value="Add Kit Item" />
+          </form>
+        </div>
+      );
+    }
+    else {
+      // finally map the items to the proper JSX
+      const kitItemNodes = kit.kitItems.map(function(kitItem) {
+        // construct the links object to insert into the kit
+        let kitItemLinks = null;
+        if (kitItem.links.length !== 0) {
+        kitItemLinks = kitItem.links.map(function(link) {
+            return(
+                <li><a href={link}>{link}</a></li>
+            );
+          }); 
+        }
+
+        return (
+          <div>
+            <div className="row" key={kitItem._id}>
+                <div className="col-4">
+                {kitItem.image && <img src={kitItem.image} className="img-fluid" alt="My cool pic"></img>}
+                </div>
+                <div className="col-8">
+                <h4>Item Name: <span id="kitItemName">{kitItem.name}</span></h4>
+                {kitItem.price && <h5>Item Price: $<span id="kitItemPrice">{kitItem.price}</span></h5>}
+                {kitItem.description && <h5>Item Description: <span id="kitItemDescription">{kitItem.description}</span></h5>}
+                {kitItem.links && <div><h4>Links:</h4>
+                    <ul id="kitItemLinkList">
+                        {kitItemLinks}
+                    </ul>
+                    </div>
+                }
+                <form id="deleteKitItemForm" action="/deleteKitItem" method="POST" onSubmit={handleDeleteKitItem}>
+                    <div className="btn-group text-center">
+                      <button type="button" id="editKitItemButton" className="btn btn-sm btn-outline-primary">Edit</button>                          
+                      <input type="hidden" id="parentKit" name="parentKit" value={kit.name} />
+                      <input type="hidden" name="itemToDelete" value={kitItem.name} />
+                      <input id="initCsrf" type="hidden" name="_csrf" value={props.csrf} />
+                      <button type="submit" className="btn btn-sm btn-outline-danger" id="kitItemDeleteButton" name="kitItemDeleteButton">Delete</button>
+                    </div>
+                  </form>
+                </div>
+                <hr/>
+            </div>
+            </div>
+          );
+      });
+
+      kitItems =  (
+          <div>
+              {kitItemNodes}
+
+            <h3 className="text-center">Add a New Kit Item:</h3>
+            <form id="kitItemForm" name="kitItemForm" action="/addKitItem" method="POST" className="text-center kitItemForm" onSubmit={handleAddkitItem}>
+              <div className="form-group text-center">
+                <input id="itemImageField" type="file" name="itemImage" />
+              </div>
+              <div className="form-row">
+                <div className="form-group col-md-4 ml-auto">
+                  <label for="name">Name: </label>
+                  <input id="kitItemName" type="text" name="itemName" className="form-control" placeholder="Kit Item Name"/>
+                </div>
+                <div className="form-group col-md-4 mr-auto">
+                  <label for="itemPrice">Price: </label>
+                  <input id="kitItemPrice" type="text" name="itemPrice" className="form-control" placeholder="Price"/>
+                </div>
+              </div>
+              <div className="form-row">
+                <div className="form-group col-md-5 ml-auto">
+                  <label for="itemDescription">Description: </label>
+                  <textarea id="kitItemDescription" type="text" className="form-control" name="itemDescription"></textarea>
+                </div>
+                <div className="form-group col-md-5 mr-auto">
+                  <ul id="linkList" className="text-left">
+                    <li><input type="button" className="btn btn-sm btn-outline-secondary addLinkButton" value="Add Link"/></li>
+                  </ul>
+                </div>
+              </div>
+              <input type="hidden" id="newCsrf" name="_csrf" value={props.csrf} />
+              <input type="hidden" id="itemImageURL" name="itemImageURL" value="" />
+              <input type="hidden" name="parentKit" value={kit.name} />
+              <input className="btn btn-outline-success text-center mx-auto" type="submit" value="Add Kit Item" />
+            </form>
+          </div>
+      );
+    }
+
+    return(
+      <div className="kit">
+        <div className="kit">
+            <div className="jumbotron jumbotron-fluid">
+                <h2 className="kitName display-4">Name: {kit.name}</h2>
+                {kit.startTimePeriod && <h4>Time Period: {kit.startTimePeriod}
+                {kit.endTimePeriod && <span> - {kit.endTimePeriod}</span>} </h4>}
+            </div>
+            <div className="row">
+            <div className="col-6">
+                {kit.image && <img src={kit.image} className="img-fluid" alt="My cool pic"></img>}
+            </div>
+            <div className="col-5">
+                {kit.description && <h5>Description: {kit.description}</h5>}
+                <form id="deleteKitForm" action="/deleteKit" method="DELETE" onSubmit={handleDeleteKit}>
+                  <div className="btn-group text-center">
+                    <button type="button" id="editKitButton" className="btn btn-sm btn-outline-primary">Edit</button>                          
+                    <input type="hidden" name="itemToDelete" value={kit.name} />
+                    <input id="initCsrf" type="hidden" name="_csrf" value={props.csrf} />
+                    <button type="submit" className="btn btn-sm btn-outline-danger" id="kitDeleteButton" name="kitDeleteButton">Delete</button>
+                  </div>
+                </form>
+            </div>
+            </div>
+            <div className="row">
+              <button type="button" className="btn btn-lg btn-primary mx-auto mt-3" id="expandKitItemsButton">Toggle Display Kit Items</button>
+            </div>
+            <hr/>
+
+            <div className="kit-items-expand collapse" id="kitItemDisplay">
+              {kitItems}
+            </div>
+
+        </div>
+        <hr/>
+    </div>
+    );
+  }); 
+
+  return (
+    <div>
+      {kitNodes}
+    </div>
+  );
+};
+
+const changePassWindow = (props) => {
+  
+}
+
+const createMakerWindow = (csrf) => {
+  sendAjax('/getKitsByOwner', null, 'GET', 'json', (data) => {
+    // first, render the base page
+    ReactDOM.render(
+      <MakerWindow csrf={csrf}/>,
+      document.querySelector('#content')
+    );
+
+    // then, render each kit along with associated items
+    ReactDOM.render(
+      <KitList kits={data.kits} csrf={csrf}/>,
+      document.querySelector('#kits')
+    );
+
+    // do everything else needed after kits are rendered
+
+    // pull forms for modals to be used for submission and editing
+    const addKitForm = document.querySelector("#kitForm");
+    const editKitForm = document.querySelector("#editKitForm");
+    const editKitItemForm = document.querySelector("#editKitItemForm");
+
+    // allow links to be added to kit items
+    const linkButtons = document.getElementsByClassName("addLinkButton");
+    if(linkButtons) {
+      for (let i = 0; i < linkButtons.length; i++) {
+        linkButtons[i].addEventListener("click", (e) => addItem(e, 
+          linkButtons[i].parentElement.parentElement, 'Link', ""));
+      }
+    }
+
+    // attach event listeners on each kit on the myKits page
+    const myKits = document.getElementsByClassName("kit");
+    if(myKits) {
+      for(let i = 0; i < myKits.length; i++) {
+        // attach expand event listener
+        const expandButton = myKits[i].querySelector("#expandKitItemsButton");
+        expandButton.addEventListener('click', (e) => {
+          $(myKits[i].querySelector("#collapseableContent")).collapse('toggle');
+        })
+
+        // attach kit event listener
+        const editButton = myKits[i].querySelector('#editKitButton');
+        const clickEdit = (e) => populateEditKitModal(myKits[i]);
+        editButton.addEventListener('click', clickEdit);
+
+        // attach event listeners to each item's edit and delete
+        const myKitItems = myKits[i].getElementsByClassName("KitItem");
+        if (myKitItems) {
+          for(let j = 0; j < myKitItems.length; j++) {
+
+            // attach edit event listener
+            const kitItemEditButton = myKitItems[j].querySelector("#editKitItemButton");
+            const parentKit = myKitItems[j].querySelector("#parentKit");
+
+            const itemClickEdit = (e) => populateEditKitItemModal(myKitItems[j], parentKit);
+            kitItemEditButton.addEventListener('click', itemClickEdit);
+          }
+        }
+      }
+    }
+
+      // attach event listeners to each kit form
+    if(addKitForm && editKitForm && editKitItemForm) {
+      updateImageField(addKitForm, "imageField", "imageLabel");
+      updateImageField(editKitForm, "editImageField", "editImageLabel");
+      updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
+    }
+  });
+};
+
+const createChangePassWindow = (csrf) => {
+
 }
 
 // wrapper function to submit an image to imgur when posting
@@ -175,34 +783,6 @@ const addItem = (e, list, elemName, value) => {
   
 };
 
-// function responsible for sending AJAX requests to our server
-// the external Imgur request is handled in another function
-const sendAjax = (action, data, type, dataType) => {
-  console.dir(data);
-  $.ajax({
-    cache: false,
-    type: type,
-    url: action,
-    data: data,
-    dataType: dataType,
-    success: (result, status, xhr) => {
-      $("#kitMessage").animate({width:'hide'},350);
-
-      if (dataType == 'json') {
-        window.location = result.redirect;
-      }
-      if(dataType == 'html') {
-        $("body").html(result);
-      }
-    },
-    error: (xhr, status, error) => {
-      const messageObj = JSON.parse(xhr.responseText);
-
-      handleError(messageObj.error);
-    }
-  });        
-};
-
 // a helper function used for updating various image modals
 const updateImageField = (form, imageField, imageLabel) => {
   const input = form.querySelector( `#${imageField}` );
@@ -220,195 +800,9 @@ const updateImageField = (form, imageField, imageLabel) => {
   }
 }
 
-// adds event listeners to things that change or add kits
-const addKitModalEventListener = (kitForm, imageField) => {
-  const $kitForm = $(kitForm)
-
-  $kitForm.on("submit", (e) => {
-    e.preventDefault();
-
-    $("#kitMessage").animate({width:'hide'},350);
-
-    if(kitForm.querySelector("#kitName") == '') {
-      handleError("Kit name is required");
-      return false;
-    }
-    
-    const imageF = kitForm.querySelector(`#${imageField}`);
-
-    makeImgurRequest(imageF.files[0])
-    .then((imageData) => {
-      let image = "";
-
-      if (imageData) {
-          const data = JSON.parse(imageData).data;
-          image = data.link;
-      }
-
-      return image;
-    })
-    .then((image) => {
-      // user uploaded a new image
-      if (image) {
-        kitForm.querySelector("#imageURL").value = image;
-      }
-      // user already has an image
-      else if (!kitForm.querySelector("#imageURL").value) {
-        kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
-      }
-      displayHideSections('submitLoading', 'none');
-      sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json");
-    });
-
-    return false;
-  });
-}
-
-$(document).ready(() => {
-  if(document.querySelector('#dynamicContent')) {
-    // set up masonry content
-    const grid = document.querySelector('#dynamicContent');
-    masonry = new Masonry(grid, {
-        columnWidth: 410,
-        gutter: 10,
-        itemSelector: '.grid-item',
-    });
-
-    // ensure that we only lay out grid when all images are loaded
-    // Credit: ImagesLoaded Library
-    imagesLoaded( '#grid', { background: true }, function() {
-        masonry.layout();
-    });
-
-    masonry.layout();
-
-    // assign event listeners to each object
-    const kits = document.getElementsByClassName("grid-item");
-
-    for(let i = 0; i < kits.length; i++) {
-      kits[i].addEventListener('click', (e) => {
-        e.preventDefault();
-
-        const name = kits[i].querySelector('#kitName').innerHTML;
-        const owner = kits[i].querySelector('#kitOwner').value;
-        const csrf = document.querySelector('#csrf').value;
-        const data = `name=${name}&owner=${owner}&csrf=${csrf}`;
-
-        sendAjax('/viewer', data, "GET", "json");
-      });
-    }
-  }
-
-  // pull forms for modals to be used for submission and editing
-  const addKitForm = document.querySelector("#kitForm");
-  const editKitForm = document.querySelector("#editKitForm");
-  const editKitItemForm = document.querySelector("#editKitItemForm");
-
-  // allow links to be added to kit items
-  const linkButtons = document.getElementsByClassName("addLinkButton");
-  if(linkButtons) {
-    for (let i = 0; i < linkButtons.length; i++) {
-      linkButtons[i].addEventListener("click", (e) => addItem(e, 
-        linkButtons[i].parentElement.parentElement, 'Link', ""));
-    }
-  }
-
-  // attach event listeners on each kit on the myKits page
-  const myKits = document.getElementsByClassName("kit");
-  if(myKits) {
-    for(let i = 0; i < myKits.length; i++) {
-      // attach expand event listener
-      const expandButton = myKits[i].querySelector("#expandKitItemsButton");
-      expandButton.addEventListener('click', (e) => {
-        $(myKits[i].querySelector("#collapseableContent")).collapse('toggle');
-      })
-
-      // attach delete event listener
-      myKits[i].querySelector('#deleteKitForm').addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const $kitForm = $(myKits[i].querySelector('#deleteKitForm'));
-
-        sendAjax($kitForm.attr("action"), $kitForm.serialize(), "DELETE", "json");
-
-        return false;
-      });
-
-      // attach kit event listener
-      const editButton = myKits[i].querySelector('#editKitButton');
-      const clickEdit = (e) => populateEditKitModal(myKits[i]);
-      editButton.addEventListener('click', clickEdit);
-
-      // attach event listeners to each item's edit and delete
-      const myKitItems = myKits[i].getElementsByClassName("KitItem");
-      if (myKitItems) {
-        for(let j = 0; j < myKitItems.length; j++) {
-          myKitItems[j].querySelector('#deleteKitItemForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-    
-            const $kitItemForm = $(myKitItems[j].querySelector('#deleteKitItemForm'));
-    
-            sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
-    
-            return false;
-          });
-
-          // attach edit event listener
-          const kitItemEditButton = myKitItems[j].querySelector("#editKitItemButton");
-          const parentKit = myKitItems[j].querySelector("#parentKit");
-
-          const itemClickEdit = (e) => populateEditKitItemModal(myKitItems[j], parentKit);
-          kitItemEditButton.addEventListener('click', itemClickEdit);
-        }
-      }
-    }
-  }
+const setup = (csrf) => {
   
-  // handles attatching listeners to edit and add kits
-  addKitModalEventListener(document.querySelector("#kitForm"), "imageField");
-  addKitModalEventListener(document.querySelector("#editKitForm"), "editImageField");
-
-  // attach submit listener
-  if (editKitForm) {
-    editKitItemForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      editKitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
-      const imageF = editKitItemForm.querySelector('#editItemImageField')
-      $("#kitMessage").animate({width:'hide'},350);
-
-      if(editKitItemForm.querySelector('#kitItemName') == '') {
-        handleError("Kit name is required");
-        return false;
-      }
-
-      const $editKitItemForm = $(editKitItemForm);
-
-      makeImgurRequest(imageF.files[0])
-      .then((imageData) => {
-        let image = "";
-
-        if (imageData) {
-            const data = JSON.parse(imageData).data;
-            image = data.link;
-        }
-
-        return image;
-      })
-      .then((image) => {
-        if (image) {
-          editKitItemForm.querySelector('#itemImageURL').value = image;
-        }
-        else if (!editKitItemForm.querySelector("#itemImageURL").value){
-          editKitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
-        }
-        displayHideSections('submitLoading', 'none');
-        sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json");
-      });
-
-      return false;
-    });
-  }
+  createMakerWindow(csrf);
 
   $("#changePassForm").on("submit", (e)=> {
     e.preventDefault();
@@ -425,59 +819,20 @@ $(document).ready(() => {
       return false;
     }
 
-    sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json");
+    sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json", redirect);
 
     return false;
   });
 
-  const kitItemForms = document.getElementsByClassName("kitItemForm");
+};
 
-  if (kitItemForms) {
-    Array.prototype.forEach.call(kitItemForms, kitItemForm => {
-      kitItemForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-    
-        kitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
-        const imageF = kitItemForm.querySelector('#itemImageField')
-        $("#kitMessage").animate({width:'hide'},350);
-    
-        if(kitItemForm.querySelector('#kitItemName') == '') {
-          handleError("Kit name is required");
-          return false;
-        }
 
-        const $kitItemForm = $(kitItemForm);
-    
-        makeImgurRequest(imageF.files[0])
-        .then((imageData) => {
-          let image = "";
-    
-          if (imageData) {
-              const data = JSON.parse(imageData).data;
-              image = data.link;
-          }
-    
-          return image;
-        })
-        .then((image) => {
-          if (image) {
-            kitItemForm.querySelector('#itemImageURL').value = image;
-          }
-          else if (!kitItemForm.querySelector("#itemImageURL").value){
-            kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
-          }
-          sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
-        });
-    
-        return false;
-      });
-    });
-  }
+const getToken = () => {
+  sendAjax('/getToken', null, 'GET', "json", (result) => {
+      setup(result.csrfToken);
+  });
+};
 
-  // attach event listeners to each kit form
-  if(addKitForm && editKitForm && editKitItemForm) {
-    updateImageField(addKitForm, "imageField", "imageLabel");
-    updateImageField(editKitForm, "editImageField", "editImageLabel");
-    updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
-  }
+$(document).ready(() => {
+  getToken();
 });

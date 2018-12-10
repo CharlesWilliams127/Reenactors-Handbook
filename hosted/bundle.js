@@ -7,22 +7,990 @@ var linkCounter = 0;
 var imgurClientID = '879ac2e671a727c';
 var imgurClientSecret = '524c709be991cd1fc64f474056b8802ea09e18b0';
 
-// get reference to masonry.js
-// Credit: Masonry Library
-var masonry = void 0;
-
 var getLinkCount = function getLinkCount() {
   return linkCounter++;
 };
 
 var counterStruct = {
   'Link': getLinkCount
+
+  // handles for POST
+};var handleAddkit = function handleAddkit(e) {
+  e.preventDefault();
+  var kitForm = document.querySelector("#kitForm");
+
+  $("#kitMessage").animate({ width: 'hide' }, 350);
+
+  if (kitForm.querySelector("#kitName") == '') {
+    handleError("Kit name is required");
+    return false;
+  }
+
+  var imageF = kitForm.querySelector('#imageField');
+
+  makeImgurRequest(imageF.files[0]).then(function (imageData) {
+    var image = "";
+
+    if (imageData) {
+      var data = JSON.parse(imageData).data;
+      image = data.link;
+    }
+
+    return image;
+  }).then(function (image) {
+    // user uploaded a new image
+    if (image) {
+      kitForm.querySelector("#imageURL").value = image;
+    }
+    // user already has an image
+    else if (!kitForm.querySelector("#imageURL").value) {
+        kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
+      }
+    displayHideSections('submitLoading', 'none');
+    sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function () {
+      getToken();
+    });
+  });
+
+  return false;
 };
 
-var handleError = function handleError(message) {
-  $("#errorMessage").text(message);
-  $('#errorModal').modal();
+var handleAddkitItem = function handleAddkitItem(e) {
+  e.preventDefault();
+  var kitItemForm = e.target;
+
+  //kitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+  var imageF = kitItemForm.querySelector('#itemImageField');
+  $("#kitMessage").animate({ width: 'hide' }, 350);
+
+  if (kitItemForm.querySelector('#kitItemName') == '') {
+    handleError("Kit name is required");
+    return false;
+  }
+
+  var $kitItemForm = $(kitItemForm);
+
+  makeImgurRequest(imageF.files[0]).then(function (imageData) {
+    var image = "";
+
+    if (imageData) {
+      var data = JSON.parse(imageData).data;
+      image = data.link;
+    }
+
+    return image;
+  }).then(function (image) {
+    if (image) {
+      kitItemForm.querySelector('#itemImageURL').value = image;
+    } else if (!kitItemForm.querySelector("#itemImageURL").value) {
+      kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
+    }
+    sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function () {
+      getToken();
+    });
+  });
+
+  return false;
 };
+
+var handleEditKit = function handleEditKit(e) {
+  e.preventDefault();
+  var kitForm = document.querySelector("#editKitForm");
+
+  $("#kitMessage").animate({ width: 'hide' }, 350);
+
+  if (kitForm.querySelector("#kitName") == '') {
+    handleError("Kit name is required");
+    return false;
+  }
+
+  var imageF = kitForm.querySelector('#editImageField');
+
+  makeImgurRequest(imageF.files[0]).then(function (imageData) {
+    var image = "";
+
+    if (imageData) {
+      var data = JSON.parse(imageData).data;
+      image = data.link;
+    }
+
+    return image;
+  }).then(function (image) {
+    // user uploaded a new image
+    if (image) {
+      kitForm.querySelector("#imageURL").value = image;
+    }
+    // user already has an image
+    else if (!kitForm.querySelector("#imageURL").value) {
+        kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
+      }
+    displayHideSections('submitLoading', 'none');
+    sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function () {
+      getToken();
+    });
+  });
+
+  return false;
+};
+
+var handleEditKitItem = function handleEditKitItem(e) {
+  e.preventDefault();
+  var editKitItemForm = document.querySelector("#editKitItemForm");
+  var $editKitItemForm = $(editKitItemForm);
+
+  //editKitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
+  var imageF = editKitItemForm.querySelector('#editItemImageField');
+  $("#kitMessage").animate({ width: 'hide' }, 350);
+
+  if (editKitItemForm.querySelector('#kitItemName') == '') {
+    handleError("Kit name is required");
+    return false;
+  }
+
+  makeImgurRequest(imageF.files[0]).then(function (imageData) {
+    var image = "";
+
+    if (imageData) {
+      var data = JSON.parse(imageData).data;
+      image = data.link;
+    }
+
+    return image;
+  }).then(function (image) {
+    if (image) {
+      editKitItemForm.querySelector('#itemImageURL').value = image;
+    } else if (!editKitItemForm.querySelector("#itemImageURL").value) {
+      editKitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
+    }
+    displayHideSections('submitLoading', 'none');
+    sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json", function () {
+      getToken();
+    });
+  });
+
+  return false;
+};
+
+var handleDeleteKit = function handleDeleteKit(e) {
+  e.preventDefault();
+
+  var $kitForm = $(e.target.querySelector('#deleteKitForm'));
+
+  sendAjax($kitForm.attr("action"), $kitForm.serialize(), "DELETE", "json", function () {
+    getToken();
+  });
+
+  return false;
+};
+
+var handleDeleteKitItem = function handleDeleteKitItem(e) {
+  e.preventDefault();
+
+  var $kitItemForm = $(e.target.querySelector('#deleteKitItemForm'));
+
+  sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function () {
+    getToken();
+  });
+
+  return false;
+};
+
+// React Views
+var MakerWindow = function MakerWindow(props) {
+  return React.createElement(
+    'div',
+    null,
+    React.createElement(
+      'div',
+      { className: 'modal fade', id: 'makeKit', tabindex: '-1', role: 'dialog', 'aria-labelledby': 'makeKitTitle', 'aria-hidden': 'true' },
+      React.createElement(
+        'section',
+        { className: 'modal-dialog modal-lg', role: 'document' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'h2',
+              { className: 'modal-title', id: 'makeKitTitle' },
+              'Add a Reeactment Kit'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'form',
+              { id: 'kitForm', name: 'kitForm', action: '/maker', method: 'POST', onSubmit: handleAddkit },
+              React.createElement(
+                'div',
+                { className: 'form-group' },
+                React.createElement('input', { id: 'imageField', type: 'file', name: 'image' }),
+                React.createElement(
+                  'label',
+                  { 'for': 'imageField', className: 'btn btn-outline-secondary', id: 'imageLabel' },
+                  'Upload an Image'
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'form-row' },
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-4 ml-auto' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'name' },
+                    'Name: '
+                  ),
+                  React.createElement('input', { id: 'kitName', type: 'text', name: 'name', className: 'form-control', placeholder: 'Kit Name' })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-3 ml-5' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'startTimePeriod' },
+                    'Time Period Range Start: '
+                  ),
+                  React.createElement('input', { id: 'kitStartTimePeriod', type: 'text', className: 'form-control', name: 'startTimePeriod', placeholder: 'Start Year' })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-3 mr-auto' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'endTimePeriod' },
+                    'Time Period Range End: '
+                  ),
+                  React.createElement('input', { id: 'kitEndTimePeriod', type: 'text', className: 'form-control', name: 'endTimePeriod', placeholder: 'End Year' })
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'form-row' },
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-6 ml-auto' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'description' },
+                    'Description: '
+                  ),
+                  React.createElement('textarea', { id: 'kitDescription', type: 'text', className: 'form-control', name: 'description' })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'form-check mr-auto mt-5 ml-3' },
+                  React.createElement('input', { id: 'kitPublic', className: 'form-check-input', type: 'checkbox', name: 'public', value: 'Public', checked: true }),
+                  React.createElement(
+                    'label',
+                    { className: 'form-check-label', 'for': 'public' },
+                    'Public'
+                  )
+                )
+              ),
+              React.createElement('input', { id: 'initCsrf', type: 'hidden', name: '_csrf', value: props.csrf }),
+              React.createElement('input', { id: 'imageURL', type: 'hidden', name: 'imageURL', value: '' }),
+              React.createElement('input', { className: 'btn btn-lg btn-outline-success', type: 'submit', value: 'Add Kit' })
+            ),
+            React.createElement('input', { id: 'hideKitForm', type: 'button', className: 'btn btn-lg btn-outline-danger', 'data-dismiss': 'modal', value: 'Cancel' })
+          )
+        )
+      )
+    ),
+    React.createElement(
+      'div',
+      { className: 'modal fade', id: 'editKit', tabindex: '-1', role: 'dialog', 'aria-labelledby': 'editKitTitle', 'aria-hidden': 'true' },
+      React.createElement(
+        'section',
+        { className: 'modal-dialog modal-lg', role: 'document' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'h2',
+              { className: 'modal-title', id: 'editKitTitle' },
+              'Editing'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'form',
+              { id: 'editKitForm', name: 'editKitForm', action: '/maker', method: 'POST', onSubmit: handleEditKit },
+              React.createElement(
+                'div',
+                { className: 'form-group' },
+                React.createElement('input', { id: 'editImageField', type: 'file', name: 'image' }),
+                React.createElement(
+                  'label',
+                  { 'for': 'editImageField', className: 'btn btn-outline-secondary', id: 'editImageLabel' },
+                  'Change Image'
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'form-row' },
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-4 ml-auto' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'name' },
+                    'Name: '
+                  ),
+                  React.createElement('input', { id: 'kitName', type: 'text', name: 'name', className: 'form-control', placeholder: 'Kit Name', readonly: true })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-3 ml-5' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'startTimePeriod' },
+                    'Time Period Range Start: '
+                  ),
+                  React.createElement('input', { id: 'kitStartTimePeriod', type: 'text', className: 'form-control', name: 'startTimePeriod', placeholder: 'Start Year' })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-3 mr-auto' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'endTimePeriod' },
+                    'Time Period Range End: '
+                  ),
+                  React.createElement('input', { id: 'kitEndTimePeriod', type: 'text', className: 'form-control', name: 'endTimePeriod', placeholder: 'End Year' })
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'form-row' },
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-6 ml-auto' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'description' },
+                    'Description: '
+                  ),
+                  React.createElement('textarea', { id: 'kitDescription', type: 'text', className: 'form-control', name: 'description' })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'form-check mr-auto mt-5 ml-3' },
+                  React.createElement('input', { id: 'kitPublic', className: 'form-check-input', type: 'checkbox', name: 'public', value: 'Public', checked: true }),
+                  React.createElement(
+                    'label',
+                    { className: 'form-check-label', 'for': 'public' },
+                    'Public'
+                  )
+                )
+              ),
+              React.createElement('input', { id: 'initCsrf', type: 'hidden', name: '_csrf', value: props.csrf }),
+              React.createElement('input', { id: 'imageURL', type: 'hidden', name: 'imageURL', value: '' }),
+              React.createElement('input', { className: 'btn btn-lg btn-outline-success', type: 'submit', value: 'Update Kit' })
+            ),
+            React.createElement('input', { id: 'hideKitForm', type: 'button', className: 'btn btn-lg btn-outline-danger', 'data-dismiss': 'modal', value: 'Cancel' })
+          )
+        )
+      )
+    ),
+    React.createElement(
+      'div',
+      { className: 'modal fade', id: 'editKitItem', tabindex: '-1', role: 'dialog', 'aria-labelledby': 'editkitItemTitle', 'aria-hidden': 'true' },
+      React.createElement(
+        'section',
+        { className: 'modal-dialog modal-lg', role: 'document' },
+        React.createElement(
+          'div',
+          { className: 'modal-content' },
+          React.createElement(
+            'div',
+            { className: 'modal-header' },
+            React.createElement(
+              'h2',
+              { className: 'modal-title', id: 'editkitItemTitle' },
+              'Editing'
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'modal-body' },
+            React.createElement(
+              'form',
+              { id: 'editKitItemForm', name: 'editKitItemForm', action: '/addKitItem', method: 'POST', className: 'text-center kitItemForm', onSubmit: handleEditKitItem },
+              React.createElement(
+                'div',
+                { className: 'form-group text-center' },
+                React.createElement('input', { id: 'editItemImageField', type: 'file', name: 'image' }),
+                React.createElement(
+                  'label',
+                  { 'for': 'editItemImageField', className: 'btn btn-outline-secondary', id: 'editItemImageLabel' },
+                  'Change Image'
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'form-row' },
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-4 ml-auto' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'name' },
+                    'Name: '
+                  ),
+                  React.createElement('input', { id: 'kitItemName', type: 'text', name: 'itemName', className: 'form-control', placeholder: 'Kit Item Name', readonly: true })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-4 mr-auto' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'itemPrice' },
+                    'Price: '
+                  ),
+                  React.createElement('input', { id: 'kitItemPrice', type: 'text', name: 'itemPrice', className: 'form-control', placeholder: 'Price' })
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'form-row' },
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-5 ml-auto' },
+                  React.createElement(
+                    'label',
+                    { 'for': 'itemDescription' },
+                    'Description: '
+                  ),
+                  React.createElement('textarea', { id: 'kitItemDescription', type: 'text', className: 'form-control', name: 'itemDescription' })
+                ),
+                React.createElement(
+                  'div',
+                  { className: 'form-group col-md-5 mr-auto' },
+                  React.createElement(
+                    'ul',
+                    { id: 'linkList', className: 'text-left' },
+                    React.createElement(
+                      'li',
+                      { id: 'addLinkButton' },
+                      React.createElement('input', { type: 'button', className: 'btn btn-sm btn-outline-secondary addLinkButton', value: 'Add Link' })
+                    )
+                  )
+                )
+              ),
+              React.createElement('input', { type: 'hidden', id: 'newCsrf', name: '_csrf', value: props.csrf }),
+              React.createElement('input', { type: 'hidden', id: 'itemImageURL', name: 'itemImageURL', value: '' }),
+              React.createElement('input', { type: 'hidden', id: 'parentKit', name: 'parentKit', value: 'REPLACE THIS' }),
+              React.createElement('input', { className: 'btn btn-outline-success text-center mx-auto', type: 'submit', value: 'Update Kit Item' })
+            ),
+            React.createElement('input', { id: 'hideKitItemForm', type: 'button', className: 'btn btn-lg btn-outline-danger', 'data-dismiss': 'modal', value: 'Cancel' })
+          )
+        )
+      )
+    ),
+    React.createElement(
+      'div',
+      { className: 'modal fade submitLoading', id: 'submitLoading', tabindex: '-1', role: 'dialog', 'aria-labelledby': 'editKitTitle', 'aria-hidden': 'true' },
+      React.createElement(
+        'div',
+        { className: 'modal-dialog modal-dialog-centered', role: 'document' },
+        React.createElement(
+          'div',
+          { className: 'modal-content load-gif mx-auto' },
+          React.createElement('img', { src: '/assets/img/loading.gif', alt: 'Loading', className: 'img-fluid mx-auto' })
+        )
+      )
+    ),
+    React.createElement('section', { id: 'kits', className: 'container bg-light mt-5' })
+  );
+};
+
+var KitList = function KitList(props) {
+  if (props.kits.length === 0) {
+    return React.createElement(
+      'div',
+      { className: 'container bg-light mt-5' },
+      React.createElement(
+        'div',
+        { className: 'jumbotron jumbotron-fluid' },
+        React.createElement(
+          'h4',
+          { className: 'display-4' },
+          'You Don\'t Have Any Reenactment Kits!'
+        ),
+        React.createElement(
+          'h4',
+          null,
+          'Get Started by Adding Some.'
+        )
+      )
+    );
+  }
+
+  var kitNodes = props.kits.map(function (kit) {
+    // return the empty display if the kit has no items
+    var kitItems = null;
+    if (kit.kitItems.length === 0) {
+      kitItems = React.createElement(
+        'div',
+        null,
+        React.createElement(
+          'div',
+          { className: 'row text-center' },
+          React.createElement(
+            'div',
+            { className: 'col' },
+            React.createElement(
+              'h3',
+              null,
+              'This Kit has no Items!'
+            ),
+            React.createElement(
+              'p',
+              null,
+              'Get Started by adding some.'
+            )
+          )
+        ),
+        React.createElement('hr', null),
+        React.createElement(
+          'h3',
+          { className: 'text-center' },
+          'Add a New Kit Item:'
+        ),
+        React.createElement(
+          'form',
+          { id: 'kitItemForm', name: 'kitItemForm', action: '/addKitItem', method: 'POST', className: 'text-center kitItemForm', onSubmit: handleAddkitItem },
+          React.createElement(
+            'div',
+            { className: 'form-group text-center' },
+            React.createElement('input', { id: 'itemImageField', type: 'file', name: 'itemImage' })
+          ),
+          React.createElement(
+            'div',
+            { className: 'form-row' },
+            React.createElement(
+              'div',
+              { className: 'form-group col-md-4 ml-auto' },
+              React.createElement(
+                'label',
+                { 'for': 'name' },
+                'Name: '
+              ),
+              React.createElement('input', { id: 'kitItemName', type: 'text', name: 'itemName', className: 'form-control', placeholder: 'Kit Item Name' })
+            ),
+            React.createElement(
+              'div',
+              { className: 'form-group col-md-4 mr-auto' },
+              React.createElement(
+                'label',
+                { 'for': 'itemPrice' },
+                'Price: '
+              ),
+              React.createElement('input', { id: 'kitItemPrice', type: 'text', name: 'itemPrice', className: 'form-control', placeholder: 'Price' })
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'form-row' },
+            React.createElement(
+              'div',
+              { className: 'form-group col-md-5 ml-auto' },
+              React.createElement(
+                'label',
+                { 'for': 'itemDescription' },
+                'Description: '
+              ),
+              React.createElement('textarea', { id: 'kitItemDescription', type: 'text', className: 'form-control', name: 'itemDescription' })
+            ),
+            React.createElement(
+              'div',
+              { className: 'form-group col-md-5 mr-auto' },
+              React.createElement(
+                'ul',
+                { id: 'linkList', className: 'text-left' },
+                React.createElement(
+                  'li',
+                  null,
+                  React.createElement('input', { type: 'button', className: 'btn btn-sm btn-outline-secondary addLinkButton', value: 'Add Link' })
+                )
+              )
+            )
+          ),
+          React.createElement('input', { type: 'hidden', id: 'newCsrf', name: '_csrf', value: props.csrf }),
+          React.createElement('input', { type: 'hidden', id: 'itemImageURL', name: 'itemImageURL', value: '' }),
+          React.createElement('input', { type: 'hidden', name: 'parentKit', value: kit.name }),
+          React.createElement('input', { className: 'btn btn-outline-success text-center mx-auto', type: 'submit', value: 'Add Kit Item' })
+        )
+      );
+    } else {
+      // finally map the items to the proper JSX
+      var kitItemNodes = kit.kitItems.map(function (kitItem) {
+        // construct the links object to insert into the kit
+        var kitItemLinks = null;
+        if (kitItem.links.length !== 0) {
+          kitItemLinks = kitItem.links.map(function (link) {
+            return React.createElement(
+              'li',
+              null,
+              React.createElement(
+                'a',
+                { href: link },
+                link
+              )
+            );
+          });
+        }
+
+        return React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'div',
+            { className: 'row', key: kitItem._id },
+            React.createElement(
+              'div',
+              { className: 'col-4' },
+              kitItem.image && React.createElement('img', { src: kitItem.image, className: 'img-fluid', alt: 'My cool pic' })
+            ),
+            React.createElement(
+              'div',
+              { className: 'col-8' },
+              React.createElement(
+                'h4',
+                null,
+                'Item Name: ',
+                React.createElement(
+                  'span',
+                  { id: 'kitItemName' },
+                  kitItem.name
+                )
+              ),
+              kitItem.price && React.createElement(
+                'h5',
+                null,
+                'Item Price: $',
+                React.createElement(
+                  'span',
+                  { id: 'kitItemPrice' },
+                  kitItem.price
+                )
+              ),
+              kitItem.description && React.createElement(
+                'h5',
+                null,
+                'Item Description: ',
+                React.createElement(
+                  'span',
+                  { id: 'kitItemDescription' },
+                  kitItem.description
+                )
+              ),
+              kitItem.links && React.createElement(
+                'div',
+                null,
+                React.createElement(
+                  'h4',
+                  null,
+                  'Links:'
+                ),
+                React.createElement(
+                  'ul',
+                  { id: 'kitItemLinkList' },
+                  kitItemLinks
+                )
+              ),
+              React.createElement(
+                'form',
+                { id: 'deleteKitItemForm', action: '/deleteKitItem', method: 'POST', onSubmit: handleDeleteKitItem },
+                React.createElement(
+                  'div',
+                  { className: 'btn-group text-center' },
+                  React.createElement(
+                    'button',
+                    { type: 'button', id: 'editKitItemButton', className: 'btn btn-sm btn-outline-primary' },
+                    'Edit'
+                  ),
+                  React.createElement('input', { type: 'hidden', id: 'parentKit', name: 'parentKit', value: kit.name }),
+                  React.createElement('input', { type: 'hidden', name: 'itemToDelete', value: kitItem.name }),
+                  React.createElement('input', { id: 'initCsrf', type: 'hidden', name: '_csrf', value: props.csrf }),
+                  React.createElement(
+                    'button',
+                    { type: 'submit', className: 'btn btn-sm btn-outline-danger', id: 'kitItemDeleteButton', name: 'kitItemDeleteButton' },
+                    'Delete'
+                  )
+                )
+              )
+            ),
+            React.createElement('hr', null)
+          )
+        );
+      });
+
+      kitItems = React.createElement(
+        'div',
+        null,
+        kitItemNodes,
+        React.createElement(
+          'h3',
+          { className: 'text-center' },
+          'Add a New Kit Item:'
+        ),
+        React.createElement(
+          'form',
+          { id: 'kitItemForm', name: 'kitItemForm', action: '/addKitItem', method: 'POST', className: 'text-center kitItemForm', onSubmit: handleAddkitItem },
+          React.createElement(
+            'div',
+            { className: 'form-group text-center' },
+            React.createElement('input', { id: 'itemImageField', type: 'file', name: 'itemImage' })
+          ),
+          React.createElement(
+            'div',
+            { className: 'form-row' },
+            React.createElement(
+              'div',
+              { className: 'form-group col-md-4 ml-auto' },
+              React.createElement(
+                'label',
+                { 'for': 'name' },
+                'Name: '
+              ),
+              React.createElement('input', { id: 'kitItemName', type: 'text', name: 'itemName', className: 'form-control', placeholder: 'Kit Item Name' })
+            ),
+            React.createElement(
+              'div',
+              { className: 'form-group col-md-4 mr-auto' },
+              React.createElement(
+                'label',
+                { 'for': 'itemPrice' },
+                'Price: '
+              ),
+              React.createElement('input', { id: 'kitItemPrice', type: 'text', name: 'itemPrice', className: 'form-control', placeholder: 'Price' })
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'form-row' },
+            React.createElement(
+              'div',
+              { className: 'form-group col-md-5 ml-auto' },
+              React.createElement(
+                'label',
+                { 'for': 'itemDescription' },
+                'Description: '
+              ),
+              React.createElement('textarea', { id: 'kitItemDescription', type: 'text', className: 'form-control', name: 'itemDescription' })
+            ),
+            React.createElement(
+              'div',
+              { className: 'form-group col-md-5 mr-auto' },
+              React.createElement(
+                'ul',
+                { id: 'linkList', className: 'text-left' },
+                React.createElement(
+                  'li',
+                  null,
+                  React.createElement('input', { type: 'button', className: 'btn btn-sm btn-outline-secondary addLinkButton', value: 'Add Link' })
+                )
+              )
+            )
+          ),
+          React.createElement('input', { type: 'hidden', id: 'newCsrf', name: '_csrf', value: props.csrf }),
+          React.createElement('input', { type: 'hidden', id: 'itemImageURL', name: 'itemImageURL', value: '' }),
+          React.createElement('input', { type: 'hidden', name: 'parentKit', value: kit.name }),
+          React.createElement('input', { className: 'btn btn-outline-success text-center mx-auto', type: 'submit', value: 'Add Kit Item' })
+        )
+      );
+    }
+
+    return React.createElement(
+      'div',
+      { className: 'kit' },
+      React.createElement(
+        'div',
+        { className: 'kit' },
+        React.createElement(
+          'div',
+          { className: 'jumbotron jumbotron-fluid' },
+          React.createElement(
+            'h2',
+            { className: 'kitName display-4' },
+            'Name: ',
+            kit.name
+          ),
+          kit.startTimePeriod && React.createElement(
+            'h4',
+            null,
+            'Time Period: ',
+            kit.startTimePeriod,
+            kit.endTimePeriod && React.createElement(
+              'span',
+              null,
+              ' - ',
+              kit.endTimePeriod
+            ),
+            ' '
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'row' },
+          React.createElement(
+            'div',
+            { className: 'col-6' },
+            kit.image && React.createElement('img', { src: kit.image, className: 'img-fluid', alt: 'My cool pic' })
+          ),
+          React.createElement(
+            'div',
+            { className: 'col-5' },
+            kit.description && React.createElement(
+              'h5',
+              null,
+              'Description: ',
+              kit.description
+            ),
+            React.createElement(
+              'form',
+              { id: 'deleteKitForm', action: '/deleteKit', method: 'DELETE', onSubmit: handleDeleteKit },
+              React.createElement(
+                'div',
+                { className: 'btn-group text-center' },
+                React.createElement(
+                  'button',
+                  { type: 'button', id: 'editKitButton', className: 'btn btn-sm btn-outline-primary' },
+                  'Edit'
+                ),
+                React.createElement('input', { type: 'hidden', name: 'itemToDelete', value: kit.name }),
+                React.createElement('input', { id: 'initCsrf', type: 'hidden', name: '_csrf', value: props.csrf }),
+                React.createElement(
+                  'button',
+                  { type: 'submit', className: 'btn btn-sm btn-outline-danger', id: 'kitDeleteButton', name: 'kitDeleteButton' },
+                  'Delete'
+                )
+              )
+            )
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'row' },
+          React.createElement(
+            'button',
+            { type: 'button', className: 'btn btn-lg btn-primary mx-auto mt-3', id: 'expandKitItemsButton' },
+            'Toggle Display Kit Items'
+          )
+        ),
+        React.createElement('hr', null),
+        React.createElement(
+          'div',
+          { className: 'kit-items-expand collapse', id: 'kitItemDisplay' },
+          kitItems
+        )
+      ),
+      React.createElement('hr', null)
+    );
+  });
+
+  return React.createElement(
+    'div',
+    null,
+    kitNodes
+  );
+};
+
+var changePassWindow = function changePassWindow(props) {};
+
+var createMakerWindow = function createMakerWindow(csrf) {
+  sendAjax('/getKitsByOwner', null, 'GET', 'json', function (data) {
+    // first, render the base page
+    ReactDOM.render(React.createElement(MakerWindow, { csrf: csrf }), document.querySelector('#content'));
+
+    // then, render each kit along with associated items
+    ReactDOM.render(React.createElement(KitList, { kits: data.kits, csrf: csrf }), document.querySelector('#kits'));
+
+    // do everything else needed after kits are rendered
+
+    // pull forms for modals to be used for submission and editing
+    var addKitForm = document.querySelector("#kitForm");
+    var editKitForm = document.querySelector("#editKitForm");
+    var editKitItemForm = document.querySelector("#editKitItemForm");
+
+    // allow links to be added to kit items
+    var linkButtons = document.getElementsByClassName("addLinkButton");
+    if (linkButtons) {
+      var _loop = function _loop(i) {
+        linkButtons[i].addEventListener("click", function (e) {
+          return addItem(e, linkButtons[i].parentElement.parentElement, 'Link', "");
+        });
+      };
+
+      for (var i = 0; i < linkButtons.length; i++) {
+        _loop(i);
+      }
+    }
+
+    // attach event listeners on each kit on the myKits page
+    var myKits = document.getElementsByClassName("kit");
+    if (myKits) {
+      var _loop2 = function _loop2(i) {
+        // attach expand event listener
+        var expandButton = myKits[i].querySelector("#expandKitItemsButton");
+        expandButton.addEventListener('click', function (e) {
+          $(myKits[i].querySelector("#collapseableContent")).collapse('toggle');
+        });
+
+        // attach kit event listener
+        var editButton = myKits[i].querySelector('#editKitButton');
+        var clickEdit = function clickEdit(e) {
+          return populateEditKitModal(myKits[i]);
+        };
+        editButton.addEventListener('click', clickEdit);
+
+        // attach event listeners to each item's edit and delete
+        var myKitItems = myKits[i].getElementsByClassName("KitItem");
+        if (myKitItems) {
+          var _loop3 = function _loop3(j) {
+
+            // attach edit event listener
+            var kitItemEditButton = myKitItems[j].querySelector("#editKitItemButton");
+            var parentKit = myKitItems[j].querySelector("#parentKit");
+
+            var itemClickEdit = function itemClickEdit(e) {
+              return populateEditKitItemModal(myKitItems[j], parentKit);
+            };
+            kitItemEditButton.addEventListener('click', itemClickEdit);
+          };
+
+          for (var j = 0; j < myKitItems.length; j++) {
+            _loop3(j);
+          }
+        }
+      };
+
+      for (var i = 0; i < myKits.length; i++) {
+        _loop2(i);
+      }
+    }
+
+    // attach event listeners to each kit form
+    if (addKitForm && editKitForm && editKitItemForm) {
+      updateImageField(addKitForm, "imageField", "imageLabel");
+      updateImageField(editKitForm, "editImageField", "editImageLabel");
+      updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
+    }
+  });
+};
+
+var createChangePassWindow = function createChangePassWindow(csrf) {};
 
 // wrapper function to submit an image to imgur when posting
 // will upload image to imgur if upload was successful
@@ -176,34 +1144,6 @@ var addItem = function addItem(e, list, elemName, value) {
   list.appendChild(item);
 };
 
-// function responsible for sending AJAX requests to our server
-// the external Imgur request is handled in another function
-var sendAjax = function sendAjax(action, data, type, dataType) {
-  console.dir(data);
-  $.ajax({
-    cache: false,
-    type: type,
-    url: action,
-    data: data,
-    dataType: dataType,
-    success: function success(result, status, xhr) {
-      $("#kitMessage").animate({ width: 'hide' }, 350);
-
-      if (dataType == 'json') {
-        window.location = result.redirect;
-      }
-      if (dataType == 'html') {
-        $("body").html(result);
-      }
-    },
-    error: function error(xhr, status, _error) {
-      var messageObj = JSON.parse(xhr.responseText);
-
-      handleError(messageObj.error);
-    }
-  });
-};
-
 // a helper function used for updating various image modals
 var updateImageField = function updateImageField(form, imageField, imageLabel) {
   var input = form.querySelector('#' + imageField);
@@ -220,213 +1160,9 @@ var updateImageField = function updateImageField(form, imageField, imageLabel) {
   }
 };
 
-// adds event listeners to things that change or add kits
-var addKitModalEventListener = function addKitModalEventListener(kitForm, imageField) {
-  var $kitForm = $(kitForm);
+var setup = function setup(csrf) {
 
-  $kitForm.on("submit", function (e) {
-    e.preventDefault();
-
-    $("#kitMessage").animate({ width: 'hide' }, 350);
-
-    if (kitForm.querySelector("#kitName") == '') {
-      handleError("Kit name is required");
-      return false;
-    }
-
-    var imageF = kitForm.querySelector('#' + imageField);
-
-    makeImgurRequest(imageF.files[0]).then(function (imageData) {
-      var image = "";
-
-      if (imageData) {
-        var data = JSON.parse(imageData).data;
-        image = data.link;
-      }
-
-      return image;
-    }).then(function (image) {
-      // user uploaded a new image
-      if (image) {
-        kitForm.querySelector("#imageURL").value = image;
-      }
-      // user already has an image
-      else if (!kitForm.querySelector("#imageURL").value) {
-          kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
-        }
-      displayHideSections('submitLoading', 'none');
-      sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json");
-    });
-
-    return false;
-  });
-};
-
-$(document).ready(function () {
-  if (document.querySelector('#dynamicContent')) {
-    (function () {
-      // set up masonry content
-      var grid = document.querySelector('#dynamicContent');
-      masonry = new Masonry(grid, {
-        columnWidth: 410,
-        gutter: 10,
-        itemSelector: '.grid-item'
-      });
-
-      // ensure that we only lay out grid when all images are loaded
-      // Credit: ImagesLoaded Library
-      imagesLoaded('#grid', { background: true }, function () {
-        masonry.layout();
-      });
-
-      masonry.layout();
-
-      // assign event listeners to each object
-      var kits = document.getElementsByClassName("grid-item");
-
-      var _loop = function _loop(i) {
-        kits[i].addEventListener('click', function (e) {
-          e.preventDefault();
-
-          var name = kits[i].querySelector('#kitName').innerHTML;
-          var owner = kits[i].querySelector('#kitOwner').value;
-          var csrf = document.querySelector('#csrf').value;
-          var data = 'name=' + name + '&owner=' + owner + '&csrf=' + csrf;
-
-          sendAjax('/viewer', data, "GET", "json");
-        });
-      };
-
-      for (var i = 0; i < kits.length; i++) {
-        _loop(i);
-      }
-    })();
-  }
-
-  // pull forms for modals to be used for submission and editing
-  var addKitForm = document.querySelector("#kitForm");
-  var editKitForm = document.querySelector("#editKitForm");
-  var editKitItemForm = document.querySelector("#editKitItemForm");
-
-  // allow links to be added to kit items
-  var linkButtons = document.getElementsByClassName("addLinkButton");
-  if (linkButtons) {
-    var _loop2 = function _loop2(i) {
-      linkButtons[i].addEventListener("click", function (e) {
-        return addItem(e, linkButtons[i].parentElement.parentElement, 'Link', "");
-      });
-    };
-
-    for (var i = 0; i < linkButtons.length; i++) {
-      _loop2(i);
-    }
-  }
-
-  // attach event listeners on each kit on the myKits page
-  var myKits = document.getElementsByClassName("kit");
-  if (myKits) {
-    var _loop3 = function _loop3(i) {
-      // attach expand event listener
-      var expandButton = myKits[i].querySelector("#expandKitItemsButton");
-      expandButton.addEventListener('click', function (e) {
-        $(myKits[i].querySelector("#collapseableContent")).collapse('toggle');
-      });
-
-      // attach delete event listener
-      myKits[i].querySelector('#deleteKitForm').addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var $kitForm = $(myKits[i].querySelector('#deleteKitForm'));
-
-        sendAjax($kitForm.attr("action"), $kitForm.serialize(), "DELETE", "json");
-
-        return false;
-      });
-
-      // attach kit event listener
-      var editButton = myKits[i].querySelector('#editKitButton');
-      var clickEdit = function clickEdit(e) {
-        return populateEditKitModal(myKits[i]);
-      };
-      editButton.addEventListener('click', clickEdit);
-
-      // attach event listeners to each item's edit and delete
-      var myKitItems = myKits[i].getElementsByClassName("KitItem");
-      if (myKitItems) {
-        var _loop4 = function _loop4(j) {
-          myKitItems[j].querySelector('#deleteKitItemForm').addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            var $kitItemForm = $(myKitItems[j].querySelector('#deleteKitItemForm'));
-
-            sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
-
-            return false;
-          });
-
-          // attach edit event listener
-          var kitItemEditButton = myKitItems[j].querySelector("#editKitItemButton");
-          var parentKit = myKitItems[j].querySelector("#parentKit");
-
-          var itemClickEdit = function itemClickEdit(e) {
-            return populateEditKitItemModal(myKitItems[j], parentKit);
-          };
-          kitItemEditButton.addEventListener('click', itemClickEdit);
-        };
-
-        for (var j = 0; j < myKitItems.length; j++) {
-          _loop4(j);
-        }
-      }
-    };
-
-    for (var i = 0; i < myKits.length; i++) {
-      _loop3(i);
-    }
-  }
-
-  // handles attatching listeners to edit and add kits
-  addKitModalEventListener(document.querySelector("#kitForm"), "imageField");
-  addKitModalEventListener(document.querySelector("#editKitForm"), "editImageField");
-
-  // attach submit listener
-  if (editKitForm) {
-    editKitItemForm.addEventListener("submit", function (e) {
-      e.preventDefault();
-
-      editKitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
-      var imageF = editKitItemForm.querySelector('#editItemImageField');
-      $("#kitMessage").animate({ width: 'hide' }, 350);
-
-      if (editKitItemForm.querySelector('#kitItemName') == '') {
-        handleError("Kit name is required");
-        return false;
-      }
-
-      var $editKitItemForm = $(editKitItemForm);
-
-      makeImgurRequest(imageF.files[0]).then(function (imageData) {
-        var image = "";
-
-        if (imageData) {
-          var data = JSON.parse(imageData).data;
-          image = data.link;
-        }
-
-        return image;
-      }).then(function (image) {
-        if (image) {
-          editKitItemForm.querySelector('#itemImageURL').value = image;
-        } else if (!editKitItemForm.querySelector("#itemImageURL").value) {
-          editKitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
-        }
-        displayHideSections('submitLoading', 'none');
-        sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json");
-      });
-
-      return false;
-    });
-  }
+  createMakerWindow(csrf);
 
   $("#changePassForm").on("submit", function (e) {
     e.preventDefault();
@@ -443,56 +1179,48 @@ $(document).ready(function () {
       return false;
     }
 
-    sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json");
+    sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json", redirect);
 
     return false;
   });
+};
 
-  var kitItemForms = document.getElementsByClassName("kitItemForm");
+var getToken = function getToken() {
+  sendAjax('/getToken', null, 'GET', "json", function (result) {
+    setup(result.csrfToken);
+  });
+};
 
-  if (kitItemForms) {
-    Array.prototype.forEach.call(kitItemForms, function (kitItemForm) {
-      kitItemForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        kitItemForm.querySelector("#newCsrf").value = document.querySelector("#initCsrf").value;
-        var imageF = kitItemForm.querySelector('#itemImageField');
-        $("#kitMessage").animate({ width: 'hide' }, 350);
-
-        if (kitItemForm.querySelector('#kitItemName') == '') {
-          handleError("Kit name is required");
-          return false;
-        }
-
-        var $kitItemForm = $(kitItemForm);
-
-        makeImgurRequest(imageF.files[0]).then(function (imageData) {
-          var image = "";
-
-          if (imageData) {
-            var data = JSON.parse(imageData).data;
-            image = data.link;
-          }
-
-          return image;
-        }).then(function (image) {
-          if (image) {
-            kitItemForm.querySelector('#itemImageURL').value = image;
-          } else if (!kitItemForm.querySelector("#itemImageURL").value) {
-            kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
-          }
-          sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json");
-        });
-
-        return false;
-      });
-    });
-  }
-
-  // attach event listeners to each kit form
-  if (addKitForm && editKitForm && editKitItemForm) {
-    updateImageField(addKitForm, "imageField", "imageLabel");
-    updateImageField(editKitForm, "editImageField", "editImageLabel");
-    updateImageField(editKitItemForm, "editItemImageField", "editItemImageLabel");
-  }
+$(document).ready(function () {
+  getToken();
 });
+"use strict";
+
+var handleError = function handleError(message) {
+  $("#errorMessage").text(message);
+  $('#errorModal').modal();
+};
+
+var redirect = function redirect(response) {
+  $("#kitMessage").animate({ width: 'hide' }, 350);
+  window.location = response.redirect;
+};
+
+// function responsible for sending AJAX requests to our server
+// the external Imgur request is handled in another function
+var sendAjax = function sendAjax(action, data, type, dataType, success) {
+  console.dir(data);
+  $.ajax({
+    cache: false,
+    type: type,
+    url: action,
+    data: data,
+    dataType: dataType,
+    success: success,
+    error: function error(xhr, status, _error) {
+      var messageObj = JSON.parse(xhr.responseText);
+
+      handleError(messageObj.error);
+    }
+  });
+};

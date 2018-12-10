@@ -33,45 +33,6 @@ const homePage = (req, res) => {
     });
 };
 
-// redirect for when the user wants to view an individual kit
-const viewer = (req, res) => {
-  const search = {
-    owner: req.query.owner,
-    name: req.query.name,
-    public: true,
-  };
-
-  const query = Kit.KitModel.findOne(search,
-    'name description kitItems startTimePeriod endTimePeriod public image owner');
-
-  const promise = query.exec();
-  promise.then((doc) => res.json({ redirect: `/viewerPage?name=${doc.name}&owner=${doc.owner}` }));
-
-  return promise;
-};
-
-// function for rendering an individual kit
-const viewerPage = (req, res) => {
-  const search = {
-    owner: req.query.owner,
-    name: req.query.name,
-    public: true,
-  };
-
-  Kit.KitModel.find(search,
-    'name description kitItems startTimePeriod endTimePeriod public image',
-    (err, docs) => {
-      if (err) {
-        console.log(err);
-        return res.status(400).json({ error: 'An error occured' });
-      }
-
-      return res.render('viewer',
-        { csrfToken: req.csrfToken(),
-          kits: docs, account: req.session.account });
-    });
-};
-
 // function for adding or editing a kit
 const makeKit = (req, res) => {
   if (!req.body.name) {
@@ -247,13 +208,23 @@ const getKitByOwner = (req, res) => {
     });
 };
 
+const getKitsByOwner = (req, res) => {
+  return Kit.KitModel.findByOwner(req.session.account._id, (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occured' });
+    }
+
+    return res.json({ kits: docs });
+  });
+}
+
 module.exports.makerPage = makerPage;
 module.exports.make = makeKit;
 module.exports.addKitItem = addKitItem;
 module.exports.homePage = homePage;
-module.exports.viewer = viewer;
-module.exports.viewerPage = viewerPage;
 module.exports.deleteKit = deleteKit;
 module.exports.deleteKitItem = deleteKitItem;
 module.exports.getKits = getKits;
 module.exports.getKitByOwner = getKitByOwner;
+module.exports.getKitsByOwner = getKitsByOwner;
