@@ -26,6 +26,8 @@ const handleAddkit = (e) => {
   
   const imageF = kitForm.querySelector('#imageField');
 
+  const $kitForm = $(kitForm);
+
   makeImgurRequest(imageF.files[0])
   .then((imageData) => {
     let image = "";
@@ -46,7 +48,8 @@ const handleAddkit = (e) => {
     else if (!kitForm.querySelector("#imageURL").value) {
       kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
     }
-    displayHideSections('submitLoading', 'none');
+    $('#submitLoading').modal('hide');
+    $('#makeKit').modal('hide');
     sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function(){
       getToken();
     });
@@ -88,6 +91,7 @@ const handleAddkitItem = (e) => {
     else if (!kitItemForm.querySelector("#itemImageURL").value){
       kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
     }
+    $('submitLoading').toggle();
     sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function(){
       getToken();
     });
@@ -109,6 +113,7 @@ const handleEditKit = (e) => {
   
   const imageF = kitForm.querySelector('#editImageField');
 
+  const $kitForm = $(kitForm);
   makeImgurRequest(imageF.files[0])
   .then((imageData) => {
     let image = "";
@@ -129,7 +134,8 @@ const handleEditKit = (e) => {
     else if (!kitForm.querySelector("#imageURL").value) {
       kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
     }
-    displayHideSections('submitLoading', 'none');
+    $('#submitLoading').modal('hide');
+    $('#editKit').modal('hide');
     sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function(){
       getToken();
     });
@@ -170,7 +176,8 @@ const handleEditKitItem = (e) => {
     else if (!editKitItemForm.querySelector("#itemImageURL").value){
       editKitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
     }
-    displayHideSections('submitLoading', 'none');
+    $('#submitLoading').modal('hide');
+    $('#editKitItem').modal('hide');
     sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json", function(){
       getToken();
     });
@@ -182,7 +189,7 @@ const handleEditKitItem = (e) => {
 const handleDeleteKit = (e) => {
   e.preventDefault();
 
-  const $kitForm = $(e.target.querySelector('#deleteKitForm'));
+  const $kitForm = $(e.target);
 
   sendAjax($kitForm.attr("action"), $kitForm.serialize(), "DELETE", "json", function(){
     getToken();
@@ -194,7 +201,7 @@ const handleDeleteKit = (e) => {
 const handleDeleteKitItem = (e) => {
   e.preventDefault();
     
-  const $kitItemForm = $(e.target.querySelector('#deleteKitItemForm'));
+  const $kitItemForm = $(e.target);
 
   sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function(){
     getToken();
@@ -506,38 +513,35 @@ const KitList = function(props) {
 
     return(
       <div className="kit">
-        <div className="kit">
-            <div className="jumbotron jumbotron-fluid">
-                <h2 className="kitName display-4">Name: {kit.name}</h2>
-                {kit.startTimePeriod && <h4>Time Period: {kit.startTimePeriod}
-                {kit.endTimePeriod && <span> - {kit.endTimePeriod}</span>} </h4>}
-            </div>
-            <div className="row">
-            <div className="col-6">
-                {kit.image && <img src={kit.image} className="img-fluid" alt="My cool pic"></img>}
-            </div>
-            <div className="col-5">
-                {kit.description && <h5>Description: {kit.description}</h5>}
-                <form id="deleteKitForm" action="/deleteKit" method="DELETE" onSubmit={handleDeleteKit}>
-                  <div className="btn-group text-center">
-                    <button type="button" id="editKitButton" className="btn btn-sm btn-outline-primary">Edit</button>                          
-                    <input type="hidden" name="itemToDelete" value={kit.name} />
-                    <input id="initCsrf" type="hidden" name="_csrf" value={props.csrf} />
-                    <button type="submit" className="btn btn-sm btn-outline-danger" id="kitDeleteButton" name="kitDeleteButton">Delete</button>
-                  </div>
-                </form>
-            </div>
-            </div>
-            <div className="row">
-              <button type="button" className="btn btn-lg btn-primary mx-auto mt-3" id="expandKitItemsButton">Toggle Display Kit Items</button>
-            </div>
-            <hr/>
+          <div className="jumbotron jumbotron-fluid">
+              <h2 className="kitName display-4">Name: <span id="kitName">{kit.name}</span></h2>
+              {kit.startTimePeriod && <h4>Time Period: <span id="kitStartTimePeriod">{kit.startTimePeriod}</span>
+              {kit.endTimePeriod && <span> - <span id="kitEndTimePeriod">{kit.endTimePeriod}</span></span>} </h4>}
+          </div>
+          <div className="row">
+          <div className="col-6">
+              {kit.image && <img src={kit.image} className="img-fluid" alt="My cool pic"></img>}
+          </div>
+          <div className="col-5">
+              {kit.description && <h5>Description: {kit.description}</h5>}
+              <form id="deleteKitForm" action="/deleteKit" method="DELETE" onSubmit={handleDeleteKit}>
+                <div className="btn-group text-center">
+                  <button type="button" id="editKitButton" className="btn btn-sm btn-outline-primary">Edit</button>                          
+                  <input type="hidden" name="itemToDelete" value={kit.name} />
+                  <input id="initCsrf" type="hidden" name="_csrf" value={props.csrf} />
+                  <button type="submit" className="btn btn-sm btn-outline-danger" id="kitDeleteButton" name="kitDeleteButton">Delete</button>
+                </div>
+              </form>
+          </div>
+          </div>
+          <div className="row">
+            <button type="button" className="btn btn-lg btn-primary mx-auto mt-3" id="expandKitItemsButton">Toggle Display Kit Items</button>
+          </div>
+          <hr/>
 
-            <div className="kit-items-expand collapse" id="kitItemDisplay">
-              {kitItems}
-            </div>
-
-        </div>
+          <div className="kit-items-expand collapse" id="kitItemDisplay">
+            {kitItems}
+          </div>
         <hr/>
     </div>
     );

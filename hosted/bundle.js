@@ -28,6 +28,8 @@ var counterStruct = {
 
   var imageF = kitForm.querySelector('#imageField');
 
+  var $kitForm = $(kitForm);
+
   makeImgurRequest(imageF.files[0]).then(function (imageData) {
     var image = "";
 
@@ -46,7 +48,8 @@ var counterStruct = {
     else if (!kitForm.querySelector("#imageURL").value) {
         kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
       }
-    displayHideSections('submitLoading', 'none');
+    $('#submitLoading').modal('hide');
+    $('#makeKit').modal('hide');
     sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function () {
       getToken();
     });
@@ -85,6 +88,7 @@ var handleAddkitItem = function handleAddkitItem(e) {
     } else if (!kitItemForm.querySelector("#itemImageURL").value) {
       kitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
     }
+    $('submitLoading').toggle();
     sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function () {
       getToken();
     });
@@ -106,6 +110,7 @@ var handleEditKit = function handleEditKit(e) {
 
   var imageF = kitForm.querySelector('#editImageField');
 
+  var $kitForm = $(kitForm);
   makeImgurRequest(imageF.files[0]).then(function (imageData) {
     var image = "";
 
@@ -124,7 +129,8 @@ var handleEditKit = function handleEditKit(e) {
     else if (!kitForm.querySelector("#imageURL").value) {
         kitForm.querySelector("#imageURL").value = "/assets/img/defaultImage.jpg";
       }
-    displayHideSections('submitLoading', 'none');
+    $('#submitLoading').modal('hide');
+    $('#editKit').modal('hide');
     sendAjax($kitForm.attr("action"), $kitForm.serialize(), "POST", "json", function () {
       getToken();
     });
@@ -162,7 +168,8 @@ var handleEditKitItem = function handleEditKitItem(e) {
     } else if (!editKitItemForm.querySelector("#itemImageURL").value) {
       editKitItemForm.querySelector("#itemImageURL").value = "/assets/img/defaultImage.jpg";
     }
-    displayHideSections('submitLoading', 'none');
+    $('#submitLoading').modal('hide');
+    $('#editKitItem').modal('hide');
     sendAjax($editKitItemForm.attr("action"), $editKitItemForm.serialize(), "POST", "json", function () {
       getToken();
     });
@@ -174,7 +181,7 @@ var handleEditKitItem = function handleEditKitItem(e) {
 var handleDeleteKit = function handleDeleteKit(e) {
   e.preventDefault();
 
-  var $kitForm = $(e.target.querySelector('#deleteKitForm'));
+  var $kitForm = $(e.target);
 
   sendAjax($kitForm.attr("action"), $kitForm.serialize(), "DELETE", "json", function () {
     getToken();
@@ -186,7 +193,7 @@ var handleDeleteKit = function handleDeleteKit(e) {
 var handleDeleteKitItem = function handleDeleteKitItem(e) {
   e.preventDefault();
 
-  var $kitItemForm = $(e.target.querySelector('#deleteKitItemForm'));
+  var $kitItemForm = $(e.target);
 
   sendAjax($kitItemForm.attr("action"), $kitItemForm.serialize(), "POST", "json", function () {
     getToken();
@@ -817,84 +824,92 @@ var KitList = function KitList(props) {
       { className: 'kit' },
       React.createElement(
         'div',
-        { className: 'kit' },
+        { className: 'jumbotron jumbotron-fluid' },
+        React.createElement(
+          'h2',
+          { className: 'kitName display-4' },
+          'Name: ',
+          React.createElement(
+            'span',
+            { id: 'kitName' },
+            kit.name
+          )
+        ),
+        kit.startTimePeriod && React.createElement(
+          'h4',
+          null,
+          'Time Period: ',
+          React.createElement(
+            'span',
+            { id: 'kitStartTimePeriod' },
+            kit.startTimePeriod
+          ),
+          kit.endTimePeriod && React.createElement(
+            'span',
+            null,
+            ' - ',
+            React.createElement(
+              'span',
+              { id: 'kitEndTimePeriod' },
+              kit.endTimePeriod
+            )
+          ),
+          ' '
+        )
+      ),
+      React.createElement(
+        'div',
+        { className: 'row' },
         React.createElement(
           'div',
-          { className: 'jumbotron jumbotron-fluid' },
-          React.createElement(
-            'h2',
-            { className: 'kitName display-4' },
-            'Name: ',
-            kit.name
-          ),
-          kit.startTimePeriod && React.createElement(
-            'h4',
-            null,
-            'Time Period: ',
-            kit.startTimePeriod,
-            kit.endTimePeriod && React.createElement(
-              'span',
-              null,
-              ' - ',
-              kit.endTimePeriod
-            ),
-            ' '
-          )
+          { className: 'col-6' },
+          kit.image && React.createElement('img', { src: kit.image, className: 'img-fluid', alt: 'My cool pic' })
         ),
         React.createElement(
           'div',
-          { className: 'row' },
-          React.createElement(
-            'div',
-            { className: 'col-6' },
-            kit.image && React.createElement('img', { src: kit.image, className: 'img-fluid', alt: 'My cool pic' })
+          { className: 'col-5' },
+          kit.description && React.createElement(
+            'h5',
+            null,
+            'Description: ',
+            kit.description
           ),
           React.createElement(
-            'div',
-            { className: 'col-5' },
-            kit.description && React.createElement(
-              'h5',
-              null,
-              'Description: ',
-              kit.description
-            ),
+            'form',
+            { id: 'deleteKitForm', action: '/deleteKit', method: 'DELETE', onSubmit: handleDeleteKit },
             React.createElement(
-              'form',
-              { id: 'deleteKitForm', action: '/deleteKit', method: 'DELETE', onSubmit: handleDeleteKit },
+              'div',
+              { className: 'btn-group text-center' },
               React.createElement(
-                'div',
-                { className: 'btn-group text-center' },
-                React.createElement(
-                  'button',
-                  { type: 'button', id: 'editKitButton', className: 'btn btn-sm btn-outline-primary' },
-                  'Edit'
-                ),
-                React.createElement('input', { type: 'hidden', name: 'itemToDelete', value: kit.name }),
-                React.createElement('input', { id: 'initCsrf', type: 'hidden', name: '_csrf', value: props.csrf }),
-                React.createElement(
-                  'button',
-                  { type: 'submit', className: 'btn btn-sm btn-outline-danger', id: 'kitDeleteButton', name: 'kitDeleteButton' },
-                  'Delete'
-                )
+                'button',
+                { type: 'button', id: 'editKitButton', className: 'btn btn-sm btn-outline-primary' },
+                'Edit'
+              ),
+              React.createElement('input', { type: 'hidden', name: 'itemToDelete', value: kit.name }),
+              React.createElement('input', { id: 'initCsrf', type: 'hidden', name: '_csrf', value: props.csrf }),
+              React.createElement(
+                'button',
+                { type: 'submit', className: 'btn btn-sm btn-outline-danger', id: 'kitDeleteButton', name: 'kitDeleteButton' },
+                'Delete'
               )
             )
           )
-        ),
-        React.createElement(
-          'div',
-          { className: 'row' },
-          React.createElement(
-            'button',
-            { type: 'button', className: 'btn btn-lg btn-primary mx-auto mt-3', id: 'expandKitItemsButton' },
-            'Toggle Display Kit Items'
-          )
-        ),
-        React.createElement('hr', null),
-        React.createElement(
-          'div',
-          { className: 'kit-items-expand collapse', id: 'kitItemDisplay' },
-          kitItems
         )
+      ),
+      React.createElement(
+        'div',
+        { className: 'row' },
+        React.createElement(
+          'button',
+          { type: 'button', className: 'btn btn-lg btn-primary mx-auto mt-3', id: 'expandKitItemsButton' },
+          'Toggle Display Kit Items'
+        )
+      ),
+      React.createElement('hr', null),
+      React.createElement(
+        'div',
+        { className: 'kit-items-expand collapse', id: 'kitItemDisplay' },
+        kitItems
       ),
       React.createElement('hr', null)
     );
