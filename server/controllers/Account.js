@@ -1,21 +1,6 @@
 const models = require('../models');
 const Account = models.Account;
 
-// function for rendering login page
-const loginPage = (req, res) => {
-  res.render('login', { csrfToken: req.csrfToken() });
-};
-
-// function for rendering signup page
-const signupPage = (req, res) => {
-  res.render('signup', { csrfToken: req.csrfToken() });
-};
-
-// function for rendering change password page
-const changePassPage = (req, res) => {
-  res.render('changePass', { csrfToken: req.csrfToken() });
-};
-
 // function for rendering logout page
 const logout = (req, res) => {
   req.session.destroy();
@@ -152,12 +137,9 @@ const getAccount = (request, response) => {
   res.json(accountJSON);
 }
 
-module.exports.loginPage = loginPage;
 module.exports.login = login;
 module.exports.logout = logout;
-module.exports.signupPage = signupPage;
 module.exports.signup = signup;
 module.exports.changePass = changePass;
-module.exports.changePassPage = changePassPage;
 module.exports.getToken = getToken;
 module.exports.getAccount = getAccount;

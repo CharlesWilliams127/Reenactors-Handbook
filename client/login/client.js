@@ -15,9 +15,6 @@ const ViewKitWindow = function(props) {
           <li className="nav-item">
             <a className="nav-link" href="/logout">Logout</a>
           </li>
-          <li className="nav-item">
-            <a className="nav-link" href="/changePass">Change Password</a>
-          </li>
         </ul>
       </nav>}
       
@@ -249,9 +246,6 @@ const HomeWindow = (props) => {
           <li className="nav-item">
             <a className="nav-link" href="/logout">Logout</a>
           </li>
-          <li className="nav-item">
-            <a className="nav-link" href="/changePass">Change Password</a>
-          </li>
         </ul>
       </nav>}
       
@@ -465,7 +459,7 @@ const addNavbarEventListeners = (csrf, account) => {
             e.preventDefault();
             createSignupWindow(csrf);
             addNavbarEventListeners(csrf, account);
-            return false
+            return false;
         });
 
         loginButton.addEventListener("click", (e) => {

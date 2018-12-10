@@ -17,7 +17,6 @@ const router = (app) => {
   // app.get('/addKitItem', mid.requiresLogin, controllers.Kit.itemMakerPage);
   app.get('/', mid.requiresSecure, controllers.Kit.homePage);
   app.post('/changePass', mid.requiresLogin, controllers.Account.changePass);
-  app.get('/changePass', mid.requiresLogin, controllers.Account.changePassPage);
   app.get('/home', mid.requiresSecure, controllers.Kit.homePage);
   app.post('/deleteKitItem', mid.requiresLogin, controllers.Kit.deleteKitItem);
   app.delete('/deleteKit', mid.requiresLogin, controllers.Kit.deleteKit);

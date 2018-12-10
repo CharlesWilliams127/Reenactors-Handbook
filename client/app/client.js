@@ -212,6 +212,28 @@ const handleDeleteKitItem = (e) => {
   return false;
 }
 
+const handleChangePassword = (e) => {
+  e.preventDefault();
+
+  $("#kitMessage").animate({width:'hide'},350);
+
+  if($("#user").val() == '' || $("#pass").val() == '' || $("#newPass").val() == '') {
+    handleError("All fields are required");
+    return false;
+  }
+
+  if($("#pass").val() === $("#newPass").val()) {
+    handleError("Passwords are the same");
+    return false;
+  }
+
+  sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json", function(){
+    getToken();
+  });
+
+  return false;
+}
+
 // React Views
 const MakerWindow = (props) => {
   return (
@@ -556,8 +578,25 @@ const KitList = function(props) {
   );
 };
 
-const changePassWindow = (props) => {
-  
+const ChangePassWindow = (props) => {
+  return (
+    <div>
+    <div className="h-25"></div>
+  <section id="changePass" className="container bg-white text-center mt-5">
+    <form id="changePassForm" name="changePassForm" action="/changePass" method="POST" className="form-signin" onSubmit={handleChangePassword}>
+      <h1 className="h3 mb-3 font-weight-normal">Please enter the following</h1>
+      <label for="username" className="sr-only">Username: </label>
+      <input id="user" className="form-control" type="text" name="username" placeholder="username"/>
+      <label for="pass" className="sr-only">Old Password: </label>
+      <input id="pass" className="form-control" type="password" name="pass" placeholder="old password"/>
+      <label for="newPass" className="sr-only">New Password: </label>
+      <input id="newPass" type="password" name="newPass" className="form-control" placeholder="new password"/>
+      <input type="hidden" name="_csrf" value={props.csrf} />
+      <input type="submit" className="btn btn-large btn-success" value="Change Password" />
+    </form>
+  </section>
+  </div>
+  );
 }
 
 const createMakerWindow = (csrf) => {
@@ -631,7 +670,10 @@ const createMakerWindow = (csrf) => {
 };
 
 const createChangePassWindow = (csrf) => {
-
+  ReactDOM.render(
+    <ChangePassWindow csrf={csrf}/>,
+    document.querySelector('#content')
+  );
 }
 
 // wrapper function to submit an image to imgur when posting
@@ -810,23 +852,15 @@ const setup = (csrf) => {
   
   createMakerWindow(csrf);
 
-  $("#changePassForm").on("submit", (e)=> {
+  document.querySelector('#changePassNavButton').addEventListener('click', (e) => {
     e.preventDefault();
+    createChangePassWindow(csrf);
+    return false;
+  });
 
-    $("#kitMessage").animate({width:'hide'},350);
-
-    if($("#user").val() == '' || $("#pass").val() == '' || $("#newPass").val() == '') {
-      handleError("All fields are required");
-      return false;
-    }
-
-    if($("#pass").val() === $("#newPass").val()) {
-      handleError("Passwords are the same");
-      return false;
-    }
-
-    sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json", redirect);
-
+  document.querySelector('#myKitsNavButton').addEventListener('click', (e) => {
+    e.preventDefault();
+    createMakerWindow(csrf);
     return false;
   });
 

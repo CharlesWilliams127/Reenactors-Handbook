@@ -204,6 +204,28 @@ var handleDeleteKitItem = function handleDeleteKitItem(e) {
   return false;
 };
 
+var handleChangePassword = function handleChangePassword(e) {
+  e.preventDefault();
+
+  $("#kitMessage").animate({ width: 'hide' }, 350);
+
+  if ($("#user").val() == '' || $("#pass").val() == '' || $("#newPass").val() == '') {
+    handleError("All fields are required");
+    return false;
+  }
+
+  if ($("#pass").val() === $("#newPass").val()) {
+    handleError("Passwords are the same");
+    return false;
+  }
+
+  sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json", function () {
+    getToken();
+  });
+
+  return false;
+};
+
 // React Views
 var MakerWindow = function MakerWindow(props) {
   return React.createElement(
@@ -924,7 +946,46 @@ var KitList = function KitList(props) {
   );
 };
 
-var changePassWindow = function changePassWindow(props) {};
+var ChangePassWindow = function ChangePassWindow(props) {
+  return React.createElement(
+    'div',
+    null,
+    React.createElement('div', { className: 'h-25' }),
+    React.createElement(
+      'section',
+      { id: 'changePass', className: 'container bg-white text-center mt-5' },
+      React.createElement(
+        'form',
+        { id: 'changePassForm', name: 'changePassForm', action: '/changePass', method: 'POST', className: 'form-signin', onSubmit: handleChangePassword },
+        React.createElement(
+          'h1',
+          { className: 'h3 mb-3 font-weight-normal' },
+          'Please enter the following'
+        ),
+        React.createElement(
+          'label',
+          { 'for': 'username', className: 'sr-only' },
+          'Username: '
+        ),
+        React.createElement('input', { id: 'user', className: 'form-control', type: 'text', name: 'username', placeholder: 'username' }),
+        React.createElement(
+          'label',
+          { 'for': 'pass', className: 'sr-only' },
+          'Old Password: '
+        ),
+        React.createElement('input', { id: 'pass', className: 'form-control', type: 'password', name: 'pass', placeholder: 'old password' }),
+        React.createElement(
+          'label',
+          { 'for': 'newPass', className: 'sr-only' },
+          'New Password: '
+        ),
+        React.createElement('input', { id: 'newPass', type: 'password', name: 'newPass', className: 'form-control', placeholder: 'new password' }),
+        React.createElement('input', { type: 'hidden', name: '_csrf', value: props.csrf }),
+        React.createElement('input', { type: 'submit', className: 'btn btn-large btn-success', value: 'Change Password' })
+      )
+    )
+  );
+};
 
 var createMakerWindow = function createMakerWindow(csrf) {
   sendAjax('/getKitsByOwner', null, 'GET', 'json', function (data) {
@@ -1007,7 +1068,9 @@ var createMakerWindow = function createMakerWindow(csrf) {
   });
 };
 
-var createChangePassWindow = function createChangePassWindow(csrf) {};
+var createChangePassWindow = function createChangePassWindow(csrf) {
+  ReactDOM.render(React.createElement(ChangePassWindow, { csrf: csrf }), document.querySelector('#content'));
+};
 
 // wrapper function to submit an image to imgur when posting
 // will upload image to imgur if upload was successful
@@ -1181,23 +1244,15 @@ var setup = function setup(csrf) {
 
   createMakerWindow(csrf);
 
-  $("#changePassForm").on("submit", function (e) {
+  document.querySelector('#changePassNavButton').addEventListener('click', function (e) {
     e.preventDefault();
+    createChangePassWindow(csrf);
+    return false;
+  });
 
-    $("#kitMessage").animate({ width: 'hide' }, 350);
-
-    if ($("#user").val() == '' || $("#pass").val() == '' || $("#newPass").val() == '') {
-      handleError("All fields are required");
-      return false;
-    }
-
-    if ($("#pass").val() === $("#newPass").val()) {
-      handleError("Passwords are the same");
-      return false;
-    }
-
-    sendAjax($("#changePassForm").attr("action"), $("#changePassForm").serialize(), "POST", "json", redirect);
-
+  document.querySelector('#myKitsNavButton').addEventListener('click', function (e) {
+    e.preventDefault();
+    createMakerWindow(csrf);
     return false;
   });
 };

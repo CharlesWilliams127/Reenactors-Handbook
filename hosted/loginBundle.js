@@ -43,15 +43,6 @@ var ViewKitWindow = function ViewKitWindow(props) {
                         { className: "nav-link", href: "/logout" },
                         "Logout"
                     )
-                ),
-                React.createElement(
-                    "li",
-                    { className: "nav-item" },
-                    React.createElement(
-                        "a",
-                        { className: "nav-link", href: "/changePass" },
-                        "Change Password"
-                    )
                 )
             )
         ),
@@ -468,15 +459,6 @@ var HomeWindow = function HomeWindow(props) {
                         "a",
                         { className: "nav-link", href: "/logout" },
                         "Logout"
-                    )
-                ),
-                React.createElement(
-                    "li",
-                    { className: "nav-item" },
-                    React.createElement(
-                        "a",
-                        { className: "nav-link", href: "/changePass" },
-                        "Change Password"
                     )
                 )
             )
