@@ -173,10 +173,11 @@ const getKits = (req, res) => {
   let search = {};
   console.log(req.query.name);
 
+  // search through the DB using Regex
   if(req.query.name) {
     search = {
       public: true,
-      name: req.query.name
+      name: new RegExp(req.query.name, 'i')
     };
   }
   else {
