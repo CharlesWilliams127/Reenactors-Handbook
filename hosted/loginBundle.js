@@ -375,8 +375,8 @@ var KitList = function KitList(props) {
     );
 };
 
-var getKits = function getKits(csrf, account) {
-    sendAjax('/getKits', null, 'GET', "json", function (data) {
+var getKits = function getKits(csrf, account, filterData) {
+    sendAjax('/getKits', filterData, 'GET', "json", function (data) {
         ReactDOM.render(React.createElement(KitList, { kits: data.kits, csrfToken: csrf }), document.querySelector("#dynamicContent"));
 
         // set up masonry content
@@ -461,6 +461,16 @@ var HomeWindow = function HomeWindow(props) {
                         "Logout"
                     )
                 )
+            ),
+            React.createElement(
+                "div",
+                { className: "form-inline my-2 my-lg-0 w-75", id: "searchBar" },
+                React.createElement("input", { className: "form-control mr-sm-2 w-50", type: "search", id: "searchData", placeholder: "Search", "aria-label": "Search" }),
+                React.createElement(
+                    "button",
+                    { className: "btn btn-outline-success my-2 my-sm-0", type: "button", id: "searchBarSubmit" },
+                    "Search"
+                )
             )
         ),
         !props.account && React.createElement(
@@ -500,6 +510,16 @@ var HomeWindow = function HomeWindow(props) {
                         { className: "nav-link", id: "signupButton", href: "/signup" },
                         "Sign up"
                     )
+                )
+            ),
+            React.createElement(
+                "div",
+                { className: "form-inline my-2 my-lg-0 w-75", id: "searchBar" },
+                React.createElement("input", { className: "form-control mr-sm-2 w-50", type: "search", id: "searchData", placeholder: "Search", "aria-label": "Search" }),
+                React.createElement(
+                    "button",
+                    { className: "btn btn-outline-success my-2 my-sm-0", type: "button", id: "searchBarSubmit" },
+                    "Search"
                 )
             )
         ),
@@ -582,7 +602,7 @@ var HomeWindow = function HomeWindow(props) {
 var createHomeWindow = function createHomeWindow(csrf, account) {
     ReactDOM.render(React.createElement(HomeWindow, { account: account }), document.querySelector('#content'));
 
-    getKits(csrf, account);
+    getKits(csrf, account, null);
 };
 
 var handleLogin = function handleLogin(e) {
@@ -859,6 +879,11 @@ var addNavbarEventListeners = function addNavbarEventListeners(csrf, account) {
         createHomeWindow(csrf, account);
         addNavbarEventListeners(csrf, account);
         return false;
+    });
+
+    // set up search bar
+    document.querySelector('#searchBarSubmit').addEventListener('click', function (e) {
+        getKits(csrf, account, "name=" + document.querySelector('#searchData').value);
     });
 };
 

@@ -170,9 +170,20 @@ const deleteKitItem = (req, res) => {
 };
 
 const getKits = (req, res) => {
-  const search = {
-    public: true,
-  };
+  let search = {};
+  console.log(req.query.name);
+
+  if(req.query.name) {
+    search = {
+      public: true,
+      name: req.query.name
+    };
+  }
+  else {
+    search = {
+      public: true,
+    };
+  }
 
   return Kit.KitModel.find(search,
     'name description kitItems startTimePeriod endTimePeriod public image owner',
@@ -181,6 +192,8 @@ const getKits = (req, res) => {
         console.log(err);
         return res.status(400).json({ error: 'An error occured' });
       }
+
+      console.log(docs);
 
       return res.json(
         { kits: docs });

@@ -187,8 +187,8 @@ const KitList = function(props) {
   </div>);
 };
 
-const getKits = (csrf, account) => {
-  sendAjax('/getKits', null, 'GET', "json", (data) => {
+const getKits = (csrf, account, filterData) => {
+  sendAjax('/getKits', filterData, 'GET', "json", (data) => {
       ReactDOM.render(
         <KitList kits={data.kits} csrfToken={csrf}/>,
         document.querySelector("#dynamicContent")
@@ -247,6 +247,10 @@ const HomeWindow = (props) => {
             <a className="nav-link" href="/logout">Logout</a>
           </li>
         </ul>
+        <div className="form-inline my-2 my-lg-0 w-75" id="searchBar">
+            <input className="form-control mr-sm-2 w-50" type="search" id="searchData" placeholder="Search" aria-label="Search"/>
+            <button className="btn btn-outline-success my-2 my-sm-0" type="button" id="searchBarSubmit">Search</button>
+        </div>
       </nav>}
       
     {!props.account && <nav className="navbar navbar-expand-lg navbar-light bg-light"> 
@@ -262,6 +266,10 @@ const HomeWindow = (props) => {
             <a className="nav-link" id="signupButton" href="/signup">Sign up</a>
           </li>
         </ul>
+        <div className="form-inline my-2 my-lg-0 w-75" id="searchBar">
+            <input className="form-control mr-sm-2 w-50" type="search" id="searchData" placeholder="Search" aria-label="Search"/>
+            <button className="btn btn-outline-success my-2 my-sm-0" type="button" id="searchBarSubmit">Search</button>
+        </div>
       </nav>}
 
     <section id="header" className="jumbotron">
@@ -304,7 +312,7 @@ const createHomeWindow = (csrf, account) => {
       document.querySelector('#content')
   );
 
-  getKits(csrf, account);
+  getKits(csrf, account, null);
 };
 
 const handleLogin= (e) =>{
@@ -486,6 +494,11 @@ const addNavbarEventListeners = (csrf, account) => {
         createHomeWindow(csrf, account);
         addNavbarEventListeners(csrf, account);
         return false;
+    });
+
+    // set up search bar
+    document.querySelector('#searchBarSubmit').addEventListener('click', (e) => {
+        getKits(csrf, account, `name=${document.querySelector('#searchData').value}`);
     });
 }
 
