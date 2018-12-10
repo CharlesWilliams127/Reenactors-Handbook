@@ -130,7 +130,11 @@ var ViewKitWindow = function ViewKitWindow(props) {
                                     "h2",
                                     { className: "kitName display-4" },
                                     "Name: ",
-                                    props.kit.name
+                                    React.createElement(
+                                        "span",
+                                        { id: "viewKitName" },
+                                        props.kit.name
+                                    )
                                 ),
                                 props.kit.startTimePeriod && React.createElement(
                                     "h4",
@@ -168,7 +172,8 @@ var ViewKitWindow = function ViewKitWindow(props) {
                             React.createElement("hr", null),
                             React.createElement("div", { className: "kit-items-expand", id: "kitItemDisplay" })
                         ),
-                        React.createElement("hr", null)
+                        React.createElement("hr", null),
+                        React.createElement("div", { id: "commentSection" })
                     )
                 )
             ),
@@ -194,6 +199,84 @@ var ViewKitWindow = function ViewKitWindow(props) {
                     )
                 )
             )
+        )
+    );
+};
+
+var handleKitComment = function handleKitComment(e) {
+    e.preventDefault();
+
+    $("#kitMessage").animate({ width: 'hide' }, 350);
+
+    if ($("#commentText").val() == '') {
+        handleError("All fields are required");
+        return false;
+    }
+
+    console.log($("input[name=_csrf]").val());
+
+    sendAjax($("#kitCommentForm").attr("action"), $("#kitCommentForm").serialize(), 'POST', "json", redirect);
+
+    return false;
+};
+
+var KitCommentsList = function KitCommentsList(props) {
+    var kitCommentNodes = null;
+
+    if (props.kit.kitComments.length !== 0) {
+        kitCommentNodes = props.kit.kitComments.map(function (kitComment) {
+            return React.createElement(
+                "div",
+                { className: "row", key: kitComment._id },
+                React.createElement(
+                    "div",
+                    { className: "col-4" },
+                    React.createElement(
+                        "p",
+                        null,
+                        kitComment.createdDate
+                    )
+                ),
+                React.createElement(
+                    "div",
+                    { className: "col-8" },
+                    React.createElement(
+                        "h4",
+                        null,
+                        kitComment.text
+                    )
+                ),
+                React.createElement("hr", null)
+            );
+        });
+    }
+
+    return React.createElement(
+        "div",
+        null,
+        kitCommentNodes,
+        React.createElement(
+            "form",
+            { id: "kitCommentForm", name: "kitCommentForm", action: "/addKitComment", method: "POST", className: "text-center kitItemForm", onSubmit: handleKitComment },
+            React.createElement(
+                "div",
+                { className: "form-row" },
+                React.createElement(
+                    "div",
+                    { className: "form-group col-md-4 ml-auto" },
+                    React.createElement(
+                        "label",
+                        { htmlFor: "commentText" },
+                        "Comment: "
+                    ),
+                    React.createElement("textarea", { id: "commentText", type: "text", className: "form-control", name: "commentText" })
+                )
+            ),
+            React.createElement("input", { type: "hidden", id: "newCsrf", name: "_csrf", value: props.csrf }),
+            React.createElement("input", { type: "hidden", id: "itemImageURL", name: "itemImageURL", value: "" }),
+            React.createElement("input", { type: "hidden", name: "parentKit", value: props.kit.name }),
+            React.createElement("input", { type: "hidden", name: "kitOwner", value: props.kit.owner }),
+            React.createElement("input", { className: "btn btn-outline-success text-center mx-auto", type: "submit", value: "Submit Comment" })
         )
     );
 };
@@ -299,6 +382,8 @@ var getViewer = function getViewer(filterData, csrf, account) {
             // next, render the kit's items
             ReactDOM.render(React.createElement(KitItemsList, { kit: data.kit[0] }), document.querySelector('#kitItemDisplay'));
         }
+
+        ReactDOM.render(React.createElement(KitCommentsList, { kit: data.kit[0], csrf: csrf }), document.querySelector('#commentSection'));
 
         // attach event listeners
         addNavbarEventListeners(csrf, account);
@@ -863,10 +948,6 @@ var addNavbarEventListeners = function addNavbarEventListeners(csrf, account) {
         });
     }
 
-    if (logoutButton && myKitsButton && changePassButton) {
-        //  TODO: add listeners for these
-    }
-
     homeButton.addEventListener("click", function (e) {
         e.preventDefault();
         createHomeWindow(csrf, account);
@@ -882,9 +963,11 @@ var addNavbarEventListeners = function addNavbarEventListeners(csrf, account) {
     });
 
     // set up search bar
-    document.querySelector('#searchBarSubmit').addEventListener('click', function (e) {
-        getKits(csrf, account, "name=" + document.querySelector('#searchData').value);
-    });
+    if (document.querySelector('#searchBarSubmit')) {
+        document.querySelector('#searchBarSubmit').addEventListener('click', function (e) {
+            getKits(csrf, account, "name=" + document.querySelector('#searchData').value);
+        });
+    }
 };
 
 var setup = function setup(csrf, account) {

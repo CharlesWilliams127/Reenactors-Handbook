@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 const _ = require('underscore');
 const kitItem = require('./KitItem');
+const kitComment = require('./KitComment');
 
 
 let KitModel = {};
@@ -24,6 +25,8 @@ const KitSchema = new mongoose.Schema({
   },
   // array of items that make up this kit
   kitItems: [kitItem.KitItemSchema],
+  // array of comments associated with this kit
+  kitComments: [kitComment.KitCommentSchema],
   startTimePeriod: {
     type: Number,
     required: false,

@@ -122,6 +122,24 @@ const addKitItem = (req, res) => {
   return pullPromise;
 };
 
+const addKitComment = (req, res) => {
+  const query = Kit.KitModel.findOneAndUpdate(
+    { name: req.body.parentKit,
+      owner: req.body.kitOwner },
+    { $push: { kitComments: {text: req.body.commentText} } }
+  );
+
+  const promise = query.exec();
+  promise.then(() => res.json({ redirect: '/home' }));
+
+  promise.catch((err) => {
+    console.log(err);
+    return res.status(400).json({ error: 'An error occured' });
+  });
+
+  return promise;
+}
+
 // function for deleting a kit and its associated items
 const deleteKit = (req, res) => {
   const deleteFilter = {
@@ -209,12 +227,13 @@ const getKitByOwner = (req, res) => {
   };
 
   Kit.KitModel.find(search,
-    'name description kitItems startTimePeriod endTimePeriod public image',
+    'name description kitItems startTimePeriod endTimePeriod public image kitComments owner',
     (err, doc) => {
       if (err) {
         console.log(err);
         return res.status(400).json({ error: 'An error occured' });
       }
+      console.log(doc);
 
       return res.json(
         { kit: doc });
@@ -240,3 +259,4 @@ module.exports.deleteKitItem = deleteKitItem;
 module.exports.getKits = getKits;
 module.exports.getKitByOwner = getKitByOwner;
 module.exports.getKitsByOwner = getKitsByOwner;
+module.exports.addKitComment = addKitComment;

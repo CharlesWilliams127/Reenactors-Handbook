@@ -6,6 +6,7 @@ const router = (app) => {
   app.get('/getToken', mid.requiresSecure, controllers.Account.getToken);
   app.get('/getAccount', mid.requiresSecure, controllers.Account.getAccount);
   app.get('/getKitByOwner', mid.requiresSecure, controllers.Kit.getKitByOwner);
+  app.post('/addKitComment', mid.requiresSecure, controllers.Kit.addKitComment);
   app.get('/getKitsByOwner', mid.requiresLogin, controllers.Kit.getKitsByOwner);
   // app.get('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
   app.post('/login', mid.requiresSecure, mid.requiresLogout, controllers.Account.login);

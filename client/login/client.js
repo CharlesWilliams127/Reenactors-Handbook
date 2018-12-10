@@ -47,7 +47,8 @@ const ViewKitWindow = function(props) {
                 <div className="kit">
                     <div className="kit">
                         <div className="jumbotron jumbotron-fluid">
-                            <h2 className="kitName display-4">Name: {props.kit.name}</h2>
+                            <h2 className="kitName display-4">Name: <span id="viewKitName">{props.kit.name}</span></h2>
+                            
                             {props.kit.startTimePeriod && <h4>Time Period: {props.kit.startTimePeriod}
                             {props.kit.endTimePeriod && <span> - {props.kit.endTimePeriod}</span>} </h4>}
                         </div>
@@ -66,6 +67,9 @@ const ViewKitWindow = function(props) {
 
                     </div>
                     <hr/>
+
+                    <div id="commentSection">
+                    </div>
                 </div>
             </section>
             </div>
@@ -79,6 +83,63 @@ const ViewKitWindow = function(props) {
         </div>
         </div>
     );
+};
+
+const handleKitComment = (e) => {
+    e.preventDefault();
+
+    $("#kitMessage").animate({width:'hide'}, 350);
+
+    if($("#commentText").val() == '') {
+        handleError("All fields are required");
+        return false;
+    }
+
+    console.log($("input[name=_csrf]").val());
+
+    sendAjax($("#kitCommentForm").attr("action"), $("#kitCommentForm").serialize(), 'POST', "json", redirect);
+
+    return false;
+}
+
+const KitCommentsList = function(props) {
+    let kitCommentNodes = null;
+
+    if(props.kit.kitComments.length !== 0) {
+        kitCommentNodes = props.kit.kitComments.map(function(kitComment) {
+            return(
+                <div className="row" key={kitComment._id}>
+                    <div className="col-4">
+                        <p>{kitComment.createdDate}</p>
+                    </div>
+                    <div className="col-8">
+                        <h4>{kitComment.text}</h4>
+                    </div>
+                    <hr/>
+                </div>
+            );
+        });
+    }
+
+    return(
+        <div>
+            {kitCommentNodes}
+
+            <form id="kitCommentForm" name="kitCommentForm" action="/addKitComment" method="POST" className="text-center kitItemForm" onSubmit={handleKitComment}>
+            <div className="form-row">
+              <div className="form-group col-md-4 ml-auto">
+                <label htmlFor="commentText">Comment: </label>
+                <textarea id="commentText" type="text" className="form-control" name="commentText"></textarea>
+              </div>
+            </div>
+            <input type="hidden" id="newCsrf" name="_csrf" value={props.csrf} />
+            <input type="hidden" id="itemImageURL" name="itemImageURL" value="" />
+            <input type="hidden" name="parentKit" value={props.kit.name} />
+            <input type="hidden" name="kitOwner" value={props.kit.owner}/>
+            <input className="btn btn-outline-success text-center mx-auto" type="submit" value="Submit Comment" />
+          </form>
+        </div>
+    )
 }
 
 const KitItemsList = function(props) {
@@ -150,6 +211,11 @@ const getViewer = (filterData, csrf, account) => {
                 document.querySelector('#kitItemDisplay')
             );
         }
+
+        ReactDOM.render(
+            <KitCommentsList kit={data.kit[0]} csrf={csrf}/>,
+            document.querySelector('#commentSection')
+        );
 
         // attach event listeners
         addNavbarEventListeners(csrf, account);
@@ -478,10 +544,6 @@ const addNavbarEventListeners = (csrf, account) => {
         });
     }
 
-    if (logoutButton && myKitsButton && changePassButton) {
-        //  TODO: add listeners for these
-    }
-
     homeButton.addEventListener("click", (e) => {
         e.preventDefault();
         createHomeWindow(csrf, account);
@@ -497,9 +559,11 @@ const addNavbarEventListeners = (csrf, account) => {
     });
 
     // set up search bar
-    document.querySelector('#searchBarSubmit').addEventListener('click', (e) => {
-        getKits(csrf, account, `name=${document.querySelector('#searchData').value}`);
-    });
+    if (document.querySelector('#searchBarSubmit')) {
+        document.querySelector('#searchBarSubmit').addEventListener('click', (e) => {
+            getKits(csrf, account, `name=${document.querySelector('#searchData').value}`);
+        });
+    }
 }
 
 const setup=(csrf, account) => {
